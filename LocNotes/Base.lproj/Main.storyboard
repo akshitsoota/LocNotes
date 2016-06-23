@@ -3,6 +3,8 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -17,25 +19,50 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="2Gg-uo-g1d">
-                                <rect key="frame" x="172" y="135" width="256" height="329"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" misplaced="YES" axis="vertical" distribution="fillProportionally" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="EpP-01-mdo">
+                                <rect key="frame" x="172" y="146" width="256" height="309"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="ug9-Fv-zbc">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="ug9-Fv-zbc">
                                         <rect key="frame" x="0.0" y="1" width="256" height="256"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="ug9-Fv-zbc" secondAttribute="height" multiplier="1:1" id="Q14-AE-SCG"/>
+                                        </constraints>
+                                        <variation key="heightClass=compact-widthClass=compact" misplaced="YES">
+                                            <rect key="frame" x="0.0" y="27" width="0.0" height="0.0"/>
+                                        </variation>
+                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                            <rect key="frame" x="0.0" y="1" width="256" height="256"/>
+                                        </variation>
                                     </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="LocNotes" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Cqd-4s-gR4">
-                                        <rect key="frame" x="32" y="277" width="192" height="53"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="LocNotes" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="Cqd-4s-gR4">
+                                        <rect key="frame" x="32" y="257" width="192" height="53"/>
                                         <fontDescription key="fontDescription" name="TrebuchetMS-Bold" family="Trebuchet MS" pointSize="45"/>
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
+                                        <variation key="heightClass=compact-widthClass=compact" misplaced="YES">
+                                            <rect key="frame" x="0.0" y="0.0" width="0.0" height="53"/>
+                                        </variation>
+                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                            <rect key="frame" x="32" y="257" width="192" height="53"/>
+                                        </variation>
                                     </label>
                                 </subviews>
+                                <variation key="heightClass=compact-widthClass=compact" axis="horizontal" misplaced="YES">
+                                    <rect key="frame" x="200" y="84" width="0.0" height="53"/>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                    <rect key="frame" x="94" y="30" width="256" height="309"/>
+                                </variation>
                             </stackView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.8784313725490196" green="0.99215686274509807" blue="0.8784313725490196" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="2Gg-uo-g1d" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="IVz-Fa-KJu"/>
-                            <constraint firstItem="2Gg-uo-g1d" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Juh-xc-ZPQ"/>
+                            <constraint firstItem="EpP-01-mdo" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="20" id="Jhw-Oo-LPH"/>
+                            <constraint firstItem="EpP-01-mdo" firstAttribute="top" relation="greaterThanOrEqual" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="10" id="M4m-wS-03u"/>
+                            <constraint firstItem="EpP-01-mdo" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="RMu-EU-vvB"/>
+                            <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="EpP-01-mdo" secondAttribute="trailing" constant="20" id="rmS-kz-5II"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" relation="greaterThanOrEqual" secondItem="EpP-01-mdo" secondAttribute="bottom" constant="10" id="sE2-Au-uaD"/>
+                            <constraint firstItem="EpP-01-mdo" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="zsl-xN-qNI"/>
                         </constraints>
                     </view>
                 </viewController>
