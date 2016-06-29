@@ -135,10 +135,10 @@
             </objects>
             <point key="canvasLocation" x="84" y="842"/>
         </scene>
-        <!--View Controller-->
+        <!--New User Page Content View Controller-->
         <scene sceneID="GBd-nq-NRt">
             <objects>
-                <viewController storyboardIdentifier="NewUserPageView1" id="Ajh-vz-0vz" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="NewUserPageView1" id="Ajh-vz-0vz" customClass="NewUserPageContentViewController" customModule="LocNotes" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Jkh-rM-RZe"/>
                         <viewControllerLayoutGuide type="bottom" id="IRP-qi-3qi"/>
