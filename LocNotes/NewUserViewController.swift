@@ -18,6 +18,8 @@ class NewUserViewController: UIViewController, UIPageViewControllerDataSource, U
     var pageViewController: UIPageViewController!
     var pageViews: [String] = []
     var pageViewBackgrounds: [UIColor] = []
+    
+    var prevContentOffsetX: CGFloat!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -132,10 +134,40 @@ class NewUserViewController: UIViewController, UIPageViewControllerDataSource, U
         let pB = (nB - oB) * pscroll
         // Color
         self.view.backgroundColor = UIColor(red: pR + oR, green: pG + oG, blue: pB + oB, alpha: 1)
+        // Save and check with prev
+        if( scrollView.contentOffset.x == self.view.frame.width && self.prevContentOffsetX > scrollView.contentOffset.x ) {
+            // User has hit the new screen
+            self.view.backgroundColor = self.pageViewBackgrounds[1]
+        } else {
+            prevContentOffsetX = scrollView.contentOffset.x
+        }
     }
     
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         NSLog("scrollViewWillBeginDragging \(scrollView.contentOffset)")
+        //
+        let oldColor = self.pageViewBackgrounds[0]
+        let newColor = self.pageViewBackgrounds[1]
+        //
+        var oR: CGFloat = 0, oG: CGFloat = 0, oB: CGFloat = 0, oA: CGFloat = 0
+        var nR: CGFloat = 0, nG: CGFloat = 0, nB: CGFloat = 0, nA: CGFloat = 0
+        oldColor.getRed(&oR, green: &oG, blue: &oB, alpha: &oA)
+        newColor.getRed(&nR, green: &nG, blue: &nB, alpha: &nA)
+        // Resolve percentage of scroll
+        let pscroll = ((scrollView.contentOffset.x - self.view.frame.width) / self.view.frame.width)
+        // Solve new color
+        let pR = (nR - oR) * pscroll
+        let pG = (nG - oG) * pscroll
+        let pB = (nB - oB) * pscroll
+        // Color
+        self.view.backgroundColor = UIColor(red: pR + oR, green: pG + oG, blue: pB + oB, alpha: 1)
+        // Save and check with prev
+        if( scrollView.contentOffset.x == self.view.frame.width && self.prevContentOffsetX > scrollView.contentOffset.x ) {
+            // User has hit the new screen
+            self.view.backgroundColor = self.pageViewBackgrounds[1]
+        } else {
+            prevContentOffsetX = scrollView.contentOffset.x
+        }
     }
 
 }
