@@ -23,7 +23,7 @@ class SplashScreenController: UIViewController {
     }
     
     func switchOutToListScreen() {
-        performSegueWithIdentifier("exitSplashScreen", sender: self)
+        performSegueWithIdentifier("showNewUser", sender: self)
     }
     
 }
