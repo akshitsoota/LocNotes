@@ -13,6 +13,8 @@ import UIKit
 
 class NewUserViewController: UIViewController, UIPageViewControllerDataSource {
     
+    @IBOutlet weak var buttonsStackView: UIStackView!
+    
     var pageViewController: UIPageViewController!
     var pageViews: [String] = []
 
@@ -20,20 +22,26 @@ class NewUserViewController: UIViewController, UIPageViewControllerDataSource {
         super.viewDidLoad()
         // Initialze the pageView array with the identifiers for the PageViewController pages
         pageViews.append("NewUserPageView1")
+        
         // Also initialize the PageViewController
         self.pageViewController = self.storyboard?.instantiateViewControllerWithIdentifier("NewUserPageView") as! UIPageViewController
         self.pageViewController.dataSource = self   // This very class will be the UIPageViewControllerDataSource for the pages
+        
         // Setup the starting Page to be shown on the UIPageViewController
         let startingPage = self.getViewControllerAtIndex(0) as! NewUserPageContentViewController
         var viewControllers: [UIViewController] = []
         viewControllers.append(startingPage)
         
         self.pageViewController.setViewControllers(viewControllers, direction: .Forward, animated: true, completion: nil)
+        
         // Now add this to our screen
-        self.pageViewController.view.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
+        self.pageViewController.view.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height - self.buttonsStackView.frame.height - 20)
         self.addChildViewController(pageViewController)
         self.view.addSubview(pageViewController.view)
         self.pageViewController.didMoveToParentViewController(self)     // We will be handling all those function calls
+        
+        // Set a background for the first page
+        self.view.backgroundColor = startingPage.view.backgroundColor
     }
 
     override func didReceiveMemoryWarning() {
