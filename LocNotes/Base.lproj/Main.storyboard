@@ -19,8 +19,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" misplaced="YES" axis="vertical" distribution="fillProportionally" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="EpP-01-mdo">
-                                <rect key="frame" x="172" y="146" width="256" height="319"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" axis="vertical" distribution="fillProportionally" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="EpP-01-mdo">
+                                <rect key="frame" x="172" y="141" width="256" height="319"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="ug9-Fv-zbc">
                                         <rect key="frame" x="0.0" y="1" width="256" height="256"/>
@@ -34,7 +34,7 @@
                                             <rect key="frame" x="0.0" y="1" width="256" height="256"/>
                                         </variation>
                                     </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="LocNotes" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="Cqd-4s-gR4">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="LocNotes" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="Cqd-4s-gR4">
                                         <rect key="frame" x="32" y="267" width="192" height="53"/>
                                         <fontDescription key="fontDescription" name="TrebuchetMS-Bold" family="Trebuchet MS" pointSize="45"/>
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -150,17 +150,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" misplaced="YES" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="0Nb-rI-C17">
-                                <rect key="frame" x="35" y="20" width="480" height="560"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="0Nb-rI-C17">
+                                <rect key="frame" x="60" y="35" width="480" height="530"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Securely store your location logs in the cloud" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZUv-aF-qpq">
-                                        <rect key="frame" x="0.0" y="0.0" width="480" height="60"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Securely store your location logs in the cloud" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZUv-aF-qpq">
+                                        <rect key="frame" x="0.0" y="0.0" width="480" height="30"/>
                                         <fontDescription key="fontDescription" name="TamilSangamMN" family="Tamil Sangam MN" pointSize="28"/>
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" placeholderIntrinsicWidth="480" placeholderIntrinsicHeight="480" image="cloudUpload" translatesAutoresizingMaskIntoConstraints="NO" id="uBN-nL-tQt">
-                                        <rect key="frame" x="0.0" y="80" width="480" height="480"/>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="480" placeholderIntrinsicHeight="480" image="cloudUpload" translatesAutoresizingMaskIntoConstraints="NO" id="uBN-nL-tQt">
+                                        <rect key="frame" x="0.0" y="50" width="480" height="480"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="uBN-nL-tQt" secondAttribute="height" multiplier="1:1" id="pxl-as-Vpr"/>
                                         </constraints>
@@ -173,18 +173,114 @@
                         </subviews>
                         <color key="backgroundColor" red="0.96574649754786657" green="0.66134648355061576" blue="0.10077185628798184" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="0Nb-rI-C17" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="cqO-JI-HKZ" secondAttribute="leadingMargin" constant="15" id="59C-uT-de8"/>
-                            <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="0Nb-rI-C17" secondAttribute="trailing" constant="-35" id="9eg-Dd-2Rp"/>
-                            <constraint firstItem="0Nb-rI-C17" firstAttribute="centerX" secondItem="cqO-JI-HKZ" secondAttribute="centerX" id="Alh-gI-uHb"/>
-                            <constraint firstItem="0Nb-rI-C17" firstAttribute="centerY" secondItem="cqO-JI-HKZ" secondAttribute="centerY" id="MpG-mh-FPJ"/>
-                            <constraint firstItem="IRP-qi-3qi" firstAttribute="top" relation="greaterThanOrEqual" secondItem="0Nb-rI-C17" secondAttribute="bottom" constant="20" id="cx8-c8-CAb"/>
-                            <constraint firstItem="0Nb-rI-C17" firstAttribute="top" relation="greaterThanOrEqual" secondItem="cqO-JI-HKZ" secondAttribute="topMargin" constant="20" id="mV5-5T-lLJ"/>
+                            <constraint firstItem="0Nb-rI-C17" firstAttribute="top" relation="greaterThanOrEqual" secondItem="Jkh-rM-RZe" secondAttribute="bottom" constant="15" id="3Ux-sR-FZG"/>
+                            <constraint firstAttribute="bottomMargin" relation="greaterThanOrEqual" secondItem="0Nb-rI-C17" secondAttribute="bottom" constant="20" id="GWN-Og-7ko"/>
+                            <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="0Nb-rI-C17" secondAttribute="trailing" constant="15" id="ItG-3r-mP0"/>
+                            <constraint firstItem="0Nb-rI-C17" firstAttribute="centerX" secondItem="cqO-JI-HKZ" secondAttribute="centerX" id="pQr-Tl-Xxw"/>
+                            <constraint firstItem="0Nb-rI-C17" firstAttribute="centerY" secondItem="cqO-JI-HKZ" secondAttribute="centerY" id="xma-Fr-7xD"/>
+                            <constraint firstItem="0Nb-rI-C17" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="cqO-JI-HKZ" secondAttribute="leadingMargin" constant="15" id="zwk-TN-enB"/>
                         </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="egf-lm-eHH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="734" y="842"/>
+            <point key="canvasLocation" x="84" y="1512"/>
+        </scene>
+        <!--New User Page Content View Controller-->
+        <scene sceneID="Qoq-vw-WRV">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="X2T-aL-9Fw" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <viewController storyboardIdentifier="NewUserPageView2" id="Q2A-PM-VXY" customClass="NewUserPageContentViewController" customModule="LocNotes" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="1zW-Nl-saQ"/>
+                        <viewControllerLayoutGuide type="bottom" id="6qa-vv-3Sr"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="G8e-SL-CQv">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="uyT-Yb-4Ex">
+                                <rect key="frame" x="60" y="40" width="480" height="520"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Look back to see all the locations you visited" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qjN-KJ-oUf">
+                                        <rect key="frame" x="0.0" y="0.0" width="480" height="20"/>
+                                        <fontDescription key="fontDescription" name="TamilSangamMN" family="Tamil Sangam MN" pointSize="28"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="480" placeholderIntrinsicHeight="480" image="locationBlackPin" translatesAutoresizingMaskIntoConstraints="NO" id="icB-C1-jaY">
+                                        <rect key="frame" x="0.0" y="40" width="480" height="480"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="icB-C1-jaY" secondAttribute="height" multiplier="1:1" id="X5c-Ge-1cp"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="icB-C1-jaY" firstAttribute="top" secondItem="qjN-KJ-oUf" secondAttribute="bottom" constant="20" id="E8g-Pr-mZC"/>
+                                </constraints>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.97802364826202393" green="0.64316034317016602" blue="0.99951696395874023" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="uyT-Yb-4Ex" secondAttribute="trailing" constant="15" id="HQb-za-CuL"/>
+                            <constraint firstItem="uyT-Yb-4Ex" firstAttribute="top" relation="greaterThanOrEqual" secondItem="1zW-Nl-saQ" secondAttribute="bottom" constant="20" id="JcP-Ab-LTA"/>
+                            <constraint firstItem="uyT-Yb-4Ex" firstAttribute="centerY" secondItem="G8e-SL-CQv" secondAttribute="centerY" id="LyE-Yt-qR4"/>
+                            <constraint firstItem="uyT-Yb-4Ex" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="G8e-SL-CQv" secondAttribute="leadingMargin" constant="15" id="V9T-Tw-xiT"/>
+                            <constraint firstItem="6qa-vv-3Sr" firstAttribute="top" relation="greaterThanOrEqual" secondItem="uyT-Yb-4Ex" secondAttribute="bottom" constant="20" id="tza-Cp-qPn"/>
+                            <constraint firstItem="uyT-Yb-4Ex" firstAttribute="centerX" secondItem="G8e-SL-CQv" secondAttribute="centerX" id="yGz-bs-XeV"/>
+                        </constraints>
+                    </view>
+                </viewController>
+            </objects>
+            <point key="canvasLocation" x="734" y="1512"/>
+        </scene>
+        <!--New User Page Content View Controller-->
+        <scene sceneID="92S-23-u50">
+            <objects>
+                <viewController storyboardIdentifier="NewUserPageView3" id="rNT-Nm-mlF" customClass="NewUserPageContentViewController" customModule="LocNotes" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="9Pn-yg-ClE"/>
+                        <viewControllerLayoutGuide type="bottom" id="Udb-q5-xPp"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="O6u-sz-xAq">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="3Wc-zg-YoW">
+                                <rect key="frame" x="60" y="40" width="480" height="520"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Access your logs across multiple iPhones with your account" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eAo-wh-4R8">
+                                        <rect key="frame" x="0.0" y="0.0" width="480" height="20"/>
+                                        <fontDescription key="fontDescription" name="TamilSangamMN" family="Tamil Sangam MN" pointSize="28"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="480" placeholderIntrinsicHeight="480" image="userIcon" translatesAutoresizingMaskIntoConstraints="NO" id="7xi-Od-Rsz">
+                                        <rect key="frame" x="0.0" y="40" width="480" height="480"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="7xi-Od-Rsz" secondAttribute="height" multiplier="1:1" id="H3p-SP-nh8"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="7xi-Od-Rsz" firstAttribute="top" secondItem="eAo-wh-4R8" secondAttribute="bottom" constant="20" id="msZ-KA-hLj"/>
+                                </constraints>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="0.99449968338012695" blue="0.59030228853225708" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="3Wc-zg-YoW" firstAttribute="top" relation="greaterThanOrEqual" secondItem="9Pn-yg-ClE" secondAttribute="bottom" constant="20" id="3Zl-Ac-KVZ"/>
+                            <constraint firstItem="3Wc-zg-YoW" firstAttribute="centerY" secondItem="O6u-sz-xAq" secondAttribute="centerY" id="Ocf-fo-zxR"/>
+                            <constraint firstItem="3Wc-zg-YoW" firstAttribute="centerX" secondItem="O6u-sz-xAq" secondAttribute="centerX" id="T8W-ul-kjZ"/>
+                            <constraint firstItem="3Wc-zg-YoW" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="O6u-sz-xAq" secondAttribute="leadingMargin" constant="15" id="ff3-EL-sZ8"/>
+                            <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="3Wc-zg-YoW" secondAttribute="trailing" constant="15" id="kyb-WV-4ja"/>
+                            <constraint firstAttribute="bottomMargin" relation="greaterThanOrEqual" secondItem="3Wc-zg-YoW" secondAttribute="bottom" constant="20" id="t3N-AS-ewh"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="rb8-Zh-fmS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1396" y="1518"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="NvP-AI-eaR">
@@ -207,6 +303,8 @@
     </scenes>
     <resources>
         <image name="cloudUpload" width="256" height="256"/>
+        <image name="locationBlackPin" width="256" height="256"/>
         <image name="logo" width="256" height="256"/>
+        <image name="userIcon" width="256" height="256"/>
     </resources>
 </document>

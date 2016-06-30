@@ -33,7 +33,8 @@ class NewUserViewController: UIViewController, UIPageViewControllerDataSource, U
         
         // Initialze the pageView array with the identifiers for the PageViewController pages
         pageViews.append("NewUserPageView1")
-        pageViews.append("NewUserPageView1")
+        pageViews.append("NewUserPageView2")
+        pageViews.append("NewUserPageView3")
         
         // Initialize pageViewBackgrounds with as many elements as pageViews
         for _ in 0..<self.pageViews.count {
@@ -168,6 +169,14 @@ class NewUserViewController: UIViewController, UIPageViewControllerDataSource, U
         // See if we've enough backgrounds to scroll through
         if( self.pageViews.count != self.pageViewBackgrounds.count ) {
             return                      // We don't have enough background as pages to scroll through
+        }
+        
+        // Check that we are not responding to scrolls out of bounds
+        if( ( self.directionOfScroll == 1 && self.currentPageViewIndex == self.pageViews.count - 1 ) ||
+            ( self.directionOfScroll == 0 && self.currentPageViewIndex == 0 ) ) {
+            
+            return                      // We should not be dealing with such a scroll
+            
         }
         
         // Check the direction of scroll now
