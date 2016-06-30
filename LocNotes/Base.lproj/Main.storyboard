@@ -34,7 +34,7 @@
                                             <rect key="frame" x="0.0" y="1" width="256" height="256"/>
                                         </variation>
                                     </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="LocNotes" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="Cqd-4s-gR4">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="LocNotes" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="Cqd-4s-gR4">
                                         <rect key="frame" x="32" y="267" width="192" height="53"/>
                                         <fontDescription key="fontDescription" name="TrebuchetMS-Bold" family="Trebuchet MS" pointSize="45"/>
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -189,7 +189,6 @@
         <!--New User Page Content View Controller-->
         <scene sceneID="Qoq-vw-WRV">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="X2T-aL-9Fw" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="NewUserPageView2" id="Q2A-PM-VXY" customClass="NewUserPageContentViewController" customModule="LocNotes" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="1zW-Nl-saQ"/>
@@ -231,6 +230,7 @@
                         </constraints>
                     </view>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="X2T-aL-9Fw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="734" y="1512"/>
         </scene>
