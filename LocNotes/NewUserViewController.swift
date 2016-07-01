@@ -22,7 +22,7 @@ class NewUserViewController: UIViewController, UIPageViewControllerDataSource, U
     // List of the backgrounds corresponding to each of the pageViews
     var pageViewBackgrounds: [UIColor] = []
     // Keeps track of the last contentOffset value for the PageViewController on the screen
-    var lastContentOffset: CGFloat!
+    var lastContentOffset: CGFloat! = 0
     // Keeps the scroll that the user is executing
     var directionOfScroll: Int! = -1 // -1 = Unknown; 0 = Left; 1 = Right
     // Holds the current PageView Index
@@ -72,6 +72,15 @@ class NewUserViewController: UIViewController, UIPageViewControllerDataSource, U
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+    }
+    
+    // MARK: - Force Screen Orientation
+    override func shouldAutorotate() -> Bool {
+        return false
+    }
+    
+    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+        return UIInterfaceOrientationMask.Portrait
     }
     
     // MARK: - Function to fetch View Controller at a given index
@@ -209,6 +218,8 @@ class NewUserViewController: UIViewController, UIPageViewControllerDataSource, U
         
         // Now set the new background color
         self.view.backgroundColor = newBackgroundColor
+        
+        // TODO: Fix bug wherein a user scrolls across multiple screens. This messes up the color shown on the screen
     }
 
 }
