@@ -221,5 +221,11 @@ class NewUserViewController: UIViewController, UIPageViewControllerDataSource, U
         
         // TODO: Fix bug wherein a user scrolls across multiple screens. This messes up the color shown on the screen
     }
+    
+    // MARK: - Button Actions
+    
+    @IBAction func loginButton(sender: AnyObject) {
+        performSegueWithIdentifier("showLoginUser", sender: self)
+    }
 
 }
