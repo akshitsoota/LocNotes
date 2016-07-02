@@ -11,6 +11,7 @@
 		FC1913F31D1B869800146224 /* SplashScreenController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1913F21D1B869800146224 /* SplashScreenController.swift */; };
 		FC1913F61D1B869800146224 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FC1913F41D1B869800146224 /* Main.storyboard */; };
 		FC1913F81D1B869800146224 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FC1913F71D1B869800146224 /* Assets.xcassets */; };
+		FC605F161D276D5E00AC5F73 /* LoginUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC605F151D276D5E00AC5F73 /* LoginUserViewController.swift */; };
 		FCFA5AEC1D2365D20092ADDC /* NewUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFA5AEB1D2365D20092ADDC /* NewUserViewController.swift */; };
 		FCFA5AEE1D242E450092ADDC /* NewUserPageContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFA5AED1D242E450092ADDC /* NewUserPageContentViewController.swift */; };
 /* End PBXBuildFile section */
@@ -22,6 +23,7 @@
 		FC1913F51D1B869800146224 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FC1913F71D1B869800146224 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FC1913FC1D1B869800146224 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FC605F151D276D5E00AC5F73 /* LoginUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginUserViewController.swift; sourceTree = "<group>"; };
 		FCFA5AEB1D2365D20092ADDC /* NewUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserViewController.swift; sourceTree = "<group>"; };
 		FCFA5AED1D242E450092ADDC /* NewUserPageContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserPageContentViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -63,6 +65,7 @@
 				FC1913FC1D1B869800146224 /* Info.plist */,
 				FCFA5AEB1D2365D20092ADDC /* NewUserViewController.swift */,
 				FCFA5AED1D242E450092ADDC /* NewUserPageContentViewController.swift */,
+				FC605F151D276D5E00AC5F73 /* LoginUserViewController.swift */,
 			);
 			path = LocNotes;
 			sourceTree = "<group>";
@@ -142,6 +145,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FC605F161D276D5E00AC5F73 /* LoginUserViewController.swift in Sources */,
 				FC1913F31D1B869800146224 /* SplashScreenController.swift in Sources */,
 				FCFA5AEE1D242E450092ADDC /* NewUserPageContentViewController.swift in Sources */,
 				FCFA5AEC1D2365D20092ADDC /* NewUserViewController.swift in Sources */,

@@ -145,7 +145,7 @@
         <!--Login User-->
         <scene sceneID="cGP-lR-5tg">
             <objects>
-                <viewController storyboardIdentifier="LoginUser" title="Login User" id="EfI-Ck-mke" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginUser" title="Login User" id="EfI-Ck-mke" customClass="LoginUserViewController" customModule="LocNotes" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="d6C-uC-AHx"/>
                         <viewControllerLayoutGuide type="bottom" id="psz-tN-0Jm"/>
@@ -157,26 +157,6 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background1" translatesAutoresizingMaskIntoConstraints="NO" id="edk-dT-eBZ">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                             </imageView>
-                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="IOP-Zj-itZ">
-                                <rect key="frame" x="119" y="0.0" width="362" height="150"/>
-                                <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="hj2-0M-564">
-                                        <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" secondItem="hj2-0M-564" secondAttribute="height" multiplier="1:1" id="ptY-Mg-URG"/>
-                                        </constraints>
-                                    </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="LocNotes" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="I2L-iQ-Vam">
-                                        <rect key="frame" x="165" y="0.0" width="197" height="150"/>
-                                        <fontDescription key="fontDescription" name="Thonburi" family="Thonburi" pointSize="43"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="150" id="8po-3T-g5N"/>
-                                </constraints>
-                            </stackView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="C67-7S-rQ4">
                                 <rect key="frame" x="0.0" y="564" width="600" height="36"/>
                                 <subviews>
@@ -195,21 +175,112 @@
                                     <constraint firstAttribute="bottom" secondItem="P8c-6S-PXo" secondAttribute="bottom" constant="10" id="Ymb-DZ-vKt"/>
                                 </constraints>
                             </view>
+                            <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="cLg-QW-z74">
+                                <rect key="frame" x="134" y="30" width="332" height="120"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="IOP-Zj-itZ">
+                                        <rect key="frame" x="0.0" y="0.0" width="332" height="120"/>
+                                        <subviews>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="hj2-0M-564">
+                                                <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="150" id="MHc-hK-9NU"/>
+                                                    <constraint firstAttribute="width" secondItem="hj2-0M-564" secondAttribute="height" multiplier="1:1" id="ptY-Mg-URG"/>
+                                                </constraints>
+                                            </imageView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="LocNotes" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="I2L-iQ-Vam">
+                                                <rect key="frame" x="135" y="0.0" width="197" height="120"/>
+                                                <fontDescription key="fontDescription" name="Thonburi" family="Thonburi" pointSize="43"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="height" relation="lessThanOrEqual" constant="120" id="8po-3T-g5N"/>
+                                        </constraints>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                            <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="NYd-nw-KHi">
+                                <rect key="frame" x="50" y="170" width="500" height="40"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="usernameIcon" translatesAutoresizingMaskIntoConstraints="NO" id="pB3-DB-Soe">
+                                        <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="pB3-DB-Soe" secondAttribute="height" multiplier="1:1" id="YJP-rU-nRB"/>
+                                        </constraints>
+                                    </imageView>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username" textAlignment="natural" clearsOnBeginEditing="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zeH-eo-ocZ">
+                                        <rect key="frame" x="48" y="0.0" width="452" height="40"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="GKx-Jb-WH6"/>
+                                        </constraints>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <textInputTraits key="textInputTraits" returnKeyType="next"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="_placeholderLabel.textColor">
+                                                <color key="value" red="0.99215686274509807" green="0.63137254901960782" blue="0.63921568627450975" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </textField>
+                                </subviews>
+                            </stackView>
+                            <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="7S4-cW-Z0y">
+                                <rect key="frame" x="50" y="218" width="500" height="40"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="passwordIcon" translatesAutoresizingMaskIntoConstraints="NO" id="nl0-5k-vPx">
+                                        <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="nl0-5k-vPx" secondAttribute="height" multiplier="1:1" id="tZo-sb-Mpj"/>
+                                        </constraints>
+                                    </imageView>
+                                    <textField opaque="NO" clipsSubviews="YES" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="m80-2E-1tn">
+                                        <rect key="frame" x="48" y="0.0" width="452" height="40"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="ZAh-dQ-kKz"/>
+                                        </constraints>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="go" secureTextEntry="YES"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="_placeholderLabel.textColor">
+                                                <color key="value" red="0.99215686274509807" green="0.63137254901960782" blue="0.63921568627450975" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </textField>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="IOP-Zj-itZ" firstAttribute="centerX" secondItem="Sck-F9-hXV" secondAttribute="centerX" id="8Ui-bk-rfG"/>
+                            <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="cLg-QW-z74" secondAttribute="trailing" constant="18" id="3Xe-bV-5k2"/>
+                            <constraint firstItem="NYd-nw-KHi" firstAttribute="centerX" secondItem="Sck-F9-hXV" secondAttribute="centerX" id="M09-L7-13b"/>
                             <constraint firstItem="C67-7S-rQ4" firstAttribute="leading" secondItem="Sck-F9-hXV" secondAttribute="leadingMargin" constant="-20" id="NXj-Cx-Z04"/>
+                            <constraint firstItem="7S4-cW-Z0y" firstAttribute="width" secondItem="NYd-nw-KHi" secondAttribute="width" id="QPW-cy-yrb"/>
                             <constraint firstItem="edk-dT-eBZ" firstAttribute="bottom" secondItem="psz-tN-0Jm" secondAttribute="top" id="SJr-iJ-QDv"/>
                             <constraint firstAttribute="trailingMargin" secondItem="C67-7S-rQ4" secondAttribute="trailing" constant="-20" id="SQj-2n-0Ts"/>
-                            <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="IOP-Zj-itZ" secondAttribute="trailing" constant="10" id="d5N-Me-TyK"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="NYd-nw-KHi" secondAttribute="trailing" constant="30" id="Zui-Jq-U1s"/>
+                            <constraint firstItem="cLg-QW-z74" firstAttribute="top" secondItem="d6C-uC-AHx" secondAttribute="bottom" constant="10" id="bfz-tq-IYm"/>
+                            <constraint firstItem="NYd-nw-KHi" firstAttribute="leading" secondItem="Sck-F9-hXV" secondAttribute="leadingMargin" constant="30" id="br3-oj-I90"/>
+                            <constraint firstItem="7S4-cW-Z0y" firstAttribute="centerX" secondItem="Sck-F9-hXV" secondAttribute="centerX" id="fM4-6N-bwQ"/>
                             <constraint firstItem="edk-dT-eBZ" firstAttribute="leading" secondItem="Sck-F9-hXV" secondAttribute="leading" id="fnN-ha-HLf"/>
                             <constraint firstItem="edk-dT-eBZ" firstAttribute="top" secondItem="Sck-F9-hXV" secondAttribute="top" id="fx7-cw-Ri4"/>
+                            <constraint firstItem="cLg-QW-z74" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Sck-F9-hXV" secondAttribute="leadingMargin" constant="18" id="kc2-ee-17g"/>
                             <constraint firstItem="psz-tN-0Jm" firstAttribute="top" secondItem="C67-7S-rQ4" secondAttribute="bottom" id="lTC-aB-bxQ"/>
+                            <constraint firstItem="7S4-cW-Z0y" firstAttribute="top" secondItem="NYd-nw-KHi" secondAttribute="bottom" constant="8" id="mdX-xZ-9JO"/>
                             <constraint firstAttribute="trailing" secondItem="edk-dT-eBZ" secondAttribute="trailing" id="nYu-mp-lh4"/>
-                            <constraint firstItem="IOP-Zj-itZ" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Sck-F9-hXV" secondAttribute="leadingMargin" constant="10" id="rMf-Vi-AEO"/>
+                            <constraint firstItem="cLg-QW-z74" firstAttribute="centerX" secondItem="Sck-F9-hXV" secondAttribute="centerX" id="pkb-ip-hij"/>
+                            <constraint firstItem="NYd-nw-KHi" firstAttribute="top" secondItem="cLg-QW-z74" secondAttribute="bottom" constant="20" id="vgv-oH-y4V"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="passwordField" destination="m80-2E-1tn" id="WhK-FT-bJJ"/>
+                        <outlet property="signupLabel" destination="P8c-6S-PXo" id="Eay-Jc-eha"/>
+                        <outlet property="usernameField" destination="zeH-eo-ocZ" id="tYY-cI-6CW"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SyJ-g8-jhd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -230,7 +301,7 @@
                             <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="0Nb-rI-C17">
                                 <rect key="frame" x="60" y="35" width="480" height="530"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Securely store your location logs in the cloud" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZUv-aF-qpq">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Securely store your location logs in the cloud" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" minimumFontSize="12" translatesAutoresizingMaskIntoConstraints="NO" id="ZUv-aF-qpq">
                                         <rect key="frame" x="0.0" y="0.0" width="480" height="30"/>
                                         <fontDescription key="fontDescription" name="TamilSangamMN" family="Tamil Sangam MN" pointSize="28"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -278,7 +349,7 @@
                             <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="uyT-Yb-4Ex">
                                 <rect key="frame" x="60" y="40" width="480" height="520"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Look back to see all the locations you visited" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qjN-KJ-oUf">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Look back to see all the locations you visited" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" minimumFontSize="12" translatesAutoresizingMaskIntoConstraints="NO" id="qjN-KJ-oUf">
                                         <rect key="frame" x="0.0" y="0.0" width="480" height="20"/>
                                         <fontDescription key="fontDescription" name="TamilSangamMN" family="Tamil Sangam MN" pointSize="28"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -326,7 +397,7 @@
                             <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="3Wc-zg-YoW">
                                 <rect key="frame" x="60" y="40" width="480" height="520"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Access your logs across multiple iPhones with your account" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eAo-wh-4R8">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Access your logs across multiple iPhones with your account" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" minimumFontSize="12" translatesAutoresizingMaskIntoConstraints="NO" id="eAo-wh-4R8">
                                         <rect key="frame" x="0.0" y="0.0" width="480" height="20"/>
                                         <fontDescription key="fontDescription" name="TamilSangamMN" family="Tamil Sangam MN" pointSize="28"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -383,6 +454,8 @@
         <image name="cloudUpload" width="256" height="256"/>
         <image name="locationBlackPin" width="256" height="256"/>
         <image name="logo" width="256" height="256"/>
+        <image name="passwordIcon" width="170" height="170"/>
         <image name="userIcon" width="256" height="256"/>
+        <image name="usernameIcon" width="170" height="170"/>
     </resources>
 </document>
