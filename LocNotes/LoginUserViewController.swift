@@ -77,6 +77,10 @@ class LoginUserViewController: UIViewController, UIGestureRecognizerDelegate, UI
     }
     
     // MARK: - Actions received here
+    @IBAction func loginButtonClicked(sender: AnyObject) {
+        attemptLogin()      // Start the login process
+    }
+    
     func signupLabelClicked() {
         // TODO: Perform segue to signup screen
     }
@@ -96,7 +100,7 @@ class LoginUserViewController: UIViewController, UIGestureRecognizerDelegate, UI
         // TODO: Start the login procedure
     }
     
-    // MARK: - Helper function here
+    // MARK: - Helper functions here
     
     // REFERENCE: http://stackoverflow.com/a/29534779/705471
     func resizeImage(image: UIImage, newHeight: CGFloat) -> UIImage {
