@@ -186,6 +186,23 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
         senderButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
     }
     
+    @IBAction func loginButtonClicked(sender: AnyObject) {
+        // Reset the background of the parent view
+        loginButtonViewHolder.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.4)
+        // Now perform the segue
+        performSegueWithIdentifier("showLoginUser", sender: self)
+    }
+    
+    @IBAction func loginButtonTouchCancelled(sender: AnyObject) {
+        // Reset the background of the parent view
+        loginButtonViewHolder.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.4)
+    }
+    
+    @IBAction func loginButtonPressedDown(sender: AnyObject) {
+        // Deal with the background of the parent view
+        loginButtonViewHolder.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.7)
+    }
+    
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         if( textField == self.nameField ) {
             self.emailField.becomeFirstResponder() // Let the email field take over
@@ -203,6 +220,8 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
     
     func attemptSignup() {
         // TODO: Start the signup procedure
+        // TODO: Check for null return
+        self.view.addSubview(CommonUtils.returnLoadingBlurredView(self)!)
     }
 
 }

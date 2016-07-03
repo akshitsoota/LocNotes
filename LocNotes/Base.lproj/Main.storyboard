@@ -530,6 +530,11 @@
                                                                 </fragment>
                                                             </attributedString>
                                                         </state>
+                                                        <connections>
+                                                            <action selector="loginButtonClicked:" destination="LbD-18-ovs" eventType="touchUpInside" id="uQK-qa-IJl"/>
+                                                            <action selector="loginButtonPressedDown:" destination="LbD-18-ovs" eventType="touchDown" id="JuB-Kv-HnR"/>
+                                                            <action selector="loginButtonTouchCancelled:" destination="LbD-18-ovs" eventType="touchUpOutside" id="zxM-Rj-Mqb"/>
+                                                        </connections>
                                                     </button>
                                                 </subviews>
                                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.40000000000000002" colorSpace="calibratedRGB"/>

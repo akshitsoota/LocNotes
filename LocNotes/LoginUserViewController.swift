@@ -155,7 +155,7 @@ class LoginUserViewController: UIViewController, UIGestureRecognizerDelegate, UI
     
     @IBAction func signupButtonClicked(sender: AnyObject) {
         // Reset the background of the parent view
-        signupButtonViewHolder.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
+        signupButtonViewHolder.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.4)
         // Now perform the segue
         performSegueWithIdentifier("showSignupUser", sender: self)
     }
