@@ -228,4 +228,7 @@ class NewUserViewController: UIViewController, UIPageViewControllerDataSource, U
         performSegueWithIdentifier("showLoginUser", sender: self)
     }
 
+    @IBAction func signupUser(sender: AnyObject) {
+        performSegueWithIdentifier("showSignupUser", sender: self)
+    }
 }

@@ -10,16 +10,14 @@ import UIKit
 
 class LoginUserViewController: UIViewController, UIGestureRecognizerDelegate, UITextFieldDelegate {
     
-    @IBOutlet weak var signupLabel: UILabel!
     @IBOutlet weak var usernameField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
+    @IBOutlet weak var signupButtonViewHolder: UIView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Set the status br color to the light color
         UIApplication.sharedApplication().statusBarStyle = .LightContent
-        // Setup click listener on the signup label
-        setupSignupLabel()
         // Setup the username and password fields
         setupUsernamePasswordFields()
     }
@@ -35,14 +33,6 @@ class LoginUserViewController: UIViewController, UIGestureRecognizerDelegate, UI
     }
     
     // MARK: - viewDidLoad() setup functions
-    func setupSignupLabel() {
-        let labelTap: UITapGestureRecognizer! = UITapGestureRecognizer(target: self, action: #selector(LoginUserViewController.signupLabelClicked))
-        // Also have us handle all the clicks
-        labelTap.delegate = self
-        // Now add it to the label
-        signupLabel.addGestureRecognizer(labelTap)
-    }
-    
     func setupUsernamePasswordFields() {
         // Remove the default border off the username and password fields
         self.usernameField.borderStyle = .None
@@ -78,11 +68,43 @@ class LoginUserViewController: UIViewController, UIGestureRecognizerDelegate, UI
     
     // MARK: - Actions received here
     @IBAction func loginButtonClicked(sender: AnyObject) {
-        attemptLogin()      // Start the login process
+        // Cast the sender to a UIButton
+        let senderButton: UIButton! = sender as! UIButton
+        // Set the login button background back to the default
+        senderButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
+        // Start the login process
+        attemptLogin()
     }
     
-    func signupLabelClicked() {
-        // TODO: Perform segue to signup screen
+    @IBAction func loginButtonPressedDown(sender: AnyObject) {
+        let senderButton: UIButton! = sender as! UIButton
+        // Now let us deal with the background of the sender button
+        senderButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.7)
+    }
+    
+    @IBAction func loginButtonTouchCancelled(sender: AnyObject) {
+        // Cast the sender to a UIButton
+        let senderButton: UIButton! = sender as! UIButton
+        // Set the login button background back to the default
+        senderButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
+
+    }
+    
+    @IBAction func signupButtonClicked(sender: AnyObject) {
+        // Reset the background of the parent view
+        signupButtonViewHolder.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
+        // Now perform the segue
+        performSegueWithIdentifier("showSignupUser", sender: self)
+    }
+    
+    @IBAction func signupButtonPressedDown(sender: AnyObject) {
+        // Deal with the background of the parent view
+        signupButtonViewHolder.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.7)
+    }
+    
+    @IBAction func signupButtonTouchCancelled(sender: AnyObject) {
+        // Reset the background of the parent view
+        signupButtonViewHolder.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.4)
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
