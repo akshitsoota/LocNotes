@@ -54,7 +54,7 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
         return UIInterfaceOrientationMask.Portrait
     }
     
-    // MARK: - Fixing Keyboard Issues here
+    // MARK: - Keyboard Scroll Issues Fix
     // REFERENCE: http://stackoverflow.com/a/28813720/705471
     
     func registerForKeyboardNotifications() {

@@ -13,11 +13,16 @@ class LoginUserViewController: UIViewController, UIGestureRecognizerDelegate, UI
     @IBOutlet weak var usernameField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
     @IBOutlet weak var signupButtonViewHolder: UIView!
+    @IBOutlet weak var scrollView: UIScrollView!
+    // Keeps track of the active field on the View
+    var activeField: UITextField?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Setup the username and password fields
         setupUsernamePasswordFields()
+        // Let us receive keyboard notifications
+        registerForKeyboardNotifications()
     }
 
     override func didReceiveMemoryWarning() {
@@ -34,6 +39,61 @@ class LoginUserViewController: UIViewController, UIGestureRecognizerDelegate, UI
         super.viewWillDisappear(animated)
         // Set the status bar color back to default
         UIApplication.sharedApplication().statusBarStyle = .Default
+        // Anddd, let us stop receiving those keyboard notifications
+        deregisterFromKeyboardNotifications()
+    }
+    
+    // MARK: - Keyboard Scroll Issues Fix
+    // REFERENCE: http://stackoverflow.com/a/28813720/705471
+    
+    func registerForKeyboardNotifications() {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SignUpUserViewController.keyboardWasShown(_:)), name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SignUpUserViewController.keyboardWillBeHidden(_:)), name: UIKeyboardWillHideNotification, object: nil)
+    }
+    
+    func deregisterFromKeyboardNotifications() {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
+    }
+    
+    func keyboardWasShown(notification: NSNotification) {
+        // Need to calculate keyboard exact size due to Apple suggestions
+        self.scrollView.scrollEnabled = true
+        let info: NSDictionary = notification.userInfo!
+        let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue().size
+        let contentInsets: UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize!.height + 20, 0.0)
+        
+        self.scrollView.contentInset = contentInsets
+        self.scrollView.scrollIndicatorInsets = contentInsets
+        
+        var aRect: CGRect = self.view.frame
+        aRect.size.height -= keyboardSize!.height
+        if activeField != nil {
+            if (!CGRectContainsPoint(aRect, activeField!.frame.origin)) {
+                self.scrollView.scrollRectToVisible(activeField!.frame, animated: true)
+            }
+        }
+    }
+    
+    func keyboardWillBeHidden(notification: NSNotification)
+    {
+        // Once keyboard disappears, restore original positions
+        let info: NSDictionary = notification.userInfo!
+        let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue().size
+        let contentInsets: UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, -keyboardSize!.height - 20, 0.0)
+        
+        self.scrollView.contentInset = contentInsets
+        self.scrollView.scrollIndicatorInsets = contentInsets
+        self.view.endEditing(true)
+        self.scrollView.scrollEnabled = false
+    }
+    
+    func textFieldDidBeginEditing(textField: UITextField) {
+        activeField = textField
+    }
+    
+    func textFieldDidEndEditing(textField: UITextField) {
+        activeField = nil
     }
     
     // MARK: - viewDidLoad() setup functions
