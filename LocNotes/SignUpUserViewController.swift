@@ -219,9 +219,127 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
     }
     
     func attemptSignup() {
-        // TODO: Start the signup procedure
-        // TODO: Check for null return
-        self.view.addSubview(CommonUtils.returnLoadingBlurredView(self)!)
+        // Run basic validation tests
+        if( !signupValidationTests() ) {
+            return
+        }
+        // Fetch the values from the endpoints properties list
+        // REFERENCE: http://www.kaleidosblog.com/nsurlsession-in-swift-get-and-post-data
+        
+        var keys: NSDictionary?
+        
+        if let path = NSBundle.mainBundle().pathForResource("endpoints", ofType: "plist") {
+            keys = NSDictionary(contentsOfFile: path)
+        }
+        if let dict = keys {
+            let awsEndpoint: String! = dict["awsEC2EndpointURL"] as! String
+            let signupURL: String! = dict["signupUserURL"] as! String
+            
+            // Fetch the loading screen
+            let loadingScreen: UIView? = CommonUtils.returnLoadingBlurredView(self)
+            if loadingScreen != nil {
+                self.view.addSubview(loadingScreen!)
+            } else {
+                // TODO:
+            }
+            
+            // Now start the async request
+            let asyncRequestURL: NSURL! = NSURL(string: "http://" + awsEndpoint + signupURL)
+            let asyncSession: NSURLSession! = NSURLSession.sharedSession()
+            
+            let asyncRequest: NSMutableURLRequest! = NSMutableURLRequest(URL: asyncRequestURL)
+            asyncRequest.HTTPMethod = "POST"
+            asyncRequest.cachePolicy = .ReloadIgnoringLocalCacheData
+            asyncRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            
+            // Let us form a dictionary of <K, V> pairs to be sent
+            // REFERENCE: http://stackoverflow.com/a/28009796/705471
+            let requestParams: Dictionary<String, String>! = ["fullname": nameField.text!,
+                                                              "emailadd": emailField.text!,
+                                                              "username": usernameField.text!,
+                                                              "password": passwordField.text!]
+            var firstParamAdded: Bool! = false
+            let paramKeys: Array<String>! = Array(requestParams.keys)
+            var requestBody = ""
+            for key in paramKeys {
+                if( !firstParamAdded ) {
+                    requestBody += key + "=" + requestParams[key]!
+                    firstParamAdded = true
+                } else {
+                    requestBody += "&" + key + "=" + requestParams[key]!
+                }
+            }
+            
+            requestBody = requestBody.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
+            asyncRequest.HTTPBody = requestBody.dataUsingEncoding(NSUTF8StringEncoding)
+            
+            let asyncTask = asyncSession.dataTaskWithRequest(asyncRequest) {
+                data, response, error in
+                // Processing here
+            }
+            asyncTask.resume() // Start the task now
+        }
+        
+        // Else, we've got a problem
+        // TODO:
+    }
+    
+    // MARK: - Signup Validation Tests
+    func signupValidationTests() -> Bool! {
+        // Full Name Field test
+        if( nameField.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()).characters.count == 0 ) {
+            let alert = UIAlertController(title: "Validation Error", message: "Name cannot be empty. Please enter your full name to proceed!", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            // Return
+            return false
+        }
+        // Email Address Field test
+        if( !isValidEmail(emailField.text!) ) {
+            let alert = UIAlertController(title: "Validation Error", message: "The email that you've entered is not valid. Please enter a valid email address to proceed!", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            // Return
+            return false
+        }
+        // Username field test
+        let trimmedUsername: String! = usernameField.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        
+        if( trimmedUsername.characters.count < 5 ) {
+            let alert = UIAlertController(title: "Validation Error", message: "Username must atleast be 5 characters long. Please enter a valid username to proceed with registering!", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            // Return
+            return false
+        }
+        
+        if trimmedUsername.characters.indexOf(" ") != nil {
+            let alert = UIAlertController(title: "Validation Error", message: "Usernames cannot have spaces. Please remove any unnecessary spaces and try again!", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            // Return
+            return false
+        }
+        
+        // Password field test
+        if( passwordField.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()).characters.count < 8 ) {
+            let alert = UIAlertController(title: "Validation Error", message: "Passwords must atleast be 8 characters long. Please fix your password and try again!", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            // Return
+            return false
+        }
+        
+        // Return true
+        return true
+    }
+    
+    func isValidEmail(testStr:String) -> Bool {
+        // print("validate calendar: \(testStr)")
+        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+        
+        let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+        return emailTest.evaluateWithObject(testStr)
     }
 
 }

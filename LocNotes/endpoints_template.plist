@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>awsEC2EndpointURL</key>
+	<string>your.aws.public.domain.goes.here.amazonaws.com</string>
+	<key>signupUserURL</key>
+	<string>/dummySignup</string>
+	<key>loginUserURL</key>
+	<string>/dummyLogin</string>
+	<key>renewLoginTokenURL</key>
+	<string>/dummyRenewToken</string>
+	<key>invalidateLoginTokenURL</key>
+	<string>/dummyInvalidateToken</string>
+</dict>
+</plist>
