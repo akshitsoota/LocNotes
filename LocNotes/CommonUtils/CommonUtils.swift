@@ -10,27 +10,22 @@ import UIKit
 
 class CommonUtils {
     
-    static func returnLoadingBlurredView(target: UIViewController) -> (UIView?) {
-        if !UIAccessibilityIsReduceTransparencyEnabled() {
-            // Create the blur effect
-            let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.Dark)
-            let blurEffectView = UIVisualEffectView(effect: blurEffect)
-            // Fill the view
-            blurEffectView.frame = target.view.bounds
-            blurEffectView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
-            // Add the ActivityIndicator
-            let activitySpinner: UIActivityIndicatorView! = UIActivityIndicatorView.init(activityIndicatorStyle: .WhiteLarge)
-            activitySpinner.center = CGPoint(x: UIScreen.mainScreen().bounds.width / 2.0, y: UIScreen.mainScreen().bounds.height / 2.0)
-            activitySpinner.startAnimating()
-            
-            blurEffectView.addSubview(activitySpinner)
-            
-            // Finally, return what we were called for
-            return blurEffectView
+    static func returnLoadingScreenView(target: UIViewController!) -> UIView! {
+        // Get the view and set the frame
+        let nibArray: [AnyObject] = NSBundle.mainBundle().loadNibNamed("LoadingScreenView", owner: target, options: nil)
+        let toReturn = nibArray[0] as! UIView
+        toReturn.frame = target.view.frame
+        // Now return
+        return toReturn
+    }
+    
+    static func setLoadingTextOnLoadingScreenView(view: UIView!, newLabelContents: String) {
+        // Try to set the label contents
+        if( view.viewWithTag(2)!.isKindOfClass(UILabel) ) {
+            let targetLabel: UILabel! = view.viewWithTag(2) as! UILabel
+            // Now change the contents
+            targetLabel.text = newLabelContents
         }
-        
-        // Cannot return the blurred view
-        return nil
     }
     
 }

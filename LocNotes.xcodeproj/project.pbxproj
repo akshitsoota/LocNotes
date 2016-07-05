@@ -13,8 +13,9 @@
 		FC1913F81D1B869800146224 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FC1913F71D1B869800146224 /* Assets.xcassets */; };
 		FC605F161D276D5E00AC5F73 /* LoginUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC605F151D276D5E00AC5F73 /* LoginUserViewController.swift */; };
 		FC605F1A1D289E1000AC5F73 /* SignUpUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC605F191D289E1000AC5F73 /* SignUpUserViewController.swift */; };
-		FC605F2E1D29FDD100AC5F73 /* CommonUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC605F2D1D29FDD100AC5F73 /* CommonUtils.swift */; };
 		FC605F301D29FE2700AC5F73 /* endpoints.plist in Resources */ = {isa = PBXBuildFile; fileRef = FC605F2F1D29FE2700AC5F73 /* endpoints.plist */; };
+		FC605F341D2B092800AC5F73 /* LoadingScreenView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FC605F331D2B092800AC5F73 /* LoadingScreenView.xib */; };
+		FC605F361D2B1B8300AC5F73 /* CommonUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC605F351D2B1B8300AC5F73 /* CommonUtils.swift */; };
 		FCFA5AEC1D2365D20092ADDC /* NewUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFA5AEB1D2365D20092ADDC /* NewUserViewController.swift */; };
 		FCFA5AEE1D242E450092ADDC /* NewUserPageContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFA5AED1D242E450092ADDC /* NewUserPageContentViewController.swift */; };
 /* End PBXBuildFile section */
@@ -28,8 +29,9 @@
 		FC1913FC1D1B869800146224 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FC605F151D276D5E00AC5F73 /* LoginUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginUserViewController.swift; sourceTree = "<group>"; };
 		FC605F191D289E1000AC5F73 /* SignUpUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpUserViewController.swift; sourceTree = "<group>"; };
-		FC605F2D1D29FDD100AC5F73 /* CommonUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CommonUtils.swift; path = CommonUtils/CommonUtils.swift; sourceTree = "<group>"; };
 		FC605F2F1D29FE2700AC5F73 /* endpoints.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = endpoints.plist; sourceTree = "<group>"; };
+		FC605F331D2B092800AC5F73 /* LoadingScreenView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LoadingScreenView.xib; path = CommonUtils/LoadingScreenView.xib; sourceTree = "<group>"; };
+		FC605F351D2B1B8300AC5F73 /* CommonUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CommonUtils.swift; path = CommonUtils/CommonUtils.swift; sourceTree = "<group>"; };
 		FCFA5AEB1D2365D20092ADDC /* NewUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserViewController.swift; sourceTree = "<group>"; };
 		FCFA5AED1D242E450092ADDC /* NewUserPageContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserPageContentViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -82,7 +84,8 @@
 		FC605F271D28CF1F00AC5F73 /* CommonUtils */ = {
 			isa = PBXGroup;
 			children = (
-				FC605F2D1D29FDD100AC5F73 /* CommonUtils.swift */,
+				FC605F331D2B092800AC5F73 /* LoadingScreenView.xib */,
+				FC605F351D2B1B8300AC5F73 /* CommonUtils.swift */,
 			);
 			name = CommonUtils;
 			sourceTree = "<group>";
@@ -153,6 +156,7 @@
 				FC1913F81D1B869800146224 /* Assets.xcassets in Resources */,
 				FC1913F61D1B869800146224 /* Main.storyboard in Resources */,
 				FC605F301D29FE2700AC5F73 /* endpoints.plist in Resources */,
+				FC605F341D2B092800AC5F73 /* LoadingScreenView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -168,7 +172,7 @@
 				FCFA5AEE1D242E450092ADDC /* NewUserPageContentViewController.swift in Sources */,
 				FC605F1A1D289E1000AC5F73 /* SignUpUserViewController.swift in Sources */,
 				FCFA5AEC1D2365D20092ADDC /* NewUserViewController.swift in Sources */,
-				FC605F2E1D29FDD100AC5F73 /* CommonUtils.swift in Sources */,
+				FC605F361D2B1B8300AC5F73 /* CommonUtils.swift in Sources */,
 				FC1913F11D1B869800146224 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -18,6 +18,8 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var loginButtonViewHolder: UIView!
     // Keeps track of the active field on the View
     var activeField: UITextField?
+    // Keeps track of the loading screen that is shown
+    var loadingScreen: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -236,12 +238,13 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
             let signupURL: String! = dict["signupUserURL"] as! String
             
             // Fetch the loading screen
-            let loadingScreen: UIView? = CommonUtils.returnLoadingBlurredView(self)
-            if loadingScreen != nil {
-                self.view.addSubview(loadingScreen!)
-            } else {
-                // TODO:
+            if( loadingScreen == nil ) {
+                loadingScreen = CommonUtils.returnLoadingScreenView(self)
             }
+            // Now setup the loading screen
+            CommonUtils.setLoadingTextOnLoadingScreenView(loadingScreen, newLabelContents: "Setting up your account...")
+            // Add it to the view
+            self.view.addSubview(loadingScreen)
             
             // Now start the async request
             let asyncRequestURL: NSURL! = NSURL(string: "http://" + awsEndpoint + signupURL)
@@ -273,9 +276,10 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
             requestBody = requestBody.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
             asyncRequest.HTTPBody = requestBody.dataUsingEncoding(NSUTF8StringEncoding)
             
-            let asyncTask = asyncSession.dataTaskWithRequest(asyncRequest) {
-                data, response, error in
+            let asyncTask = asyncSession.dataTaskWithRequest(asyncRequest) {(data, response, error) in
                 // Processing here
+                NSLog("data: " + (NSString(data: data!, encoding: NSUTF8StringEncoding) as! String))
+                NSLog("response " + response!.description)
             }
             asyncTask.resume() // Start the task now
         }
@@ -286,6 +290,9 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
     
     // MARK: - Signup Validation Tests
     func signupValidationTests() -> Bool! {
+        // Hide the keyboard if visible
+        self.view.endEditing(true)
+        
         // Full Name Field test
         if( nameField.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()).characters.count == 0 ) {
             let alert = UIAlertController(title: "Validation Error", message: "Name cannot be empty. Please enter your full name to proceed!", preferredStyle: UIAlertControllerStyle.Alert)
