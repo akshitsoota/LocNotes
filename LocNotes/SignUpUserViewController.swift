@@ -276,16 +276,101 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
             requestBody = requestBody.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
             asyncRequest.HTTPBody = requestBody.dataUsingEncoding(NSUTF8StringEncoding)
             
-            let asyncTask = asyncSession.dataTaskWithRequest(asyncRequest) {(data, response, error) in
-                // Processing here
-                NSLog("data: " + (NSString(data: data!, encoding: NSUTF8StringEncoding) as! String))
-                NSLog("response " + response!.description)
-            }
+            let asyncTask = asyncSession.dataTaskWithRequest(asyncRequest, completionHandler: signupResponseReceived)
             asyncTask.resume() // Start the task now
         }
         
         // Else, we've got a problem
         // TODO:
+    }
+    
+    func signupResponseReceived(data: NSData?, response: NSURLResponse?, error: NSError?) -> () {
+        // Process the JSON data here if we got no errors
+        if( error == nil ) {
+            // Deal with the error here
+            loadingScreen.removeFromSuperview() // Hide the loading screen
+            // Show an alert to the user
+            CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "Your request could not be fulfilled. Please try again later!")
+            // Return
+            return
+        }
+        
+        do {
+            
+            let jsonResponse: [String: AnyObject] = try (NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions()) as? [String: AnyObject])!
+            // Now process the response
+            let status = jsonResponse["status"]
+            
+            if( status == nil ) {
+                loadingScreen.removeFromSuperview() // Hide the loading screen
+                // We've got some problems parsing the response; Show an alert to the user
+                CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Please try again later!")
+                // Return
+                return
+            }
+            
+            let strStatus: String! = status as! String
+            
+            if( strStatus == "invalid_email" ) {
+                loadingScreen.removeFromSuperview() // Hide the loading screen
+                // User entered an invalid email; Show an alert to the user
+                CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "You've an invalid email. Please fix your email to continue with the registation process.")
+                // Return
+                return
+            } else if( strStatus == "username_too_short" ) {
+                loadingScreen.removeFromSuperview() // Hide the loading screen
+                // User entered a username that is too short; Show an alert to the user
+                CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "Your username should atleast be 5 characters in length. Please fix your username and try again.")
+                // Return
+                return
+            } else if( strStatus == "username_has_spaces" ) {
+                loadingScreen.removeFromSuperview() // Hide the loading screen
+                // User entered a username with spaces in it; Show an alert to the user
+                CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "Your username cannot have any spaces. Remove any spaces and try again.")
+                // Return
+                return
+            } else if( strStatus == "password_too_short" ) {
+                loadingScreen.removeFromSuperview() // Hide the loading screen
+                // User entered a password that is too short; Show an alert to the user
+                CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "The password that you've entered is too short. Please enter a password that is atleast 8 characters long and try signing up again!")
+                // Return
+                return
+            } else if( strStatus == "duplicate_username" ) {
+                loadingScreen.removeFromSuperview() // Hide the loading screen
+                // User entered a username but there is already an account with the same username; Show an alert to the user
+                CommonUtils.showDefaultAlertToUser(self, title: "Username Error", alertContents: "The username you have typed already has an account associated with it. If you don't own that account, please change your username and try registering again! If you own that account, log into your account.")
+                // Return
+                return
+            } else if( strStatus == "duplicate_email" ) {
+                loadingScreen.removeFromSuperview() // Hide the loading screen
+                // User entered an email address but there is already an account registered with the same email address; Show an alert to the user
+                CommonUtils.showDefaultAlertToUser(self, title: "Email Address Error", alertContents: "There is another account associated with the same email address as the one you've entered. Please change your email address and try again!")
+                // Return
+                return
+            } else if( strStatus == "failed" ) {
+                loadingScreen.removeFromSuperview() // Hide the loading screen
+                // Failed some backend Amazon RDS transaction; Show an alert to the user
+                CommonUtils.showDefaultAlertToUser(self, title: "Sign Up Error", alertContents: "There was an issuing your sign up command. Please try again!")
+                // Return
+                return
+            } else if( strStatus == "successful" ) {
+                // Setup the loading screen
+                CommonUtils.setLoadingTextOnLoadingScreenView(loadingScreen, newLabelContents: "Fetching your login details...")
+                // Attempt the login process now
+                attemptLogin()
+            }
+            
+            
+        } catch {
+            // We've got some problems parsing the response; Show an alert to the user
+            CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Please try again later!")
+            // Return
+            return
+        }
+    }
+    
+    func attemptLogin() {
+        
     }
     
     // MARK: - Signup Validation Tests
@@ -295,17 +380,13 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
         
         // Full Name Field test
         if( nameField.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()).characters.count == 0 ) {
-            let alert = UIAlertController(title: "Validation Error", message: "Name cannot be empty. Please enter your full name to proceed!", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+            CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "Name cannot be empty. Please enter your full name to proceed!")
             // Return
             return false
         }
         // Email Address Field test
-        if( !isValidEmail(emailField.text!) ) {
-            let alert = UIAlertController(title: "Validation Error", message: "The email that you've entered is not valid. Please enter a valid email address to proceed!", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+        if( !CommonUtils.isValidEmail(emailField.text!) ) {
+            CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "The email that you've entered is not valid. Please enter a valid email address to proceed!")
             // Return
             return false
         }
@@ -313,40 +394,26 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
         let trimmedUsername: String! = usernameField.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         
         if( trimmedUsername.characters.count < 5 ) {
-            let alert = UIAlertController(title: "Validation Error", message: "Username must atleast be 5 characters long. Please enter a valid username to proceed with registering!", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+            CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "Username must atleast be 5 characters long. Please enter a valid username to proceed with registering!")
             // Return
             return false
         }
         
         if trimmedUsername.characters.indexOf(" ") != nil {
-            let alert = UIAlertController(title: "Validation Error", message: "Usernames cannot have spaces. Please remove any unnecessary spaces and try again!", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+            CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "Usernames cannot have spaces. Please remove any unnecessary spaces and try again!")
             // Return
             return false
         }
         
         // Password field test
         if( passwordField.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()).characters.count < 8 ) {
-            let alert = UIAlertController(title: "Validation Error", message: "Passwords must atleast be 8 characters long. Please fix your password and try again!", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+            CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "Passwords must atleast be 8 characters long. Please fix your password and try again!")
             // Return
             return false
         }
         
         // Return true
         return true
-    }
-    
-    func isValidEmail(testStr:String) -> Bool {
-        // print("validate calendar: \(testStr)")
-        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-        
-        let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
-        return emailTest.evaluateWithObject(testStr)
     }
 
 }
