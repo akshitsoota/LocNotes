@@ -16,6 +16,8 @@ class LoginUserViewController: UIViewController, UIGestureRecognizerDelegate, UI
     @IBOutlet weak var scrollView: UIScrollView!
     // Keeps track of the active field on the View
     var activeField: UITextField?
+    // Keeps track of the loading screen that is shown
+    var loadingScreen: UIView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -181,8 +183,190 @@ class LoginUserViewController: UIViewController, UIGestureRecognizerDelegate, UI
         return true
     }
     
+    // MARK: - Backend functions here
     func attemptLogin() {
-        // TODO: Start the login procedure
+        // Run basic validation tests
+        if( !loginValidationTest() ) {
+            return
+        }
+        // Fetch the values from the endpoints properties list
+        // REFERENCE: http://www.kaleidosblog.com/nsurlsession-in-swift-get-and-post-data
+        
+        var keys: NSDictionary?
+        
+        if let path = NSBundle.mainBundle().pathForResource("endpoints", ofType: "plist") {
+            keys = NSDictionary(contentsOfFile: path)
+        }
+        if let dict = keys {
+            let awsEndpoint: String! = dict["awsEC2EndpointURL"] as! String
+            let loginURL: String! = dict["loginUserURL"] as! String
+            
+            // Fetch the loading screen
+            if( loadingScreen == nil ) {
+                loadingScreen = CommonUtils.returnLoadingScreenView(self)
+            }
+            // Now setup the loading screen
+            CommonUtils.setLoadingTextOnLoadingScreenView(self.loadingScreen, newLabelContents: "Connecting to the server...")
+            // Add it to the view
+            self.view.addSubview(loadingScreen)
+            
+            // Now start the async request
+            let asyncRequestURL: NSURL! = NSURL(string: "http://" + awsEndpoint + loginURL)
+            let asyncSession: NSURLSession! = NSURLSession.sharedSession()
+            
+            let asyncRequest: NSMutableURLRequest! = NSMutableURLRequest(URL: asyncRequestURL)
+            asyncRequest.HTTPMethod = "POST"
+            asyncRequest.cachePolicy = .ReloadIgnoringLocalCacheData
+            asyncRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            
+            // Let us form a dictionary of <K, V> pairs to be sent
+            // REFERENCE: http://stackoverflow.com/a/28009796/705471
+            let requestParams: Dictionary<String, String>! = ["username": usernameField.text!,
+                                                              "password": passwordField.text!]
+            var firstParamAdded: Bool! = false
+            let paramKeys: Array<String>! = Array(requestParams.keys)
+            var requestBody = ""
+            for key in paramKeys {
+                if( !firstParamAdded ) {
+                    requestBody += key + "=" + requestParams[key]!
+                    firstParamAdded = true
+                } else {
+                    requestBody += "&" + key + "=" + requestParams[key]!
+                }
+            }
+            
+            // DEPRECATED: requestBody = requestBody.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
+            requestBody = requestBody.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
+            asyncRequest.HTTPBody = requestBody.dataUsingEncoding(NSUTF8StringEncoding)
+            
+            let asyncTask = asyncSession.dataTaskWithRequest(asyncRequest, completionHandler: loginResponseReceived)
+            asyncTask.resume() // Start the task now
+            // Return
+            return
+        }
+        
+        // Else, we've got a problem
+        dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
+        CommonUtils.showDefaultAlertToUser(self, title: "Internal Error", alertContents: "There was an internal error in fetching our backend endpoint. Please try again!")
+        // Return
+        return
+    }
+    
+    func loginResponseReceived(data: NSData?, response: NSURLResponse?, error: NSError?) -> () {
+        // Process the JSON data here if we got no errors
+        if( error != nil ) {
+            // Deal with the error here
+            dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
+            // Show an alert to the user
+            CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "Your request could not be fulfilled. Please try logging in again!")
+            // Return
+            return
+        }
+        
+        do {
+            
+            let jsonResponse: [String: AnyObject] = try (NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions()) as? [String: AnyObject])!
+            // Now process the response
+            let status = jsonResponse["status"]
+            
+            if( status == nil ) {
+                dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
+                // We've got some problems parsing the response; Show an alert to the user
+                CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Please try logging in again!")
+                // Return
+                return
+            }
+            
+            let strStatus: String! = status as! String
+            
+            if( strStatus == "no_match" ) {
+                dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
+                // No matching account was found; Show an alert to the user
+                CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "You've entered invalid credentials. Please fix them and try logging in again!")
+                // Return
+                return
+            } else if( strStatus == "correct_credentials_old_token_passed" || strStatus == "correct_credentials_new_token_generated" ) {
+                // Save all the information given by the server
+                let loginToken: String! = jsonResponse["login_token"] as! String
+                let tokenExpiry: Double! = (jsonResponse["token_expiry"] as? NSNumber)?.doubleValue
+                
+                // Update the loading screen
+                dispatch_async(dispatch_get_main_queue(), {
+                    CommonUtils.setLoadingTextOnLoadingScreenView(self.loadingScreen, newLabelContents: "Saving your user credentials...")
+                })
+                
+                // Call the Keychain Wrapper
+                let usernameSaved: Bool = KeychainWrapper.defaultKeychainWrapper().setString(usernameField.text!, forKey: "LocNotes-username")
+                let loginTokenSaved: Bool = KeychainWrapper.defaultKeychainWrapper().setString(loginToken, forKey: "LocNotes-loginToken")
+                let tokenExpirySaved: Bool = KeychainWrapper.defaultKeychainWrapper().setDouble(tokenExpiry, forKey: "LocNotes-tokenExpiry")
+                let userLoggedInSaved: Bool = KeychainWrapper.defaultKeychainWrapper().setBool(true, forKey: "LocNotes-userLoggedIn")
+                let userLoggedInAtSaved: Bool = KeychainWrapper.defaultKeychainWrapper().setDouble(NSDate().timeIntervalSince1970, forKey: "LocNotes-userLoggedInAt")
+                
+                let savedAll: Bool = usernameSaved && loginTokenSaved && tokenExpirySaved && userLoggedInSaved && userLoggedInAtSaved
+                
+                // Check if we were able to save it all in Keychain
+                if( !savedAll ) {
+                    dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
+                    // We've got to tell the user; Show an alert
+                    CommonUtils.showDefaultAlertToUser(self, title: "Internal Error", alertContents: "You were successfully logged in but we were unable to save your login credentials in Keychain! Please try again later.")
+                    // Return
+                    return
+                } else {
+                    // Timer to switch out to the logged in user; Spawn it off in the main thread
+                    dispatch_async(dispatch_get_main_queue(), {
+                        _ = NSTimer.scheduledTimerWithTimeInterval(
+                            2, target: SignUpUserViewController.self(), selector: #selector(LoginUserViewController.switchOutToListScreen), userInfo: nil, repeats: false
+                        )
+                    })
+                }
+            }
+            
+            
+        } catch {
+            dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
+            // We've got some problems parsing the response; Show an alert to the user
+            CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Please try to login again!")
+            // Return
+            return
+        }
+    }
+    
+    func switchOutToListScreen() {
+        // Switch out to the next screen
+        dispatch_async(dispatch_get_main_queue(), {
+            self.performSegueWithIdentifier("showLoggedInUser", sender: SignUpUserViewController.self())
+        })
+    }
+    
+    // MARK: - Login Validation Tests
+    func loginValidationTest() -> Bool! {
+        // Hide the keyboard if visible
+        self.view.endEditing(true)
+        
+        // Username field test
+        let trimmedUsername: String! = usernameField.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        
+        if( trimmedUsername.characters.count < 5 ) {
+            CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "Username must atleast be 5 characters long. Please enter a valid username to proceed with logging in!")
+            // Return
+            return false
+        }
+        
+        if trimmedUsername.characters.indexOf(" ") != nil {
+            CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "Usernames cannot have spaces. Please remove any unnecessary spaces and try again!")
+            // Return
+            return false
+        }
+        
+        // Password field test
+        if( passwordField.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()).characters.count < 8 ) {
+            CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "Passwords must atleast be 8 characters long. Please fix your password and try again!")
+            // Return
+            return false
+        }
+        
+        // Return true
+        return true
     }
     
     // MARK: - Helper functions here

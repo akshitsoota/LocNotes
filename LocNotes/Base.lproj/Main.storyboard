@@ -22,8 +22,8 @@
                             <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" axis="vertical" distribution="fillProportionally" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="EpP-01-mdo">
                                 <rect key="frame" x="172" y="141" width="256" height="319"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="ug9-Fv-zbc">
-                                        <rect key="frame" x="0.0" y="1" width="256" height="256"/>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="ug9-Fv-zbc">
+                                        <rect key="frame" x="0.0" y="0.0" width="256" height="256"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="ug9-Fv-zbc" secondAttribute="height" multiplier="1:1" id="Q14-AE-SCG"/>
                                         </constraints>
@@ -34,8 +34,8 @@
                                             <rect key="frame" x="0.0" y="1" width="256" height="256"/>
                                         </variation>
                                     </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="LocNotes" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="Cqd-4s-gR4">
-                                        <rect key="frame" x="32" y="267" width="192" height="53"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="LocNotes" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="Cqd-4s-gR4">
+                                        <rect key="frame" x="0.0" y="266" width="256" height="53"/>
                                         <fontDescription key="fontDescription" name="TrebuchetMS-Bold" family="Trebuchet MS" pointSize="45"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
@@ -47,6 +47,9 @@
                                         </variation>
                                     </label>
                                 </subviews>
+                                <constraints>
+                                    <constraint firstItem="Cqd-4s-gR4" firstAttribute="width" secondItem="ug9-Fv-zbc" secondAttribute="width" id="YJP-zS-gR1"/>
+                                </constraints>
                                 <variation key="heightClass=compact-widthClass=compact" axis="horizontal" misplaced="YES">
                                     <rect key="frame" x="200" y="84" width="0.0" height="53"/>
                                 </variation>
@@ -345,6 +348,7 @@
                         <outlet property="signupButtonViewHolder" destination="C67-7S-rQ4" id="rbB-nE-GnY"/>
                         <outlet property="usernameField" destination="zeH-eo-ocZ" id="tYY-cI-6CW"/>
                         <segue destination="LbD-18-ovs" kind="show" identifier="showSignupUser" id="Tep-wv-Lwt"/>
+                        <segue destination="SlG-YX-iLH" kind="show" identifier="showLoggedInUser" id="B39-6l-1V2"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SyJ-g8-jhd" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -596,6 +600,7 @@
                         <outlet property="scrollView" destination="Fxq-e3-ezZ" id="ddn-Px-kqZ"/>
                         <outlet property="usernameField" destination="PiQ-2k-gWz" id="23T-2Y-Ml6"/>
                         <segue destination="EfI-Ck-mke" kind="show" identifier="showLoginUser" id="0zl-Km-IAC"/>
+                        <segue destination="SlG-YX-iLH" kind="show" identifier="showLoggedInUser" id="x7y-BZ-6Jw"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="auE-mb-m8Z" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -746,10 +751,10 @@
             </objects>
             <point key="canvasLocation" x="1396" y="1518"/>
         </scene>
-        <!--View Controller-->
+        <!--User Location Logs View Controller-->
         <scene sceneID="NvP-AI-eaR">
             <objects>
-                <viewController id="SlG-YX-iLH" sceneMemberID="viewController">
+                <viewController title="User Location Logs View Controller" id="SlG-YX-iLH" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="IEA-Fg-9A7"/>
                         <viewControllerLayoutGuide type="bottom" id="l80-YY-gHs"/>
@@ -780,5 +785,6 @@
     <inferredMetricsTieBreakers>
         <segue reference="0zl-Km-IAC"/>
         <segue reference="Tep-wv-Lwt"/>
+        <segue reference="tiQ-3l-giC"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -23,7 +23,16 @@ class SplashScreenController: UIViewController {
     }
     
     func switchOutToListScreen() {
-        performSegueWithIdentifier("showNewUser", sender: self)
+        // Check keychain values and then decide which screen has to be shown
+        let isUserLoggedIn: Bool? = KeychainWrapper.defaultKeychainWrapper().boolForKey("LocNotes-userLoggedIn")
+        
+        if( isUserLoggedIn == nil || !isUserLoggedIn! ) {
+            // No value in KeyChain or the user is NOT logged in
+            performSegueWithIdentifier("showNewUser", sender: self)
+        } else if( isUserLoggedIn! ) {
+            // There is a value in KeyChain and the user is logged in
+            performSegueWithIdentifier("showLoggedInUser", sender: self)
+        }
     }
     
 }

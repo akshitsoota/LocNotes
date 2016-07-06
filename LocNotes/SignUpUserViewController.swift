@@ -243,7 +243,7 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
                 loadingScreen = CommonUtils.returnLoadingScreenView(self)
             }
             // Now setup the loading screen
-            CommonUtils.setLoadingTextOnLoadingScreenView(loadingScreen, newLabelContents: "Setting up your account...")
+            CommonUtils.setLoadingTextOnLoadingScreenView(self.loadingScreen, newLabelContents: "Setting up your account...")
             // Add it to the view
             self.view.addSubview(loadingScreen)
             
@@ -274,14 +274,18 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
                 }
             }
             
-            requestBody = requestBody.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
+            // DEPRECATED: requestBody = requestBody.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
+            requestBody = requestBody.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
             asyncRequest.HTTPBody = requestBody.dataUsingEncoding(NSUTF8StringEncoding)
             
             let asyncTask = asyncSession.dataTaskWithRequest(asyncRequest, completionHandler: signupResponseReceived)
             asyncTask.resume() // Start the task now
+            // Return
+            return
         }
         
         // Else, we've got a problem
+        dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
         CommonUtils.showDefaultAlertToUser(self, title: "Internal Error", alertContents: "There was an internal error in fetching our backend endpoint. Please try again later!")
         // Return
         return
@@ -289,9 +293,9 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
     
     func signupResponseReceived(data: NSData?, response: NSURLResponse?, error: NSError?) -> () {
         // Process the JSON data here if we got no errors
-        if( error == nil ) {
+        if( error != nil ) {
             // Deal with the error here
-            loadingScreen.removeFromSuperview() // Hide the loading screen
+            dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
             // Show an alert to the user
             CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "Your request could not be fulfilled. Please try again later!")
             // Return
@@ -305,7 +309,7 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
             let status = jsonResponse["status"]
             
             if( status == nil ) {
-                loadingScreen.removeFromSuperview() // Hide the loading screen
+                dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
                 // We've got some problems parsing the response; Show an alert to the user
                 CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Please try again later!")
                 // Return
@@ -315,57 +319,59 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
             let strStatus: String! = status as! String
             
             if( strStatus == "invalid_email" ) {
-                loadingScreen.removeFromSuperview() // Hide the loading screen
+                dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
                 // User entered an invalid email; Show an alert to the user
                 CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "You've an invalid email. Please fix your email to continue with the registation process.")
                 // Return
                 return
             } else if( strStatus == "username_too_short" ) {
-                loadingScreen.removeFromSuperview() // Hide the loading screen
+                dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
                 // User entered a username that is too short; Show an alert to the user
                 CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "Your username should atleast be 5 characters in length. Please fix your username and try again.")
                 // Return
                 return
             } else if( strStatus == "username_has_spaces" ) {
-                loadingScreen.removeFromSuperview() // Hide the loading screen
+                dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
                 // User entered a username with spaces in it; Show an alert to the user
                 CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "Your username cannot have any spaces. Remove any spaces and try again.")
                 // Return
                 return
             } else if( strStatus == "password_too_short" ) {
-                loadingScreen.removeFromSuperview() // Hide the loading screen
+                dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
                 // User entered a password that is too short; Show an alert to the user
                 CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "The password that you've entered is too short. Please enter a password that is atleast 8 characters long and try signing up again!")
                 // Return
                 return
             } else if( strStatus == "duplicate_username" ) {
-                loadingScreen.removeFromSuperview() // Hide the loading screen
+                dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
                 // User entered a username but there is already an account with the same username; Show an alert to the user
                 CommonUtils.showDefaultAlertToUser(self, title: "Username Error", alertContents: "The username you have typed already has an account associated with it. If you don't own that account, please change your username and try registering again! If you own that account, log into your account.")
                 // Return
                 return
             } else if( strStatus == "duplicate_email" ) {
-                loadingScreen.removeFromSuperview() // Hide the loading screen
+                dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
                 // User entered an email address but there is already an account registered with the same email address; Show an alert to the user
                 CommonUtils.showDefaultAlertToUser(self, title: "Email Address Error", alertContents: "There is another account associated with the same email address as the one you've entered. Please change your email address and try again!")
                 // Return
                 return
             } else if( strStatus == "failed" ) {
-                loadingScreen.removeFromSuperview() // Hide the loading screen
+                dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
                 // Failed some backend Amazon RDS transaction; Show an alert to the user
                 CommonUtils.showDefaultAlertToUser(self, title: "Sign Up Error", alertContents: "There was an issuing your sign up command. Please try again!")
                 // Return
                 return
             } else if( strStatus == "successful" ) {
                 // Setup the loading screen
-                CommonUtils.setLoadingTextOnLoadingScreenView(loadingScreen, newLabelContents: "Fetching your login details...")
+                dispatch_async(dispatch_get_main_queue(), {
+                    CommonUtils.setLoadingTextOnLoadingScreenView(self.loadingScreen, newLabelContents: "Fetching your login details...")
+                })
                 // Attempt the login process now
                 attemptLogin()
             }
             
             
         } catch {
-            loadingScreen.removeFromSuperview() // Hide the loading screen
+            dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
             // We've got some problems parsing the response; Show an alert to the user
             CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Please try again later!")
             // Return
@@ -408,15 +414,18 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
                 }
             }
             
-            requestBody = requestBody.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
+            // DEPRECATED: requestBody = requestBody.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
+            requestBody = requestBody.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
             asyncRequest.HTTPBody = requestBody.dataUsingEncoding(NSUTF8StringEncoding)
             
             let asyncTask = asyncSession.dataTaskWithRequest(asyncRequest, completionHandler: loginResponseReceived)
             asyncTask.resume() // Start the task now
+            // Return
+            return
         }
         
         // Else, we've got a problem
-        loadingScreen.removeFromSuperview() // Hide the loading screen
+        dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
         CommonUtils.showDefaultAlertToUser(self, title: "Internal Error", alertContents: "There was an internal error in fetching our backend endpoint. However, your account has been created. Please goto the login screen and try to login from there!")
         // Return
         return
@@ -424,9 +433,9 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
     
     func loginResponseReceived(data: NSData?, response: NSURLResponse?, error: NSError?) -> () {
         // Process the JSON data here if we got no errors
-        if( error == nil ) {
+        if( error != nil ) {
             // Deal with the error here
-            loadingScreen.removeFromSuperview() // Hide the loading screen
+            dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
             // Show an alert to the user
             CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "Your request could not be fulfilled. However, your account has been created. Goto the login page to login!")
             // Return
@@ -440,7 +449,7 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
             let status = jsonResponse["status"]
             
             if( status == nil ) {
-                loadingScreen.removeFromSuperview() // Hide the loading screen
+                dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
                 // We've got some problems parsing the response; Show an alert to the user
                 CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Your account has been created so you can goto the login page to login!")
                 // Return
@@ -450,23 +459,62 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
             let strStatus: String! = status as! String
             
             if( strStatus == "no_match" ) {
-                loadingScreen.removeFromSuperview() // Hide the loading screen
+                dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
                 // The server said that there was no matching response but we shouldn't be getting that as we just created the user's account; Show an alert to the user
                 CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "The server returned an unexpected response. Your account has been created so you can goto the login page to login!")
                 // Return
                 return
             } else if( strStatus == "correct_credentials_old_token_passed" || strStatus == "correct_credentials_new_token_generated" ) {
-                // 
+                // Save all the information given by the server
+                let loginToken: String! = jsonResponse["login_token"] as! String
+                let tokenExpiry: Double! = (jsonResponse["token_expiry"] as? NSNumber)?.doubleValue
+                
+                // Update the loading screen
+                dispatch_async(dispatch_get_main_queue(), {
+                    CommonUtils.setLoadingTextOnLoadingScreenView(self.loadingScreen, newLabelContents: "Saving your user credentials...")
+                })
+                
+                // Call the Keychain Wrapper
+                let usernameSaved: Bool = KeychainWrapper.defaultKeychainWrapper().setString(usernameField.text!, forKey: "LocNotes-username")
+                let loginTokenSaved: Bool = KeychainWrapper.defaultKeychainWrapper().setString(loginToken, forKey: "LocNotes-loginToken")
+                let tokenExpirySaved: Bool = KeychainWrapper.defaultKeychainWrapper().setDouble(tokenExpiry, forKey: "LocNotes-tokenExpiry")
+                let userLoggedInSaved: Bool = KeychainWrapper.defaultKeychainWrapper().setBool(true, forKey: "LocNotes-userLoggedIn")
+                let userLoggedInAtSaved: Bool = KeychainWrapper.defaultKeychainWrapper().setDouble(NSDate().timeIntervalSince1970, forKey: "LocNotes-userLoggedInAt")
+                
+                let savedAll: Bool = usernameSaved && loginTokenSaved && tokenExpirySaved && userLoggedInSaved && userLoggedInAtSaved
+                
+                // Check if we were able to save it all in Keychain
+                if( !savedAll ) {
+                    dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
+                    // We've got to tell the user; Show an alert
+                    CommonUtils.showDefaultAlertToUser(self, title: "Internal Error", alertContents: "You were successfully logged in but we were unable to save your login credentials in Keychain! Please try again later.")
+                    // Return 
+                    return
+                } else {
+                    // Timer to switch out to the logged in user; Spawn it off in the main thread
+                    dispatch_async(dispatch_get_main_queue(), {
+                        _ = NSTimer.scheduledTimerWithTimeInterval(
+                            2, target: SignUpUserViewController.self(), selector: #selector(SignUpUserViewController.switchOutToListScreen), userInfo: nil, repeats: false
+                        )
+                    })
+                }
             }
             
             
         } catch {
-            loadingScreen.removeFromSuperview() // Hide the loading screen
+            dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
             // We've got some problems parsing the response; Show an alert to the user
             CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Your account has been created and you can login by going to the login screen!")
             // Return
             return
         }
+    }
+    
+    func switchOutToListScreen() {
+        // Switch out to the next screen
+        dispatch_async(dispatch_get_main_queue(), {
+            self.performSegueWithIdentifier("showLoggedInUser", sender: SignUpUserViewController.self())
+        })
     }
     
     // MARK: - Signup Validation Tests
