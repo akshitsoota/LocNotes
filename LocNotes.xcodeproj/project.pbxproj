@@ -11,6 +11,9 @@
 		FC1913F31D1B869800146224 /* SplashScreenController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1913F21D1B869800146224 /* SplashScreenController.swift */; };
 		FC1913F61D1B869800146224 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FC1913F41D1B869800146224 /* Main.storyboard */; };
 		FC1913F81D1B869800146224 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FC1913F71D1B869800146224 /* Assets.xcassets */; };
+		FC5B6ECA1D2CA87500EC9C88 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC5B6EC21D2CA66400EC9C88 /* LocalAuthentication.framework */; };
+		FC5B6ECE1D2CAA2300EC9C88 /* KeychainWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC5B6ECC1D2CAA2300EC9C88 /* KeychainWrapper.swift */; };
+		FC5B6ECF1D2CAA2300EC9C88 /* KeychainOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC5B6ECD1D2CAA2300EC9C88 /* KeychainOptions.swift */; };
 		FC605F161D276D5E00AC5F73 /* LoginUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC605F151D276D5E00AC5F73 /* LoginUserViewController.swift */; };
 		FC605F1A1D289E1000AC5F73 /* SignUpUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC605F191D289E1000AC5F73 /* SignUpUserViewController.swift */; };
 		FC605F301D29FE2700AC5F73 /* endpoints.plist in Resources */ = {isa = PBXBuildFile; fileRef = FC605F2F1D29FE2700AC5F73 /* endpoints.plist */; };
@@ -27,6 +30,11 @@
 		FC1913F51D1B869800146224 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FC1913F71D1B869800146224 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FC1913FC1D1B869800146224 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FC5B6EC21D2CA66400EC9C88 /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
+		FC5B6EC61D2CA82E00EC9C88 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		FC5B6ECB1D2CAA2300EC9C88 /* SwiftKeychainWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwiftKeychainWrapper.h; sourceTree = "<group>"; };
+		FC5B6ECC1D2CAA2300EC9C88 /* KeychainWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainWrapper.swift; sourceTree = "<group>"; };
+		FC5B6ECD1D2CAA2300EC9C88 /* KeychainOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainOptions.swift; sourceTree = "<group>"; };
 		FC605F151D276D5E00AC5F73 /* LoginUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginUserViewController.swift; sourceTree = "<group>"; };
 		FC605F191D289E1000AC5F73 /* SignUpUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpUserViewController.swift; sourceTree = "<group>"; };
 		FC605F2F1D29FE2700AC5F73 /* endpoints.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = endpoints.plist; sourceTree = "<group>"; };
@@ -41,6 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FC5B6ECA1D2CA87500EC9C88 /* LocalAuthentication.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -50,6 +59,8 @@
 		FC1913E41D1B869800146224 = {
 			isa = PBXGroup;
 			children = (
+				FC5B6EC61D2CA82E00EC9C88 /* Security.framework */,
+				FC5B6EC21D2CA66400EC9C88 /* LocalAuthentication.framework */,
 				FC1913EF1D1B869800146224 /* LocNotes */,
 				FC1913EE1D1B869800146224 /* Products */,
 			);
@@ -81,9 +92,20 @@
 			path = LocNotes;
 			sourceTree = "<group>";
 		};
+		FC5B6ED01D2CAA2900EC9C88 /* SwiftKeychainWrapper */ = {
+			isa = PBXGroup;
+			children = (
+				FC5B6ECB1D2CAA2300EC9C88 /* SwiftKeychainWrapper.h */,
+				FC5B6ECC1D2CAA2300EC9C88 /* KeychainWrapper.swift */,
+				FC5B6ECD1D2CAA2300EC9C88 /* KeychainOptions.swift */,
+			);
+			name = SwiftKeychainWrapper;
+			sourceTree = "<group>";
+		};
 		FC605F271D28CF1F00AC5F73 /* CommonUtils */ = {
 			isa = PBXGroup;
 			children = (
+				FC5B6ED01D2CAA2900EC9C88 /* SwiftKeychainWrapper */,
 				FC605F331D2B092800AC5F73 /* LoadingScreenView.xib */,
 				FC605F351D2B1B8300AC5F73 /* CommonUtils.swift */,
 			);
@@ -172,7 +194,9 @@
 				FCFA5AEE1D242E450092ADDC /* NewUserPageContentViewController.swift in Sources */,
 				FC605F1A1D289E1000AC5F73 /* SignUpUserViewController.swift in Sources */,
 				FCFA5AEC1D2365D20092ADDC /* NewUserViewController.swift in Sources */,
+				FC5B6ECE1D2CAA2300EC9C88 /* KeychainWrapper.swift in Sources */,
 				FC605F361D2B1B8300AC5F73 /* CommonUtils.swift in Sources */,
+				FC5B6ECF1D2CAA2300EC9C88 /* KeychainOptions.swift in Sources */,
 				FC1913F11D1B869800146224 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -220,6 +220,7 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
         return true
     }
     
+    // MARK: - Backend functions here
     func attemptSignup() {
         // Run basic validation tests
         if( !signupValidationTests() ) {
@@ -281,7 +282,9 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
         }
         
         // Else, we've got a problem
-        // TODO:
+        CommonUtils.showDefaultAlertToUser(self, title: "Internal Error", alertContents: "There was an internal error in fetching our backend endpoint. Please try again later!")
+        // Return
+        return
     }
     
     func signupResponseReceived(data: NSData?, response: NSURLResponse?, error: NSError?) -> () {
@@ -362,6 +365,7 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
             
             
         } catch {
+            loadingScreen.removeFromSuperview() // Hide the loading screen
             // We've got some problems parsing the response; Show an alert to the user
             CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Please try again later!")
             // Return
@@ -370,7 +374,99 @@ class SignUpUserViewController: UIViewController, UITextFieldDelegate {
     }
     
     func attemptLogin() {
+        var keys: NSDictionary?
         
+        if let path = NSBundle.mainBundle().pathForResource("endpoints", ofType: "plist") {
+            keys = NSDictionary(contentsOfFile: path)
+        }
+        if let dict = keys {
+            let awsEndpoint: String! = dict["awsEC2EndpointURL"] as! String
+            let loginURL: String! = dict["loginUserURL"] as! String
+            
+            // Now start the async request
+            let asyncRequestURL: NSURL! = NSURL(string: "http://" + awsEndpoint + loginURL)
+            let asyncSession: NSURLSession! = NSURLSession.sharedSession()
+            
+            let asyncRequest: NSMutableURLRequest! = NSMutableURLRequest(URL: asyncRequestURL)
+            asyncRequest.HTTPMethod = "POST"
+            asyncRequest.cachePolicy = .ReloadIgnoringLocalCacheData
+            asyncRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            
+            // Let us form a dictionary of <K, V> pairs to be sent
+            // REFERENCE: http://stackoverflow.com/a/28009796/705471
+            let requestParams: Dictionary<String, String>! = ["username": usernameField.text!,
+                                                              "password": passwordField.text!]
+            var firstParamAdded: Bool! = false
+            let paramKeys: Array<String>! = Array(requestParams.keys)
+            var requestBody = ""
+            for key in paramKeys {
+                if( !firstParamAdded ) {
+                    requestBody += key + "=" + requestParams[key]!
+                    firstParamAdded = true
+                } else {
+                    requestBody += "&" + key + "=" + requestParams[key]!
+                }
+            }
+            
+            requestBody = requestBody.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
+            asyncRequest.HTTPBody = requestBody.dataUsingEncoding(NSUTF8StringEncoding)
+            
+            let asyncTask = asyncSession.dataTaskWithRequest(asyncRequest, completionHandler: loginResponseReceived)
+            asyncTask.resume() // Start the task now
+        }
+        
+        // Else, we've got a problem
+        loadingScreen.removeFromSuperview() // Hide the loading screen
+        CommonUtils.showDefaultAlertToUser(self, title: "Internal Error", alertContents: "There was an internal error in fetching our backend endpoint. However, your account has been created. Please goto the login screen and try to login from there!")
+        // Return
+        return
+    }
+    
+    func loginResponseReceived(data: NSData?, response: NSURLResponse?, error: NSError?) -> () {
+        // Process the JSON data here if we got no errors
+        if( error == nil ) {
+            // Deal with the error here
+            loadingScreen.removeFromSuperview() // Hide the loading screen
+            // Show an alert to the user
+            CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "Your request could not be fulfilled. However, your account has been created. Goto the login page to login!")
+            // Return
+            return
+        }
+        
+        do {
+            
+            let jsonResponse: [String: AnyObject] = try (NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions()) as? [String: AnyObject])!
+            // Now process the response
+            let status = jsonResponse["status"]
+            
+            if( status == nil ) {
+                loadingScreen.removeFromSuperview() // Hide the loading screen
+                // We've got some problems parsing the response; Show an alert to the user
+                CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Your account has been created so you can goto the login page to login!")
+                // Return
+                return
+            }
+            
+            let strStatus: String! = status as! String
+            
+            if( strStatus == "no_match" ) {
+                loadingScreen.removeFromSuperview() // Hide the loading screen
+                // The server said that there was no matching response but we shouldn't be getting that as we just created the user's account; Show an alert to the user
+                CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "The server returned an unexpected response. Your account has been created so you can goto the login page to login!")
+                // Return
+                return
+            } else if( strStatus == "correct_credentials_old_token_passed" || strStatus == "correct_credentials_new_token_generated" ) {
+                // 
+            }
+            
+            
+        } catch {
+            loadingScreen.removeFromSuperview() // Hide the loading screen
+            // We've got some problems parsing the response; Show an alert to the user
+            CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Your account has been created and you can login by going to the login screen!")
+            // Return
+            return
+        }
     }
     
     // MARK: - Signup Validation Tests
