@@ -49,8 +49,8 @@ class LoginUserViewController: UIViewController, UIGestureRecognizerDelegate, UI
     // REFERENCE: http://stackoverflow.com/a/28813720/705471
     
     func registerForKeyboardNotifications() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SignUpUserViewController.keyboardWasShown(_:)), name: UIKeyboardWillShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SignUpUserViewController.keyboardWillBeHidden(_:)), name: UIKeyboardWillHideNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginUserViewController.keyboardWasShown(_:)), name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginUserViewController.keyboardWillBeHidden(_:)), name: UIKeyboardWillHideNotification, object: nil)
     }
     
     func deregisterFromKeyboardNotifications() {
@@ -184,7 +184,7 @@ class LoginUserViewController: UIViewController, UIGestureRecognizerDelegate, UI
     }
     
     // MARK: - Backend functions here
-    func attemptLogin() {
+    func attemptLogin() { 
         // Run basic validation tests
         if( !loginValidationTest() ) {
             return
@@ -246,8 +246,10 @@ class LoginUserViewController: UIViewController, UIGestureRecognizerDelegate, UI
         }
         
         // Else, we've got a problem
-        dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
-        CommonUtils.showDefaultAlertToUser(self, title: "Internal Error", alertContents: "There was an internal error in fetching our backend endpoint. Please try again!")
+        dispatch_async(dispatch_get_main_queue(), {
+            self.loadingScreen.removeFromSuperview() // Hide the loading screen
+            CommonUtils.showDefaultAlertToUser(self, title: "Internal Error", alertContents: "There was an internal error in fetching our backend endpoint. Please try again!")
+        })
         // Return
         return
     }
@@ -256,9 +258,11 @@ class LoginUserViewController: UIViewController, UIGestureRecognizerDelegate, UI
         // Process the JSON data here if we got no errors
         if( error != nil ) {
             // Deal with the error here
-            dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
-            // Show an alert to the user
-            CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "Your request could not be fulfilled. Please try logging in again!")
+            dispatch_async(dispatch_get_main_queue(), {
+                self.loadingScreen.removeFromSuperview() // Hide the loading screen
+                // Show an alert to the user
+                CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "Your request could not be fulfilled. Please try logging in again!")
+            })
             // Return
             return
         }
@@ -270,9 +274,11 @@ class LoginUserViewController: UIViewController, UIGestureRecognizerDelegate, UI
             let status = jsonResponse["status"]
             
             if( status == nil ) {
-                dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
-                // We've got some problems parsing the response; Show an alert to the user
-                CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Please try logging in again!")
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.loadingScreen.removeFromSuperview() // Hide the loading screen
+                    // We've got some problems parsing the response; Show an alert to the user
+                    CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Please try logging in again!")
+                })
                 // Return
                 return
             }
@@ -280,9 +286,11 @@ class LoginUserViewController: UIViewController, UIGestureRecognizerDelegate, UI
             let strStatus: String! = status as! String
             
             if( strStatus == "no_match" ) {
-                dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
-                // No matching account was found; Show an alert to the user
-                CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "You've entered invalid credentials. Please fix them and try logging in again!")
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.loadingScreen.removeFromSuperview() // Hide the loading screen
+                    // No matching account was found; Show an alert to the user
+                    CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "You've entered invalid credentials. Please fix them and try logging in again!")
+                })
                 // Return
                 return
             } else if( strStatus == "correct_credentials_old_token_passed" || strStatus == "correct_credentials_new_token_generated" ) {
@@ -306,16 +314,18 @@ class LoginUserViewController: UIViewController, UIGestureRecognizerDelegate, UI
                 
                 // Check if we were able to save it all in Keychain
                 if( !savedAll ) {
-                    dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
-                    // We've got to tell the user; Show an alert
-                    CommonUtils.showDefaultAlertToUser(self, title: "Internal Error", alertContents: "You were successfully logged in but we were unable to save your login credentials in Keychain! Please try again later.")
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.loadingScreen.removeFromSuperview() // Hide the loading screen
+                        // We've got to tell the user; Show an alert
+                        CommonUtils.showDefaultAlertToUser(self, title: "Internal Error", alertContents: "You were successfully logged in but we were unable to save your login credentials in Keychain! Please try again later.")
+                    })
                     // Return
                     return
                 } else {
                     // Timer to switch out to the logged in user; Spawn it off in the main thread
                     dispatch_async(dispatch_get_main_queue(), {
                         _ = NSTimer.scheduledTimerWithTimeInterval(
-                            2, target: SignUpUserViewController.self(), selector: #selector(LoginUserViewController.switchOutToListScreen), userInfo: nil, repeats: false
+                            2, target: self, selector: #selector(LoginUserViewController.switchOutToListScreen), userInfo: nil, repeats: false
                         )
                     })
                 }
@@ -323,9 +333,11 @@ class LoginUserViewController: UIViewController, UIGestureRecognizerDelegate, UI
             
             
         } catch {
-            dispatch_async(dispatch_get_main_queue(), { self.loadingScreen.removeFromSuperview() }) // Hide the loading screen
-            // We've got some problems parsing the response; Show an alert to the user
-            CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Please try to login again!")
+            dispatch_async(dispatch_get_main_queue(), {
+                self.loadingScreen.removeFromSuperview() // Hide the loading screen
+                // We've got some problems parsing the response; Show an alert to the user
+                CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Please try to login again!")
+            })
             // Return
             return
         }
@@ -333,9 +345,7 @@ class LoginUserViewController: UIViewController, UIGestureRecognizerDelegate, UI
     
     func switchOutToListScreen() {
         // Switch out to the next screen
-        dispatch_async(dispatch_get_main_queue(), {
-            self.performSegueWithIdentifier("showLoggedInUser", sender: SignUpUserViewController.self())
-        })
+        self.performSegueWithIdentifier("showLoggedInUserFromLogin", sender: self)
     }
     
     // MARK: - Login Validation Tests

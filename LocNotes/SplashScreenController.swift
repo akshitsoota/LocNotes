@@ -30,8 +30,8 @@ class SplashScreenController: UIViewController {
             // No value in KeyChain or the user is NOT logged in
             performSegueWithIdentifier("showNewUser", sender: self)
         } else if( isUserLoggedIn! ) {
-            // There is a value in KeyChain and the user is logged in
-            performSegueWithIdentifier("showLoggedInUser", sender: self)
+            // There is a value in KeyChain and the user is logged in; TODO
+            performSegueWithIdentifier("showNewUser", sender: self) //showLoggedInUser", sender: self)
         }
     }
     

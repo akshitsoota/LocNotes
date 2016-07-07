@@ -18,20 +18,20 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="BLo-aS-pAG">
-                                <rect key="frame" x="35" y="260" width="530" height="81"/>
+                                <rect key="frame" x="35" y="252.5" width="530" height="96"/>
                                 <subviews>
                                     <activityIndicatorView opaque="NO" tag="1" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" verticalCompressionResistancePriority="749" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="b3g-MP-AWg">
-                                        <rect key="frame" x="0.0" y="0.0" width="530" height="22"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="530" height="37"/>
                                     </activityIndicatorView>
                                     <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loading..." textAlignment="center" lineBreakMode="wordWrap" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ob1-12-JfC">
-                                        <rect key="frame" x="0.0" y="52" width="530" height="29"/>
+                                        <rect key="frame" x="0.0" y="67" width="530" height="29"/>
                                         <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="21"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="81" id="eGW-YU-QkR"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="81" id="eGW-YU-QkR"/>
                                 </constraints>
                             </stackView>
                         </subviews>
