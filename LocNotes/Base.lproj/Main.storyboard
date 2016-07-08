@@ -703,6 +703,151 @@
             </objects>
             <point key="canvasLocation" x="734" y="1512"/>
         </scene>
+        <!--New User Location Log View-->
+        <scene sceneID="Sse-JG-gfT">
+            <objects>
+                <viewController title="New User Location Log View" automaticallyAdjustsScrollViewInsets="NO" id="5av-Vm-EAH" customClass="NewUserLocationLogViewController" customModule="LocNotes" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="zYL-JL-2gK"/>
+                        <viewControllerLayoutGuide type="bottom" id="XJd-ms-PBc"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Lbs-b6-84P">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="26x-CM-l82">
+                                <rect key="frame" x="0.0" y="20" width="600" height="580"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zKX-k6-nNO">
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="580"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="njc-uu-Jpm">
+                                                <rect key="frame" x="0.0" y="20" width="600" height="34"/>
+                                                <subviews>
+                                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Title" textAlignment="natural" minimumFontSize="16" translatesAutoresizingMaskIntoConstraints="NO" id="7zy-0p-aTB">
+                                                        <rect key="frame" x="12" y="2" width="576" height="30"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="30" id="PPu-sS-757"/>
+                                                        </constraints>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                        <textInputTraits key="textInputTraits"/>
+                                                        <userDefinedRuntimeAttributes>
+                                                            <userDefinedRuntimeAttribute type="color" keyPath="_placeholderLabel.textColor">
+                                                                <color key="value" red="0.0" green="0.47843137254901957" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                            </userDefinedRuntimeAttribute>
+                                                        </userDefinedRuntimeAttributes>
+                                                    </textField>
+                                                </subviews>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="trailing" secondItem="7zy-0p-aTB" secondAttribute="trailing" constant="12" id="623-8r-Tkc"/>
+                                                    <constraint firstItem="7zy-0p-aTB" firstAttribute="top" secondItem="njc-uu-Jpm" secondAttribute="top" constant="2" id="LPj-6w-tFH"/>
+                                                    <constraint firstItem="7zy-0p-aTB" firstAttribute="leading" secondItem="njc-uu-Jpm" secondAttribute="leading" constant="12" id="ZRr-FM-zUA"/>
+                                                    <constraint firstAttribute="bottom" secondItem="7zy-0p-aTB" secondAttribute="bottom" constant="2" id="cdA-19-XhI"/>
+                                                </constraints>
+                                            </view>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YDe-Ke-Ri8">
+                                                <rect key="frame" x="0.0" y="74" width="600" height="200"/>
+                                                <subviews>
+                                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="4nw-C0-3B6">
+                                                        <rect key="frame" x="12" y="2" width="576" height="196"/>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <string key="text">Tell us about your trip. What did you do? What did you enjoy? What places did you visit? Which places would you love to visit again?</string>
+                                                        <color key="textColor" red="0.0" green="0.47843137254901957" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                    </textView>
+                                                </subviews>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="200" id="0pH-SW-4YR"/>
+                                                    <constraint firstAttribute="trailing" secondItem="4nw-C0-3B6" secondAttribute="trailing" constant="12" id="MvB-lC-Ggn"/>
+                                                    <constraint firstItem="4nw-C0-3B6" firstAttribute="top" secondItem="YDe-Ke-Ri8" secondAttribute="top" constant="2" id="OXF-fH-hUS"/>
+                                                    <constraint firstItem="4nw-C0-3B6" firstAttribute="leading" secondItem="YDe-Ke-Ri8" secondAttribute="leading" constant="12" id="W7c-Bt-IFL"/>
+                                                    <constraint firstAttribute="bottom" secondItem="4nw-C0-3B6" secondAttribute="bottom" constant="2" id="d3r-WP-jvN"/>
+                                                </constraints>
+                                            </view>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6an-A0-3gi">
+                                                <rect key="frame" x="0.0" y="294" width="600" height="175"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your log photos" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ifc-HL-v81">
+                                                        <rect key="frame" x="12" y="8" width="576" height="21"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K28-vP-qLW">
+                                                        <rect key="frame" x="12" y="39" width="576" height="128"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="128" id="aAf-KC-zy6"/>
+                                                        </constraints>
+                                                    </scrollView>
+                                                </subviews>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <constraints>
+                                                    <constraint firstItem="K28-vP-qLW" firstAttribute="top" secondItem="Ifc-HL-v81" secondAttribute="bottom" constant="10" id="4nn-hY-Q9W"/>
+                                                    <constraint firstAttribute="trailing" secondItem="K28-vP-qLW" secondAttribute="trailing" constant="12" id="NDw-5t-KB6"/>
+                                                    <constraint firstAttribute="bottom" secondItem="K28-vP-qLW" secondAttribute="bottom" constant="8" id="WYA-0l-yXW"/>
+                                                    <constraint firstItem="Ifc-HL-v81" firstAttribute="top" secondItem="6an-A0-3gi" secondAttribute="top" constant="8" id="ahp-Pg-x4r"/>
+                                                    <constraint firstItem="K28-vP-qLW" firstAttribute="leading" secondItem="6an-A0-3gi" secondAttribute="leading" constant="12" id="cS3-DR-JFw"/>
+                                                    <constraint firstItem="Ifc-HL-v81" firstAttribute="leading" secondItem="6an-A0-3gi" secondAttribute="leading" constant="12" id="l3w-6p-HSD"/>
+                                                    <constraint firstAttribute="trailing" secondItem="Ifc-HL-v81" secondAttribute="trailing" constant="12" id="ley-Vo-BR5"/>
+                                                    <constraint firstAttribute="height" constant="175" id="lfz-qt-TGF"/>
+                                                </constraints>
+                                            </view>
+                                        </subviews>
+                                        <color key="backgroundColor" red="0.84313725490196079" green="0.84313725490196079" blue="0.84313725490196079" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstItem="6an-A0-3gi" firstAttribute="leading" secondItem="zKX-k6-nNO" secondAttribute="leading" id="4wu-eS-csK"/>
+                                            <constraint firstItem="njc-uu-Jpm" firstAttribute="leading" secondItem="zKX-k6-nNO" secondAttribute="leading" id="Bg2-oq-QcK"/>
+                                            <constraint firstItem="YDe-Ke-Ri8" firstAttribute="top" secondItem="njc-uu-Jpm" secondAttribute="bottom" constant="20" id="FEx-RW-TKU"/>
+                                            <constraint firstAttribute="trailing" secondItem="YDe-Ke-Ri8" secondAttribute="trailing" id="Gra-O5-4XW"/>
+                                            <constraint firstAttribute="trailing" secondItem="6an-A0-3gi" secondAttribute="trailing" id="IYg-xN-X4g"/>
+                                            <constraint firstAttribute="trailing" secondItem="njc-uu-Jpm" secondAttribute="trailing" id="M3u-Ch-5yl"/>
+                                            <constraint firstItem="YDe-Ke-Ri8" firstAttribute="leading" secondItem="zKX-k6-nNO" secondAttribute="leading" id="VgM-9P-0rb"/>
+                                            <constraint firstItem="njc-uu-Jpm" firstAttribute="top" secondItem="zKX-k6-nNO" secondAttribute="top" constant="20" id="nVX-r7-x0V"/>
+                                            <constraint firstItem="6an-A0-3gi" firstAttribute="top" secondItem="YDe-Ke-Ri8" secondAttribute="bottom" constant="20" id="zDJ-AS-OKq"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="zKX-k6-nNO" firstAttribute="top" secondItem="26x-CM-l82" secondAttribute="top" id="4wE-Kv-W37"/>
+                                    <constraint firstAttribute="bottom" secondItem="zKX-k6-nNO" secondAttribute="bottom" id="If9-JL-4NG"/>
+                                    <constraint firstItem="zKX-k6-nNO" firstAttribute="width" secondItem="26x-CM-l82" secondAttribute="width" id="OXA-it-b4R"/>
+                                    <constraint firstAttribute="trailing" secondItem="zKX-k6-nNO" secondAttribute="trailing" id="ZLc-GX-rga"/>
+                                    <constraint firstItem="zKX-k6-nNO" firstAttribute="leading" secondItem="26x-CM-l82" secondAttribute="leading" id="dBl-tZ-vrQ"/>
+                                    <constraint firstItem="zKX-k6-nNO" firstAttribute="height" secondItem="26x-CM-l82" secondAttribute="height" id="zRZ-SX-wHm"/>
+                                </constraints>
+                            </scrollView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="26x-CM-l82" firstAttribute="leading" secondItem="Lbs-b6-84P" secondAttribute="leadingMargin" constant="-20" id="1Rt-vL-f0X"/>
+                            <constraint firstItem="26x-CM-l82" firstAttribute="top" secondItem="zYL-JL-2gK" secondAttribute="bottom" id="VbV-W0-cra"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="26x-CM-l82" secondAttribute="trailing" constant="-20" id="Vmw-gD-NDV"/>
+                            <constraint firstItem="XJd-ms-PBc" firstAttribute="top" secondItem="26x-CM-l82" secondAttribute="bottom" id="zcd-Rg-3LH"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="New Location Log" id="o1a-6a-J0j">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="kIo-eK-qRy">
+                            <color key="tintColor" red="1" green="0.38039215686274508" blue="0.35686274509803922" alpha="1" colorSpace="calibratedRGB"/>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="done" id="8sp-88-NZw">
+                            <color key="tintColor" red="0.35686274509803922" green="1" blue="0.38039215686274508" alpha="1" colorSpace="calibratedRGB"/>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="descriptionTextField" destination="4nw-C0-3B6" id="cbM-bl-cSX"/>
+                        <outlet property="descriptionTextFieldHolder" destination="YDe-Ke-Ri8" id="1YO-6z-CPH"/>
+                        <outlet property="logPhotosMainHolder" destination="6an-A0-3gi" id="Fr5-ue-9AW"/>
+                        <outlet property="titleTextField" destination="7zy-0p-aTB" id="pCJ-5F-D4G"/>
+                        <outlet property="titleTextFieldHolder" destination="njc-uu-Jpm" id="DHo-RH-O1k"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Big-pU-9e5" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1554" y="842"/>
+        </scene>
         <!--New User Page Content View Controller-->
         <scene sceneID="92S-23-u50">
             <objects>
@@ -754,7 +899,7 @@
         <!--User Location Logs View-->
         <scene sceneID="NvP-AI-eaR">
             <objects>
-                <viewController title="User Location Logs View" id="SlG-YX-iLH" sceneMemberID="viewController">
+                <viewController title="User Location Logs View" automaticallyAdjustsScrollViewInsets="NO" id="SlG-YX-iLH" customClass="UserLocationLogsViewController" customModule="LocNotes" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="IEA-Fg-9A7"/>
                         <viewControllerLayoutGuide type="bottom" id="l80-YY-gHs"/>
@@ -768,7 +913,7 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="LocationLogCell" rowHeight="250" id="moX-ne-NIo">
-                                        <rect key="frame" x="0.0" y="92" width="600" height="250"/>
+                                        <rect key="frame" x="0.0" y="28" width="600" height="250"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="moX-ne-NIo" id="VeU-VL-2Uh">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="249.5"/>
@@ -810,6 +955,9 @@
                     <navigationItem key="navigationItem" title="Your Location Logs" id="uEc-NS-tiy">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="58h-7n-aEa">
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <action selector="navigationBarAddButtonClicked:" destination="SlG-YX-iLH" id="e6o-RY-IfK"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                 </viewController>
@@ -817,10 +965,10 @@
             </objects>
             <point key="canvasLocation" x="848" y="135"/>
         </scene>
-        <!--User Location Logs Navigation Controller-->
+        <!--Navigation Controller-->
         <scene sceneID="ZRc-nx-vrO">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Njh-km-45c" customClass="UserLocationLogsNavigationController" customModule="LocNotes" customModuleProvider="target" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Njh-km-45c" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="8Se-bM-WWi">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -833,11 +981,34 @@
                     <nil name="viewControllers"/>
                     <connections>
                         <segue destination="SlG-YX-iLH" kind="relationship" relationship="rootViewController" id="sm9-G6-Dv3"/>
+                        <segue destination="p18-Qs-eQZ" kind="show" identifier="showNewOrUpdateLocationLog" id="SNg-sf-3w3"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eif-s5-mCH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="133" y="135"/>
+        </scene>
+        <!--New User Location Log Navigation Controller-->
+        <scene sceneID="fcO-8q-zRM">
+            <objects>
+                <navigationController title="New User Location Log Navigation Controller" automaticallyAdjustsScrollViewInsets="NO" id="p18-Qs-eQZ" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="v5R-oB-H0Z">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </textAttributes>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="5av-Vm-EAH" kind="relationship" relationship="rootViewController" id="Xum-um-EyS"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yiH-E6-AUB" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="848" y="842"/>
         </scene>
     </scenes>
     <resources>

@@ -14,7 +14,7 @@
 		FC5B6ECA1D2CA87500EC9C88 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC5B6EC21D2CA66400EC9C88 /* LocalAuthentication.framework */; };
 		FC5B6ECE1D2CAA2300EC9C88 /* KeychainWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC5B6ECC1D2CAA2300EC9C88 /* KeychainWrapper.swift */; };
 		FC5B6ECF1D2CAA2300EC9C88 /* KeychainOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC5B6ECD1D2CAA2300EC9C88 /* KeychainOptions.swift */; };
-		FC5B6ED21D2E049D00EC9C88 /* UserLocationLogsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC5B6ED11D2E049D00EC9C88 /* UserLocationLogsNavigationController.swift */; };
+		FC5B6ED21D2E049D00EC9C88 /* UserLocationLogsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC5B6ED11D2E049D00EC9C88 /* UserLocationLogsViewController.swift */; };
 		FC605F161D276D5E00AC5F73 /* LoginUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC605F151D276D5E00AC5F73 /* LoginUserViewController.swift */; };
 		FC605F1A1D289E1000AC5F73 /* SignUpUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC605F191D289E1000AC5F73 /* SignUpUserViewController.swift */; };
 		FC605F301D29FE2700AC5F73 /* endpoints.plist in Resources */ = {isa = PBXBuildFile; fileRef = FC605F2F1D29FE2700AC5F73 /* endpoints.plist */; };
@@ -24,6 +24,7 @@
 		FCFA5AEE1D242E450092ADDC /* NewUserPageContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFA5AED1D242E450092ADDC /* NewUserPageContentViewController.swift */; };
 		FCFD7E401D2ED7B200727BD6 /* ProgressLoadingScreenView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FCFD7E3F1D2ED7B200727BD6 /* ProgressLoadingScreenView.xib */; };
 		FCFD7E441D2EE3C800727BD6 /* ProgressLoadingScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFD7E431D2EE3C800727BD6 /* ProgressLoadingScreenView.swift */; };
+		FCFD7E481D2F42B400727BD6 /* NewUserLocationLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFD7E471D2F42B400727BD6 /* NewUserLocationLogViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,7 +39,7 @@
 		FC5B6ECB1D2CAA2300EC9C88 /* SwiftKeychainWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwiftKeychainWrapper.h; sourceTree = "<group>"; };
 		FC5B6ECC1D2CAA2300EC9C88 /* KeychainWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainWrapper.swift; sourceTree = "<group>"; };
 		FC5B6ECD1D2CAA2300EC9C88 /* KeychainOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainOptions.swift; sourceTree = "<group>"; };
-		FC5B6ED11D2E049D00EC9C88 /* UserLocationLogsNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserLocationLogsNavigationController.swift; sourceTree = "<group>"; };
+		FC5B6ED11D2E049D00EC9C88 /* UserLocationLogsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserLocationLogsViewController.swift; sourceTree = "<group>"; };
 		FC605F151D276D5E00AC5F73 /* LoginUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginUserViewController.swift; sourceTree = "<group>"; };
 		FC605F191D289E1000AC5F73 /* SignUpUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpUserViewController.swift; sourceTree = "<group>"; };
 		FC605F2F1D29FE2700AC5F73 /* endpoints.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = endpoints.plist; sourceTree = "<group>"; };
@@ -48,6 +49,7 @@
 		FCFA5AED1D242E450092ADDC /* NewUserPageContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserPageContentViewController.swift; sourceTree = "<group>"; };
 		FCFD7E3F1D2ED7B200727BD6 /* ProgressLoadingScreenView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProgressLoadingScreenView.xib; sourceTree = "<group>"; };
 		FCFD7E431D2EE3C800727BD6 /* ProgressLoadingScreenView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProgressLoadingScreenView.swift; path = CommonUtils/ProgressLoadingScreenView.swift; sourceTree = "<group>"; };
+		FCFD7E471D2F42B400727BD6 /* NewUserLocationLogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserLocationLogViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,7 +95,8 @@
 				FCFA5AED1D242E450092ADDC /* NewUserPageContentViewController.swift */,
 				FC605F151D276D5E00AC5F73 /* LoginUserViewController.swift */,
 				FC605F191D289E1000AC5F73 /* SignUpUserViewController.swift */,
-				FC5B6ED11D2E049D00EC9C88 /* UserLocationLogsNavigationController.swift */,
+				FC5B6ED11D2E049D00EC9C88 /* UserLocationLogsViewController.swift */,
+				FCFD7E471D2F42B400727BD6 /* NewUserLocationLogViewController.swift */,
 				FC605F2F1D29FE2700AC5F73 /* endpoints.plist */,
 			);
 			path = LocNotes;
@@ -200,11 +203,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				FC605F161D276D5E00AC5F73 /* LoginUserViewController.swift in Sources */,
-				FC5B6ED21D2E049D00EC9C88 /* UserLocationLogsNavigationController.swift in Sources */,
+				FC5B6ED21D2E049D00EC9C88 /* UserLocationLogsViewController.swift in Sources */,
 				FC1913F31D1B869800146224 /* SplashScreenController.swift in Sources */,
 				FCFD7E441D2EE3C800727BD6 /* ProgressLoadingScreenView.swift in Sources */,
 				FCFA5AEE1D242E450092ADDC /* NewUserPageContentViewController.swift in Sources */,
 				FC605F1A1D289E1000AC5F73 /* SignUpUserViewController.swift in Sources */,
+				FCFD7E481D2F42B400727BD6 /* NewUserLocationLogViewController.swift in Sources */,
 				FCFA5AEC1D2365D20092ADDC /* NewUserViewController.swift in Sources */,
 				FC5B6ECE1D2CAA2300EC9C88 /* KeychainWrapper.swift in Sources */,
 				FC605F361D2B1B8300AC5F73 /* CommonUtils.swift in Sources */,

@@ -1,5 +1,5 @@
 //
-//  UserLocationLogsNavigationController.swift
+//  UserLocationLogsViewController.swift
 //  LocNotes
 //
 //  Created by Akshit (Axe) Soota on 7/6/16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class UserLocationLogsNavigationController: UINavigationController {
+class UserLocationLogsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +28,12 @@ class UserLocationLogsNavigationController: UINavigationController {
         super.viewWillDisappear(animated)
         // Set the status bar color back to default
         UIApplication.sharedApplication().statusBarStyle = .Default
+    }
+    
+    // MARK: - Actions received here
+    @IBAction func navigationBarAddButtonClicked(sender: UIBarButtonItem) {
+        // Navigate to the add location log screen
+        self.navigationController!.performSegueWithIdentifier("showNewOrUpdateLocationLog", sender: self)
     }
 
 }
