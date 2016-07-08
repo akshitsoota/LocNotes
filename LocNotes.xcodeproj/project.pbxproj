@@ -25,6 +25,9 @@
 		FCFD7E401D2ED7B200727BD6 /* ProgressLoadingScreenView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FCFD7E3F1D2ED7B200727BD6 /* ProgressLoadingScreenView.xib */; };
 		FCFD7E441D2EE3C800727BD6 /* ProgressLoadingScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFD7E431D2EE3C800727BD6 /* ProgressLoadingScreenView.swift */; };
 		FCFD7E481D2F42B400727BD6 /* NewUserLocationLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFD7E471D2F42B400727BD6 /* NewUserLocationLogViewController.swift */; };
+		FCFD7E4F1D300BAA00727BD6 /* AddNewPhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFD7E4E1D300BAA00727BD6 /* AddNewPhotoCollectionViewCell.swift */; };
+		FCFD7E511D300D6500727BD6 /* PhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFD7E501D300D6500727BD6 /* PhotoCollectionViewCell.swift */; };
+		FCFD7E531D300F8E00727BD6 /* PhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFD7E521D300F8E00727BD6 /* PhotoView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +53,9 @@
 		FCFD7E3F1D2ED7B200727BD6 /* ProgressLoadingScreenView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProgressLoadingScreenView.xib; sourceTree = "<group>"; };
 		FCFD7E431D2EE3C800727BD6 /* ProgressLoadingScreenView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProgressLoadingScreenView.swift; path = CommonUtils/ProgressLoadingScreenView.swift; sourceTree = "<group>"; };
 		FCFD7E471D2F42B400727BD6 /* NewUserLocationLogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserLocationLogViewController.swift; sourceTree = "<group>"; };
+		FCFD7E4E1D300BAA00727BD6 /* AddNewPhotoCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddNewPhotoCollectionViewCell.swift; path = PhotoCollectionViews/AddNewPhotoCollectionViewCell.swift; sourceTree = "<group>"; };
+		FCFD7E501D300D6500727BD6 /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PhotoCollectionViewCell.swift; path = PhotoCollectionViews/PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
+		FCFD7E521D300F8E00727BD6 /* PhotoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PhotoView.swift; path = PhotoCollectionViews/PhotoView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				FC605F271D28CF1F00AC5F73 /* CommonUtils */,
+				FCFD7E4D1D300B5B00727BD6 /* PhotoCollectionViews */,
 				FC1913F01D1B869800146224 /* AppDelegate.swift */,
 				FC1913F21D1B869800146224 /* SplashScreenController.swift */,
 				FC1913F41D1B869800146224 /* Main.storyboard */,
@@ -122,6 +129,16 @@
 				FCFD7E431D2EE3C800727BD6 /* ProgressLoadingScreenView.swift */,
 			);
 			name = CommonUtils;
+			sourceTree = "<group>";
+		};
+		FCFD7E4D1D300B5B00727BD6 /* PhotoCollectionViews */ = {
+			isa = PBXGroup;
+			children = (
+				FCFD7E4E1D300BAA00727BD6 /* AddNewPhotoCollectionViewCell.swift */,
+				FCFD7E501D300D6500727BD6 /* PhotoCollectionViewCell.swift */,
+				FCFD7E521D300F8E00727BD6 /* PhotoView.swift */,
+			);
+			name = PhotoCollectionViews;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -205,13 +222,16 @@
 				FC605F161D276D5E00AC5F73 /* LoginUserViewController.swift in Sources */,
 				FC5B6ED21D2E049D00EC9C88 /* UserLocationLogsViewController.swift in Sources */,
 				FC1913F31D1B869800146224 /* SplashScreenController.swift in Sources */,
+				FCFD7E531D300F8E00727BD6 /* PhotoView.swift in Sources */,
 				FCFD7E441D2EE3C800727BD6 /* ProgressLoadingScreenView.swift in Sources */,
 				FCFA5AEE1D242E450092ADDC /* NewUserPageContentViewController.swift in Sources */,
 				FC605F1A1D289E1000AC5F73 /* SignUpUserViewController.swift in Sources */,
+				FCFD7E4F1D300BAA00727BD6 /* AddNewPhotoCollectionViewCell.swift in Sources */,
 				FCFD7E481D2F42B400727BD6 /* NewUserLocationLogViewController.swift in Sources */,
 				FCFA5AEC1D2365D20092ADDC /* NewUserViewController.swift in Sources */,
 				FC5B6ECE1D2CAA2300EC9C88 /* KeychainWrapper.swift in Sources */,
 				FC605F361D2B1B8300AC5F73 /* CommonUtils.swift in Sources */,
+				FCFD7E511D300D6500727BD6 /* PhotoCollectionViewCell.swift in Sources */,
 				FC5B6ECF1D2CAA2300EC9C88 /* KeychainOptions.swift in Sources */,
 				FC1913F11D1B869800146224 /* AppDelegate.swift in Sources */,
 			);
