@@ -817,10 +817,10 @@
             </objects>
             <point key="canvasLocation" x="848" y="135"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--User Location Logs Navigation Controller-->
         <scene sceneID="ZRc-nx-vrO">
             <objects>
-                <navigationController storyboardIdentifier="UserLocationLogsViewController" automaticallyAdjustsScrollViewInsets="NO" id="Njh-km-45c" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Njh-km-45c" customClass="UserLocationLogsNavigationController" customModule="LocNotes" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="8Se-bM-WWi">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
