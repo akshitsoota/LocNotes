@@ -27,30 +27,27 @@ class PhotoCollectionViewCell: UICollectionViewCell {
             }
         }
     }
+    // Holds if the view was setup by adding a tap gesture recognizer on the ImageView
+    var viewSetup: Bool = false
     
     override init(frame: CGRect) {
         super.init(frame: frame) // Let the super do its job
-        // Setup view
-        setupView()
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder) // Let the super do its job
-        // Setup view
-        setupView()
-    }
-    
-    // MARK: - View setup here
-    func setupView() {
-        let imageTapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(PhotoCollectionViewCell.photoImageClicked))
-        // TODO:
-        if( self.imageView != nil ) {
-            self.imageView.addGestureRecognizer(imageTapGestureRecognizer)
-        }
     }
     
     private func _updateThumbnailImage(thumbnailImage: UIImage) {
         self.imageView.image = thumbnailImage
+        // Setup the view if it wasn't setup earlier
+        if( !viewSetup ) {
+            // Setup the TapGestureRecognizer
+            let imageTapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(PhotoCollectionViewCell.photoImageClicked))
+            self.imageView.addGestureRecognizer(imageTapGestureRecognizer)
+            // We've setup the view so:
+            viewSetup = true
+        }
     }
     
     // MARK: - Actions handled here
