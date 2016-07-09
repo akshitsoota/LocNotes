@@ -9,7 +9,9 @@
 import MapKit
 import UIKit
 
-class AddLocationToLocationLogViewController: UIViewController {
+class AddLocationToLocationLogViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,
+                                              UISearchBarDelegate
+{
 
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var cancelSearchButton: UIButton!
@@ -25,6 +27,10 @@ class AddLocationToLocationLogViewController: UIViewController {
     var navigationItemDiscardButton: UIBarButtonItem?
     // Holds the locations that will be shown in the search results
     var searchMatches: [MKMapItem] = []
+    // Holds the US Circular Region
+    let unitedStatesCircularRegion: CLCircularRegion = CLCircularRegion(center: CLLocationCoordinate2DMake(+37.99472997, -95.85629150), radius: CLLocationDistance(3042542.54), identifier: "UnitedStates")
+    // Holds the US Circular Region compatible with a MapView
+    var unitedStatesCircularRegionMap: MKCoordinateRegion?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,37 +73,103 @@ class AddLocationToLocationLogViewController: UIViewController {
         self.navigationItem.leftBarButtonItems = [navigationItemBackButton!]
         self.navigationItem.rightBarButtonItem = nil
         
-        ///////
-        let request = MKLocalSearchRequest()
-        request.naturalLanguageQuery = "United States"
-        request.region = mapView.region
+        // Configure the search results table view
+        self.searchResultsTable.dataSource = self
+        self.searchResultsTable.delegate = self
         
+        // By default, hide the search results holder
+        self.searchResultsHolder.hidden = true
+        
+        // Center the MapView to the United States
+        self.unitedStatesCircularRegionMap = CommonUtils.convertCircularRegionToMapViewRegion(self.unitedStatesCircularRegion)
+        self.mapView.region = self.unitedStatesCircularRegionMap!
+        
+        // We should be fired when the search bar is queried
+        self.searchBar.delegate = self
+        
+        // Hide the activity indicator by default
+        self.searchResultsProgress.stopAnimating()
+        self.searchResultsProgress.hidden = true
+    }
+    
+    // MARK: - UITableViewDelegate and UITableViewDataSource Delegate
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return searchMatches.count
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let tableCell: UITableViewCell = tableView.dequeueReusableCellWithIdentifier("textCell")! as UITableViewCell
+        tableCell.textLabel?.text = self.searchMatches[indexPath.row].placemark.title
+        // Now return it
+        return tableCell
+    }
+    
+    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+        // TODO
+    }
+    
+    // MARK: - UISearchBarDelegate Delegate
+    func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
+        // Show the search results table
+        self.searchResultsHolder.hidden = false
+    }
+    
+    func searchBarHelper(searchBar: UISearchBar, searchText: String) {
+        if( searchText.isEmpty ) {
+            // Hide all the table results
+            self.searchMatches.removeAll()
+            // Force update the table
+            self.searchResultsTable.reloadData()
+            // And, we don't have to do anything else, so
+            return
+        }
+        
+        // Else, as we are performing a search, show the activity indicator
+        self.searchResultsProgress.hidden = false
+        self.searchResultsProgress.startAnimating()
+        
+        // And now perform the search
+        performMapSearch(searchBar.text!)
+    }
+    
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        // Call our helper function
+        self.searchBarHelper(searchBar, searchText: searchText)
+    }
+    
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        // Hide the keyboard of the search bar
+        searchBar.resignFirstResponder()
+        // Now, call our helper function
+        self.searchBarHelper(searchBar, searchText: searchBar.text!)
+    }
+    
+    // MARK: - Search Query code here
+    func performMapSearch(searchQuery: String) {
+        // Create the search query
+        let request = MKLocalSearchRequest()
+        request.naturalLanguageQuery = searchQuery
+        
+        // Now create the response handler and fire off the search
         let search = MKLocalSearch(request: request)
-        search.startWithCompletionHandler { response, error in
+        search.startWithCompletionHandler {(response, error) in
             guard let response = response else {
                 print("There was an error searching for: \(request.naturalLanguageQuery) error: \(error)")
                 return
             }
             
+            // Empty the search results previously got
+            self.searchMatches.removeAll()
+            // Iterate over each of the results and add them all
             for item in response.mapItems {
-                NSLog("\(item)")
-                
-                if let pmCircularRegion = item.placemark.region as? CLCircularRegion {
-                    
-                    let metersAcross = pmCircularRegion.radius * 2
-                    
-                    let region = MKCoordinateRegionMakeWithDistance(pmCircularRegion.center, metersAcross, metersAcross)
-                    
-                    self.mapView.region = region
-                    
-                    let annotation = MKPointAnnotation()
-                    annotation.coordinate = CLLocationCoordinate2D(latitude: item.placemark.location!.coordinate.latitude, longitude: item.placemark.location!.coordinate.longitude)
-                    self.mapView.addAnnotation(annotation)
-                }
-                
-                
-                self.searchResultsHolder.hidden = true
+                // Add each item to the list
+                self.searchMatches.append(item)
             }
+            // Also, now update the TableView
+            self.searchResultsTable.reloadData()
+            // Hide the activity indicator
+            self.searchResultsProgress.stopAnimating()
+            self.searchResultsProgress.hidden = true
         }
     }
     

@@ -6,6 +6,7 @@
 //  Copyright © 2016 axe. All rights reserved.
 //
 
+import MapKit
 import UIKit
 
 class CommonUtils {
@@ -49,6 +50,10 @@ class CommonUtils {
         toReturn.frame = target.view.frame
         // Now return
         return toReturn
+    }
+    
+    static func convertCircularRegionToMapViewRegion(region: CLCircularRegion) -> MKCoordinateRegion {
+        return MKCoordinateRegionMakeWithDistance(region.center, region.radius * 2, region.radius * 2)
     }
     
 }

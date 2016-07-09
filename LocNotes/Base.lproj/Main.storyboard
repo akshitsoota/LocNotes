@@ -786,7 +786,7 @@
                                         </prototypes>
                                     </tableView>
                                     <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="eYt-Q4-Zyf">
-                                        <rect key="frame" x="543" y="435" width="37" height="37"/>
+                                        <rect key="frame" x="543" y="20" width="37" height="37"/>
                                         <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                     </activityIndicatorView>
                                 </subviews>
@@ -797,7 +797,7 @@
                                     <constraint firstAttribute="trailing" secondItem="p1O-I3-S68" secondAttribute="trailing" id="9nt-pu-FVB"/>
                                     <constraint firstAttribute="bottom" secondItem="p1O-I3-S68" secondAttribute="bottom" id="9wK-Oc-bRz"/>
                                     <constraint firstItem="p1O-I3-S68" firstAttribute="top" secondItem="eAv-8r-K3B" secondAttribute="top" id="ZJh-vd-Guh"/>
-                                    <constraint firstAttribute="bottom" secondItem="eYt-Q4-Zyf" secondAttribute="bottom" constant="20" id="hOF-eO-lTl"/>
+                                    <constraint firstItem="eYt-Q4-Zyf" firstAttribute="top" secondItem="eAv-8r-K3B" secondAttribute="top" constant="20" id="y11-ni-iKI"/>
                                 </constraints>
                             </view>
                         </subviews>
