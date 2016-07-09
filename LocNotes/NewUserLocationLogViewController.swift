@@ -169,16 +169,37 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     }
     
     // MARK: - ImagePickerController Delegate
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         // Hide the ImagePicker
         self.dismissViewControllerAnimated(true, completion: {() -> Void in
             // Do nothing
         })
         // Now, save the image
+        let referenceURL: NSURL = info[UIImagePickerControllerReferenceURL] as! NSURL
+        let fetchResult: PHFetchResult = PHAsset.fetchAssetsWithALAssetURLs([referenceURL], options: nil)
+        let photoAsset: PHAsset = fetchResult.firstObject as! PHAsset
+        // Check for the image location
+        let photoLocation: CLLocation? = photoAsset.location
+        // Now save the image
         let newPhotoView: PhotoView = PhotoView()
-        newPhotoView.image = image // Save the image
+        newPhotoView.assetsLocation = referenceURL // Save the reference URL that we received
+        newPhotoView.photoAsset = photoAsset // Save the PhotoAsset that we resolved
+        newPhotoView.photoLocation = photoLocation // Save the location that the photo was taken
         newPhotoView.photoViewIndex = self.photoViews.count // Add the photo view index
-        // Add it to the list of PhotoViews
+        // Resize the image for thumbnail view and save it in the PhotoView
+        func resizeImage(image: UIImage, newHeight: CGFloat) -> UIImage {
+            let scale = newHeight / image.size.height
+            let newWidth = image.size.width * scale
+            UIGraphicsBeginImageContext(CGSize(width: newWidth, height: newHeight))
+            image.drawInRect(CGRectMake(0, 0, newWidth, newHeight))
+            let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            
+            return newImage
+        }
+        
+        newPhotoView.thumbnailImage = resizeImage(info[UIImagePickerControllerOriginalImage] as! UIImage, newHeight: 128)
+        // Add it tot the list of PhotoViews
         self.photoViews.append(newPhotoView)
         // Now force an update of the CollectionView
         self.logPhotosCollectionView.reloadData()
@@ -225,8 +246,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
             return CGSize(width: 128, height: 128)
         }
         // Else, calculate the ratio and then send the new size
-        return CGSize(width: CGFloat(self.photoViews[indexPath.row].image!.size.width * (128 / self.photoViews[indexPath.row].image!.size.height)),
-                      height: 128)
+        return CGSize(width: self.photoViews[indexPath.row].thumbnailImage!.size.width, height: 128)
     }
     
     // MARK: - Other methods

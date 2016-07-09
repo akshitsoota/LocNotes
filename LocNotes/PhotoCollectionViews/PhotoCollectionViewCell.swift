@@ -22,8 +22,8 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         set {
             _extraInfo = newValue
             // Now update the UI with the thumbnail
-            if( _extraInfo != nil && _extraInfo!.image != nil ) {
-                _updateImage(_extraInfo!.image!)
+            if( _extraInfo != nil && _extraInfo!.thumbnailImage != nil ) {
+                _updateThumbnailImage(_extraInfo!.thumbnailImage!)
             }
         }
     }
@@ -49,8 +49,8 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    private func _updateImage(image: UIImage) {
-        self.imageView.image = image
+    private func _updateThumbnailImage(thumbnailImage: UIImage) {
+        self.imageView.image = thumbnailImage
     }
     
     // MARK: - Actions handled here
