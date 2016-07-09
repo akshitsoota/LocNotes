@@ -37,6 +37,10 @@ class AddLocationToLocationLogViewController: UIViewController, UITableViewDeleg
     var mapViewConfirmedPins: [MKPointAnnotation] = []
     // Holds all the pins (confirmed and non-confirmed) pinned places on the MapView
     var mapViewAllShownPins: [MKPointAnnotation] = []
+    // Holds all MKMapItems that are ever added to the MapView (may or may not be present on the MapView currently)
+    var allMapItems: [MKMapItem] = []
+    // Holds all MKMapItems of the confirmed locations by the user that are shown as green on the MapView
+    var confirmedMapItems: [MKMapItem] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -136,6 +140,7 @@ class AddLocationToLocationLogViewController: UIViewController, UITableViewDeleg
                                                        longitude: self.searchMatches[indexPath.row].placemark.location!.coordinate.longitude)
         self.mapViewPins.append(annotation) // Add it to our list that tracks all the MapView Pins
         self.mapViewAllShownPins.append(annotation) // Add it to our list that keeps track of all shown pins on MapView currently
+        self.allMapItems.append(self.searchMatches[indexPath.row]) // Add it to our list of MKMapItems that the user ever added to the map
         self.mapView.addAnnotation(annotation) // Finally, add it to the MapView itself
         // Zoom to show all annotation pins
         self.mapView.showAnnotations(self.mapViewAllShownPins, animated: true)
@@ -250,6 +255,12 @@ class AddLocationToLocationLogViewController: UIViewController, UITableViewDeleg
             self.mapView.removeAnnotation(mapViewPin)
             // Add to confirmed pins
             self.mapViewConfirmedPins.append(mapViewPin)
+            // Add the respective MapItem to our confirmed MKMapItem list
+            let correspondingMapItem: MKMapItem? = CommonUtils.findMapItemFromMapItems(self.allMapItems, latitude: mapViewPin.coordinate.latitude, longitude: mapViewPin.coordinate.longitude)
+            if( correspondingMapItem != nil ) {
+                // Add it to the list of confirmed ones
+                self.confirmedMapItems.append(correspondingMapItem!)
+            }
             // Re-add it to trigger the new color
             self.mapView.addAnnotation(mapViewPin)
         }
@@ -284,11 +295,11 @@ class AddLocationToLocationLogViewController: UIViewController, UITableViewDeleg
         self.searchResultsHolder.hidden = true
         self.searchResultsProgress.stopAnimating()
         self.searchResultsProgress.hidden = true
-        // Clean out the results
-        self.searchMatches.removeAll()
-        self.searchResultsTable.reloadData()
         // Clear out the SearchBar text box and hide the keyboard
         self.searchBar.text = nil
         self.searchBar.resignFirstResponder()
+        // Clean out the results
+        self.searchMatches.removeAll()
+        self.searchResultsTable.reloadData()
     }
 }

@@ -56,4 +56,17 @@ class CommonUtils {
         return MKCoordinateRegionMakeWithDistance(region.center, region.radius * 2, region.radius * 2)
     }
     
+    static func findMapItemFromMapItems(mapItems: [MKMapItem], latitude: CLLocationDegrees, longitude: CLLocationDegrees) -> MKMapItem? {
+        // Iterate over each of the MapItems
+        for mapItem in mapItems {
+            if( mapItem.placemark.coordinate.latitude == latitude &&
+                mapItem.placemark.coordinate.longitude == longitude ) {
+                // We found a match
+                return mapItem
+            }
+        }
+        // Else, return null
+        return nil
+    }
+    
 }

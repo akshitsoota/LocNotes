@@ -264,7 +264,11 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     
     // MARK: - Segue actions handler here
     @IBAction func unwindSegue(segue: UIStoryboardSegue) {
-        
+        if( segue.sourceViewController.isKindOfClass(AddLocationToLocationLogViewController) ) {
+            // Extract the locations confirmed by the user
+            let sourceVC: AddLocationToLocationLogViewController = segue.sourceViewController as! AddLocationToLocationLogViewController
+            // To process: sourceVC.confirmedMapItems
+        }
     }
     
     // MARK: - Other methods
