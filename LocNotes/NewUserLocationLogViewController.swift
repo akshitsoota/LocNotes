@@ -10,7 +10,8 @@ import Photos
 import UIKit
 
 class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UICollectionViewDataSource,
-                                        UINavigationControllerDelegate, UIImagePickerControllerDelegate
+                                        UINavigationControllerDelegate, UIImagePickerControllerDelegate,
+                                        UICollectionViewDelegateFlowLayout
 {
 
     @IBOutlet weak var titleTextFieldHolder: UIView!
@@ -87,6 +88,8 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         self.logPhotosCollectionView.backgroundView = UIView(frame: CGRectZero)
         // Let us handle the data source and delegate for the CollectionView of the photos
         self.logPhotosCollectionView.dataSource = self
+        // We should handle the FlowLayout for the Photos CollectionView as well
+        self.logPhotosCollectionView.delegate = self
     }
     
     // MARK: - TextView Delegate functions to deal with placeholder text
@@ -113,7 +116,25 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         // Allow the user to pick photos now; Check for authorization now
         if PHPhotoLibrary.authorizationStatus() != .Authorized {
             // Complain as we don't have access
-            CommonUtils.showDefaultAlertToUser(self, title: "Attention", alertContents: "Please allow us to access your photo library in the Settings so that you can pick and add photos to your location log.")
+            
+            // Setup the Alert Controller
+            let alertController: UIAlertController = UIAlertController(title: "Attention", message: "Please allow us to access your photo library in the Settings so that you can pick and add photos to your location log. Goto settings?", preferredStyle: .Alert)
+            
+            // Setup the Action Buttons for the Alert
+            let settingsAction: UIAlertAction = UIAlertAction(title: "Settings", style: .Default) {(_) -> Void in
+                let settingsUrl = NSURL(string: UIApplicationOpenSettingsURLString)
+                if let url = settingsUrl {
+                    UIApplication.sharedApplication().openURL(url)
+                }
+            }
+            let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
+            
+            // Now attach the action buttons to the Alert Controller
+            alertController.addAction(settingsAction)
+            alertController.addAction(cancelAction)
+            // Now show it
+            self.presentViewController(alertController, animated: true, completion: nil)
+            
         } else {
             // We have access to their photos
             if UIImagePickerController.isSourceTypeAvailable(.PhotoLibrary) {
@@ -194,4 +215,24 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         // Now return
         return photoViewCell!
     }
+    
+    // MARK: - UICollectionViewDelegateFlowLayout Delegate
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        // REFERENCE: http://stackoverflow.com/a/29987062/705471
+        
+        if( indexPath.row == self.photoViews.count ) {
+            // If we're asked for the size of the add photo button, default 128x128 is sent
+            return CGSize(width: 128, height: 128)
+        }
+        // Else, calculate the ratio and then send the new size
+        return CGSize(width: CGFloat(self.photoViews[indexPath.row].image!.size.width * (128 / self.photoViews[indexPath.row].image!.size.height)),
+                      height: 128)
+    }
+    
+    // MARK: - Other methods
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews() // Let the super do its stuff
+        logPhotosCollectionView.collectionViewLayout.invalidateLayout()
+    }
+
 }

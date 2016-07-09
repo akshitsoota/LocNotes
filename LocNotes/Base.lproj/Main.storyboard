@@ -768,7 +768,7 @@
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6an-A0-3gi">
-                                                <rect key="frame" x="0.0" y="294" width="600" height="175"/>
+                                                <rect key="frame" x="0.0" y="294" width="600" height="178"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your log photos" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ifc-HL-v81">
                                                         <rect key="frame" x="12" y="8" width="576" height="21"/>
@@ -777,11 +777,11 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K28-vP-qLW">
-                                                        <rect key="frame" x="12" y="39" width="576" height="128"/>
+                                                        <rect key="frame" x="12" y="42" width="576" height="128"/>
                                                         <subviews>
                                                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="FUp-xR-1Dm">
                                                                 <rect key="frame" x="0.0" y="0.0" width="576" height="128"/>
-                                                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="5" minimumInteritemSpacing="5" id="1DC-K1-jpJ">
+                                                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="1DC-K1-jpJ">
                                                                     <size key="itemSize" width="128" height="128"/>
                                                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -825,7 +825,7 @@
                                                                         </connections>
                                                                     </collectionViewCell>
                                                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="addPhotoCell" id="gXC-xq-Mfl" customClass="AddNewPhotoCollectionViewCell" customModule="LocNotes" customModuleProvider="target">
-                                                                        <rect key="frame" x="133" y="0.0" width="128" height="128"/>
+                                                                        <rect key="frame" x="138" y="0.0" width="128" height="128"/>
                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                                                             <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
@@ -868,14 +868,14 @@
                                                 </subviews>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <constraints>
-                                                    <constraint firstItem="K28-vP-qLW" firstAttribute="top" secondItem="Ifc-HL-v81" secondAttribute="bottom" constant="10" id="4nn-hY-Q9W"/>
+                                                    <constraint firstItem="K28-vP-qLW" firstAttribute="top" secondItem="Ifc-HL-v81" secondAttribute="bottom" constant="13" id="4nn-hY-Q9W"/>
                                                     <constraint firstAttribute="trailing" secondItem="K28-vP-qLW" secondAttribute="trailing" constant="12" id="NDw-5t-KB6"/>
                                                     <constraint firstAttribute="bottom" secondItem="K28-vP-qLW" secondAttribute="bottom" constant="8" id="WYA-0l-yXW"/>
                                                     <constraint firstItem="Ifc-HL-v81" firstAttribute="top" secondItem="6an-A0-3gi" secondAttribute="top" constant="8" id="ahp-Pg-x4r"/>
                                                     <constraint firstItem="K28-vP-qLW" firstAttribute="leading" secondItem="6an-A0-3gi" secondAttribute="leading" constant="12" id="cS3-DR-JFw"/>
                                                     <constraint firstItem="Ifc-HL-v81" firstAttribute="leading" secondItem="6an-A0-3gi" secondAttribute="leading" constant="12" id="l3w-6p-HSD"/>
                                                     <constraint firstAttribute="trailing" secondItem="Ifc-HL-v81" secondAttribute="trailing" constant="12" id="ley-Vo-BR5"/>
-                                                    <constraint firstAttribute="height" constant="175" id="lfz-qt-TGF"/>
+                                                    <constraint firstAttribute="height" constant="178" id="lfz-qt-TGF"/>
                                                 </constraints>
                                             </view>
                                         </subviews>
