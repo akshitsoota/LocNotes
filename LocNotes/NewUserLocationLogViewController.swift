@@ -152,20 +152,33 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         if( extraInfo == nil ) {
             return // We cannot do anything :(
         }
-        // Fetch the index and remove the PhotoView at that index
-        self.photoViews.removeAtIndex(extraInfo!.photoViewIndex)
-        // Update all the PhotoView indexes
-        if( self.photoViews.count != 0 ) {
-            for index in 0...(self.photoViews.count - 1) {
-                photoViews[index].photoViewIndex = index
+        // Ask the user if he really wants to delete his photo from our Photo CollectionView list
+        let actionSheet: UIAlertController = UIAlertController(title: nil, message: "Are you sure you want to remove your photo from the location log?", preferredStyle: .ActionSheet)
+        let deleteAction: UIAlertAction = UIAlertAction(title: "Delete", style: .Destructive, handler: {(alert: UIAlertAction) -> Void in
+            
+            // Fetch the index and remove the PhotoView at that index
+            self.photoViews.removeAtIndex(extraInfo!.photoViewIndex)
+            // Update all the PhotoView indexes
+            if( self.photoViews.count != 0 ) {
+                for index in 0...(self.photoViews.count - 1) {
+                    self.photoViews[index].photoViewIndex = index
+                }
             }
-        }
-        // Force update of the CollectionView
-        self.logPhotosCollectionView.reloadData()
+            // Force update of the CollectionView
+            self.logPhotosCollectionView.reloadData()
+            
+        })
+        let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
+        // Add the options to the Action Sheet
+        actionSheet.addAction(deleteAction)
+        actionSheet.addAction(cancelAction)
+        // Now present the Action Sheet
+        self.presentViewController(actionSheet, animated: true, completion: nil)
     }
     
     func imageClicked(sender: AnyObject, extraInfo: PhotoView?) -> Void {
-        // TODO
+        // Nothing as of now; TODO
+        self.performSegueWithIdentifier("showAddLocationToLog", sender: self)
     }
     
     // MARK: - ImagePickerController Delegate
