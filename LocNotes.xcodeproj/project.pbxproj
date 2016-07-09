@@ -28,6 +28,8 @@
 		FCFD7E4F1D300BAA00727BD6 /* AddNewPhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFD7E4E1D300BAA00727BD6 /* AddNewPhotoCollectionViewCell.swift */; };
 		FCFD7E511D300D6500727BD6 /* PhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFD7E501D300D6500727BD6 /* PhotoCollectionViewCell.swift */; };
 		FCFD7E531D300F8E00727BD6 /* PhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFD7E521D300F8E00727BD6 /* PhotoView.swift */; };
+		FCFD7E571D30B1DA00727BD6 /* AddLocationToLocationLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFD7E561D30B1DA00727BD6 /* AddLocationToLocationLogViewController.swift */; };
+		FCFD7E591D318F0C00727BD6 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCFD7E581D318F0C00727BD6 /* MapKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +58,8 @@
 		FCFD7E4E1D300BAA00727BD6 /* AddNewPhotoCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddNewPhotoCollectionViewCell.swift; path = PhotoCollectionViews/AddNewPhotoCollectionViewCell.swift; sourceTree = "<group>"; };
 		FCFD7E501D300D6500727BD6 /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PhotoCollectionViewCell.swift; path = PhotoCollectionViews/PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
 		FCFD7E521D300F8E00727BD6 /* PhotoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PhotoView.swift; path = PhotoCollectionViews/PhotoView.swift; sourceTree = "<group>"; };
+		FCFD7E561D30B1DA00727BD6 /* AddLocationToLocationLogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddLocationToLocationLogViewController.swift; sourceTree = "<group>"; };
+		FCFD7E581D318F0C00727BD6 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FCFD7E591D318F0C00727BD6 /* MapKit.framework in Frameworks */,
 				FC5B6ECA1D2CA87500EC9C88 /* LocalAuthentication.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -73,6 +78,7 @@
 		FC1913E41D1B869800146224 = {
 			isa = PBXGroup;
 			children = (
+				FCFD7E581D318F0C00727BD6 /* MapKit.framework */,
 				FC5B6EC61D2CA82E00EC9C88 /* Security.framework */,
 				FC5B6EC21D2CA66400EC9C88 /* LocalAuthentication.framework */,
 				FC1913EF1D1B869800146224 /* LocNotes */,
@@ -104,6 +110,7 @@
 				FC605F191D289E1000AC5F73 /* SignUpUserViewController.swift */,
 				FC5B6ED11D2E049D00EC9C88 /* UserLocationLogsViewController.swift */,
 				FCFD7E471D2F42B400727BD6 /* NewUserLocationLogViewController.swift */,
+				FCFD7E561D30B1DA00727BD6 /* AddLocationToLocationLogViewController.swift */,
 				FC605F2F1D29FE2700AC5F73 /* endpoints.plist */,
 			);
 			path = LocNotes;
@@ -225,6 +232,7 @@
 				FCFD7E531D300F8E00727BD6 /* PhotoView.swift in Sources */,
 				FCFD7E441D2EE3C800727BD6 /* ProgressLoadingScreenView.swift in Sources */,
 				FCFA5AEE1D242E450092ADDC /* NewUserPageContentViewController.swift in Sources */,
+				FCFD7E571D30B1DA00727BD6 /* AddLocationToLocationLogViewController.swift in Sources */,
 				FC605F1A1D289E1000AC5F73 /* SignUpUserViewController.swift in Sources */,
 				FCFD7E4F1D300BAA00727BD6 /* AddNewPhotoCollectionViewCell.swift in Sources */,
 				FCFD7E481D2F42B400727BD6 /* NewUserLocationLogViewController.swift in Sources */,
