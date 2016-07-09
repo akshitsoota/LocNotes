@@ -10,7 +10,7 @@ import MapKit
 import UIKit
 
 class AddLocationToLocationLogViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,
-                                              UISearchBarDelegate
+                                              UISearchBarDelegate, MKMapViewDelegate
 {
 
     @IBOutlet weak var searchBar: UISearchBar!
@@ -31,6 +31,12 @@ class AddLocationToLocationLogViewController: UIViewController, UITableViewDeleg
     let unitedStatesCircularRegion: CLCircularRegion = CLCircularRegion(center: CLLocationCoordinate2DMake(+37.99472997, -95.85629150), radius: CLLocationDistance(3042542.54), identifier: "UnitedStates")
     // Holds the US Circular Region compatible with a MapView
     var unitedStatesCircularRegionMap: MKCoordinateRegion?
+    // Holds the pins places on the MapView
+    var mapViewPins: [MKPointAnnotation] = []
+    // Holds the pins that have been confirmed by the user
+    var mapViewConfirmedPins: [MKPointAnnotation] = []
+    // Holds all the pins (confirmed and non-confirmed) pinned places on the MapView
+    var mapViewAllShownPins: [MKPointAnnotation] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -77,8 +83,9 @@ class AddLocationToLocationLogViewController: UIViewController, UITableViewDeleg
         self.searchResultsTable.dataSource = self
         self.searchResultsTable.delegate = self
         
-        // By default, hide the search results holder
+        // By default, hide the search results holder and the cancel search button
         self.searchResultsHolder.hidden = true
+        self.cancelSearchButton.hidden = true
         
         // Center the MapView to the United States
         self.unitedStatesCircularRegionMap = CommonUtils.convertCircularRegionToMapViewRegion(self.unitedStatesCircularRegion)
@@ -90,28 +97,62 @@ class AddLocationToLocationLogViewController: UIViewController, UITableViewDeleg
         // Hide the activity indicator by default
         self.searchResultsProgress.stopAnimating()
         self.searchResultsProgress.hidden = true
+        
+        // We should be dealing with the MapView Delegate
+        self.mapView.delegate = self
     }
     
     // MARK: - UITableViewDelegate and UITableViewDataSource Delegate
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if( self.searchMatches.count == 0 &&
+            !self.searchBar.text!.isEmpty ) {
+            return 1 // We've to tell the user that we found nothing
+        }
         return searchMatches.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let tableCell: UITableViewCell = tableView.dequeueReusableCellWithIdentifier("textCell")! as UITableViewCell
-        tableCell.textLabel?.text = self.searchMatches[indexPath.row].placemark.title
+        if( self.searchMatches.count == 0 ) {
+            // We found nothing, so tell the user
+            tableCell.textLabel?.text = "No matches found 😞"
+        } else {
+            // We have got some matches, so pull up names from there
+            tableCell.textLabel?.text = self.searchMatches[indexPath.row].placemark.title
+        }
         // Now return it
         return tableCell
     }
     
-    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
-        // TODO
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        // Hide all the search things
+        self.searchBar.text = nil
+        self.searchResultsHolder.hidden = true // Hide the Search Results Holder
+        self.searchBar.resignFirstResponder() // Also hide the keyboard
+        self.cancelSearchButton.hidden = true // Hide the cancel search button as well
+        // Now, add the pin to the map
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = CLLocationCoordinate2D(latitude: self.searchMatches[indexPath.row].placemark.location!.coordinate.latitude,
+                                                       longitude: self.searchMatches[indexPath.row].placemark.location!.coordinate.longitude)
+        self.mapViewPins.append(annotation) // Add it to our list that tracks all the MapView Pins
+        self.mapViewAllShownPins.append(annotation) // Add it to our list that keeps track of all shown pins on MapView currently
+        self.mapView.addAnnotation(annotation) // Finally, add it to the MapView itself
+        // Zoom to show all annotation pins
+        self.mapView.showAnnotations(self.mapViewAllShownPins, animated: true)
+        // Also, now update the buttons the Navigation Bar
+        self.navigationItem.leftBarButtonItem = navigationItemSaveButton
+        self.navigationItem.rightBarButtonItem = navigationItemDiscardButton
+        // Remove all results and update the table
+        self.searchMatches.removeAll()
+        self.searchResultsTable.reloadData()
     }
     
     // MARK: - UISearchBarDelegate Delegate
     func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
         // Show the search results table
         self.searchResultsHolder.hidden = false
+        // Show the cancel search button
+        self.cancelSearchButton.hidden = false
     }
     
     func searchBarHelper(searchBar: UISearchBar, searchText: String) {
@@ -154,7 +195,14 @@ class AddLocationToLocationLogViewController: UIViewController, UITableViewDeleg
         let search = MKLocalSearch(request: request)
         search.startWithCompletionHandler {(response, error) in
             guard let response = response else {
-                print("There was an error searching for: \(request.naturalLanguageQuery) error: \(error)")
+                // Empty the search results previously got
+                self.searchMatches.removeAll()
+                // Hide the activity indicator
+                self.searchResultsProgress.stopAnimating()
+                self.searchResultsProgress.hidden = true
+                // Force a reload of the table data
+                self.searchResultsTable.reloadData()
+                // Return
                 return
             }
             
@@ -173,17 +221,74 @@ class AddLocationToLocationLogViewController: UIViewController, UITableViewDeleg
         }
     }
     
+    // MARK: - MKMapViewDelegate
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        if( self.mapViewConfirmedPins.contains(annotation as! MKPointAnnotation) ) {
+            // This is one of the confirmed pins
+            let annotationView: MKPinAnnotationView = MKPinAnnotationView.init(annotation: annotation, reuseIdentifier: nil)
+            // Set the color and return
+            annotationView.pinTintColor = UIColor.greenColor()
+            // Now, return
+            return annotationView
+        }
+        // Else, return
+        return nil
+    }
+    
     // MARK: - Actions received here
     @IBAction func backButtonClicked(sender: AnyObject) {
-        
+        self.performSegueWithIdentifier("exitSegueBackToLocationLog", sender: self)
     }
     
     @IBAction func saveButtonClicked(sender: AnyObject) {
-        
+        // Reset the navigation bar
+        self.navigationItem.leftBarButtonItem = self.navigationItemBackButton
+        self.navigationItem.rightBarButtonItem = nil
+        // Move all the pins from mapViewPins to mapViewConfirmedPins
+        for mapViewPin in mapViewPins {
+            // Remove the pin from the MapView
+            self.mapView.removeAnnotation(mapViewPin)
+            // Add to confirmed pins
+            self.mapViewConfirmedPins.append(mapViewPin)
+            // Re-add it to trigger the new color
+            self.mapView.addAnnotation(mapViewPin)
+        }
+        // Remove from mapViewPins
+        self.mapViewPins.removeAll()
     }
     
     @IBAction func discardButtonClicked(sender: AnyObject) {
-        
+        // Reset the navigation bar
+        self.navigationItem.leftBarButtonItem = self.navigationItemBackButton
+        self.navigationItem.rightBarButtonItem = nil
+        // Remove all the pins on MapView
+        for mapViewPin in mapViewPins {
+            self.mapView.removeAnnotation(mapViewPin)
+        }
+        // Update current list of annotations shown on the screen
+        self.mapViewAllShownPins = self.mapViewConfirmedPins
+        // Clear out all the old pinds
+        self.mapViewPins.removeAll()
+        // Zoom out to the United States
+        if( self.mapViewAllShownPins.count == 0 ) {
+            self.mapView.setRegion(unitedStatesCircularRegionMap!, animated: true)
+        } else {
+            self.mapView.showAnnotations(self.mapViewAllShownPins, animated: true)
+        }
     }
     
+    @IBAction func cancelButtonClicked(sender: AnyObject) {
+        // Hide the cancel button
+        self.cancelSearchButton.hidden = true
+        // Hide the search results holder
+        self.searchResultsHolder.hidden = true
+        self.searchResultsProgress.stopAnimating()
+        self.searchResultsProgress.hidden = true
+        // Clean out the results
+        self.searchMatches.removeAll()
+        self.searchResultsTable.reloadData()
+        // Clear out the SearchBar text box and hide the keyboard
+        self.searchBar.text = nil
+        self.searchBar.resignFirstResponder()
+    }
 }

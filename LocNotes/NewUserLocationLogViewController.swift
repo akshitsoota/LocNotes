@@ -262,6 +262,11 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         return CGSize(width: self.photoViews[indexPath.row].thumbnailImage!.size.width, height: 128)
     }
     
+    // MARK: - Segue actions handler here
+    @IBAction func unwindSegue(segue: UIStoryboardSegue) {
+        
+    }
+    
     // MARK: - Other methods
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews() // Let the super do its stuff

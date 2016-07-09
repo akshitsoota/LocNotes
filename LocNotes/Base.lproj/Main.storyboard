@@ -707,6 +707,7 @@
         <!--Add Location View Controller-->
         <scene sceneID="hhO-mZ-5yJ">
             <objects>
+                <exit id="ih2-rW-RXV" userLabel="Exit" sceneMemberID="exit"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ef0-CF-lSK" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController title="Add Location View Controller" id="vyd-NY-XLK" customClass="AddLocationToLocationLogViewController" customModule="LocNotes" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
@@ -736,6 +737,9 @@
                                                         <state key="normal" title="Cancel">
                                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                         </state>
+                                                        <connections>
+                                                            <action selector="cancelButtonClicked:" destination="vyd-NY-XLK" eventType="touchUpInside" id="CTv-C6-KHe"/>
+                                                        </connections>
                                                     </button>
                                                 </subviews>
                                             </stackView>
@@ -819,6 +823,7 @@
                                 <color key="tintColor" red="1" green="0.70196078431372544" blue="0.35686274509803922" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
                                     <action selector="backButtonClicked:" destination="vyd-NY-XLK" id="Hpz-Df-Wcq"/>
+                                    <segue destination="ih2-rW-RXV" kind="unwind" identifier="exitSegueBackToLocationLog" unwindAction="unwindSegue:" id="ziU-iV-XK3"/>
                                 </connections>
                             </barButtonItem>
                             <barButtonItem tag="1" systemItem="save" id="FwC-zm-RpC">
