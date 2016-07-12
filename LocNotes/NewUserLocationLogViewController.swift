@@ -11,7 +11,7 @@ import UIKit
 
 class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UICollectionViewDataSource,
                                         UINavigationControllerDelegate, UIImagePickerControllerDelegate,
-                                        UICollectionViewDelegateFlowLayout
+                                        UICollectionViewDelegateFlowLayout, UITableViewDelegate, UITableViewDataSource
 {
 
     @IBOutlet weak var titleTextFieldHolder: UIView!
@@ -21,6 +21,12 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     @IBOutlet weak var logPhotosMainHolder: UIView!
     @IBOutlet weak var logPhotosMainScrollView: UIScrollView!
     @IBOutlet weak var logPhotosCollectionView: UICollectionView!
+    @IBOutlet weak var locationsUserVisitedHolder: UIView!
+    @IBOutlet weak var locationVisitedTable: UITableView!
+    @IBOutlet weak var locationsVisitedAddNewButton: UIButton!
+    @IBOutlet weak var locationsVisitedRemoveMultipleButton: UIButton!
+    @IBOutlet weak var locationsVisitedReorderLocationsButton: UIButton!
+    @IBOutlet weak var locationsVisitedStopActionButton: UIButton!
     // The Description Field default placeholder text
     var defaultDescriptionTextFieldPlaceholder: String!
     // Default placeholder color for the Description Text Field
@@ -29,6 +35,10 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     var photoViews: [PhotoView] = []
     // ImagePicker for the user to pick pictures from the saved photos
     var imagePicker = UIImagePickerController()
+    // Holds the locations the user visited
+    var locationsUserVisited: [String] = []
+    // Holds what action is happening in Locations Visited Table
+    var locationsVisitedTableAction: Int = -1 // -1 = Nothing; 0 = Multi-Remove; 1 = Re-order mode
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,10 +83,12 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         generateTopBorder(self.titleTextFieldHolder)
         generateTopBorder(self.descriptionTextFieldHolder)
         generateTopBorder(self.logPhotosMainHolder)
+        generateTopBorder(self.locationsUserVisitedHolder)
         // Add the bottom border for the field holders
         generateBottomBorder(self.titleTextFieldHolder)
-        generateBottomBorder(self.self.descriptionTextFieldHolder)
-        generateBottomBorder(logPhotosMainHolder)
+        generateBottomBorder(self.descriptionTextFieldHolder)
+        generateBottomBorder(self.logPhotosMainHolder)
+        generateBottomBorder(self.locationsUserVisitedHolder)
         
         // Let us handle the text view events to deal with the placeholder text
         self.defaultDescriptionTextFieldPlaceholder = self.descriptionTextField.text
@@ -90,6 +102,13 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         self.logPhotosCollectionView.dataSource = self
         // We should handle the FlowLayout for the Photos CollectionView as well
         self.logPhotosCollectionView.delegate = self
+        
+        // Setup the Locations Visited Table View
+        self.locationVisitedTable.dataSource = self
+        self.locationVisitedTable.delegate = self
+        
+        // Hide stop action button in Locations Visited by default
+        self.locationsVisitedStopActionButton.hidden = true
     }
     
     // MARK: - TextView Delegate functions to deal with placeholder text
@@ -177,8 +196,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     }
     
     func imageClicked(sender: AnyObject, extraInfo: PhotoView?) -> Void {
-        // Nothing as of now; TODO
-        self.performSegueWithIdentifier("showAddLocationToLog", sender: self)
+        // Nothing as of now
     }
     
     // MARK: - ImagePickerController Delegate
@@ -262,12 +280,147 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         return CGSize(width: self.photoViews[indexPath.row].thumbnailImage!.size.width, height: 128)
     }
     
+    // MARK: - UITableViewDelegate and UITableViewDataSource
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.locationsUserVisited.count
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        // Return the location that the user visited
+        let cell: UITableViewCell = tableView.dequeueReusableCellWithIdentifier("locationCell")!
+        cell.textLabel?.text = self.locationsUserVisited[indexPath.row]
+        
+        return cell
+    }
+    
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        if editingStyle == .Delete {
+            // User wants to delete a TableView cell
+            if self.locationsVisitedTableAction == 0 {
+                // User is in Multi-Delete mode. This means, we've got an implicit confirmation, so delete it right away:
+                //
+                // Update the array
+                self.locationsUserVisited.removeAtIndex(indexPath.row)
+                // Show the deletion animation
+                self.locationVisitedTable.beginUpdates()
+                self.locationVisitedTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+                self.locationVisitedTable.endUpdates()
+            } else {
+                // Prompt Action Sheet
+                
+                // Ask the user if he really wants to delete this location from the list of locations they've visited
+                let actionSheet: UIAlertController = UIAlertController(title: nil, message: "Are you sure you want to delete this location from the list of locations you've visited for this location log?", preferredStyle: .ActionSheet)
+                let deleteAction: UIAlertAction = UIAlertAction(title: "Delete", style: .Destructive, handler: {(alert: UIAlertAction) -> Void in
+                    
+                    // Update the array
+                    self.locationsUserVisited.removeAtIndex(indexPath.row)
+                    // Show the deletion animation
+                    self.locationVisitedTable.beginUpdates()
+                    self.locationVisitedTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+                    self.locationVisitedTable.endUpdates()
+                    
+                })
+                let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
+                // Add the options to the Action Sheet
+                actionSheet.addAction(deleteAction)
+                actionSheet.addAction(cancelAction)
+                // Now present the Action Sheet
+                self.presentViewController(actionSheet, animated: true, completion: nil)
+            }
+        }
+    }
+    
+    func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
+        if( self.locationsVisitedTableAction == 1 ) {
+            return .None    // Re-ordering mode so we don't want to show the delete button
+        }
+        return .Delete      // Delete mode so we gotta show the minus signs to the left
+    }
+    
+    func tableView(tableView: UITableView, shouldIndentWhileEditingRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        if( self.locationsVisitedTableAction == 1 ) {
+            return false    // As re-ordering is taking place, we don't want to left indent the items
+        }
+        return true         // Else, return true as the user is in delete mode
+    }
+    
+    func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
+        // Table re-ordering is taking place
+        let objectMoved: String = self.locationsUserVisited[sourceIndexPath.row]
+        self.locationsUserVisited.removeAtIndex(sourceIndexPath.row)
+        self.locationsUserVisited.insert(objectMoved, atIndex: destinationIndexPath.row)
+        // Refresh the data
+        self.locationVisitedTable.reloadData()
+    }
+    
+    func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        // Check if the user is re-ordering or not
+        return (self.locationsVisitedTableAction == 1)
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        // We don't need to do anything if the user taps on a table cell but hide the fact that he tapped it
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+    
+    // MARK: - Location You Visited Actions here
+    @IBAction func addNewLocationVisitedClicked(sender: AnyObject) {
+        // Goto the page where the user can add more locations
+        self.performSegueWithIdentifier("showAddLocationToLog", sender: self)
+    }
+    
+    @IBAction func removeLocationClicked(sender: AnyObject) {
+        // Set state
+        self.locationsVisitedTableAction = 0 // Multi-Remove taking place
+        // Toggle editing mode on for the TableView
+        self.locationVisitedTable.setEditing(true, animated: true)
+        // Hide other buttons and show stop action button
+        self.locationsVisitedStopActionButton.hidden = false
+        self.locationsVisitedReorderLocationsButton.hidden = true
+        self.locationsVisitedRemoveMultipleButton.hidden = true
+        self.locationsVisitedAddNewButton.hidden = true
+        // Force a table reload
+        self.locationVisitedTable.reloadData()
+    }
+    
+    @IBAction func moveRowsLocationsVisitedClicked(sender: AnyObject) {
+        // Set state
+        self.locationsVisitedTableAction = 1 // Table re-ordering requested
+        // Toggle editing mode on the TableView
+        self.locationVisitedTable.setEditing(true, animated: true)
+        // Hide the other buttons and show the stop action button
+        self.locationsVisitedStopActionButton.hidden = false
+        self.locationsVisitedReorderLocationsButton.hidden = true
+        self.locationsVisitedRemoveMultipleButton.hidden = true
+        self.locationsVisitedAddNewButton.hidden = true
+        // Force a table reload
+        self.locationVisitedTable.reloadData()
+    }
+    
+    @IBAction func stopCurrentActionLocationsVisitedClicked(sender: AnyObject) {
+        // See what action is happening
+        if self.locationsVisitedTableAction != (-1) {
+            // Toggle it off
+            self.locationVisitedTable.setEditing(false, animated: true)
+            // Show other buttons and hide the stop action button
+            self.locationsVisitedStopActionButton.hidden = true
+            self.locationsVisitedReorderLocationsButton.hidden = false
+            self.locationsVisitedRemoveMultipleButton.hidden = false
+            self.locationsVisitedAddNewButton.hidden = false
+        }
+        // At the end, set unknown state
+        self.locationsVisitedTableAction = -1 // Unknown state
+    }
     // MARK: - Segue actions handler here
     @IBAction func unwindSegue(segue: UIStoryboardSegue) {
         if( segue.sourceViewController.isKindOfClass(AddLocationToLocationLogViewController) ) {
             // Extract the locations confirmed by the user
             let sourceVC: AddLocationToLocationLogViewController = segue.sourceViewController as! AddLocationToLocationLogViewController
-            // To process: sourceVC.confirmedMapItems
+            // Iterate over each of the MapItems the user chose and add it to our list and force the Locations Visited Table to refresh
+            for mapItem in sourceVC.confirmedMapItems {
+                self.locationsUserVisited.append(mapItem.placemark.title!)
+            }
+            self.locationVisitedTable.reloadData()
         }
     }
     

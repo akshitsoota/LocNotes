@@ -1049,13 +1049,51 @@
                                                                 <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
+                                                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="NRN-2n-Edi">
+                                                                <rect key="frame" x="12" y="42" width="576" height="200"/>
+                                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                                <prototypes>
+                                                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="locationCell" textLabel="RbC-Bm-7Mb" style="IBUITableViewCellStyleDefault" id="Gnn-Pf-34U">
+                                                                        <rect key="frame" x="0.0" y="28" width="576" height="44"/>
+                                                                        <autoresizingMask key="autoresizingMask"/>
+                                                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Gnn-Pf-34U" id="fWC-LV-WzQ">
+                                                                            <rect key="frame" x="0.0" y="0.0" width="576" height="43.5"/>
+                                                                            <autoresizingMask key="autoresizingMask"/>
+                                                                            <subviews>
+                                                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="RbC-Bm-7Mb">
+                                                                                    <rect key="frame" x="15" y="0.0" width="546" height="43.5"/>
+                                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                                                    <nil key="highlightedColor"/>
+                                                                                </label>
+                                                                            </subviews>
+                                                                        </tableViewCellContentView>
+                                                                    </tableViewCell>
+                                                                </prototypes>
+                                                                <sections/>
+                                                            </tableView>
+                                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k5p-YG-Kg6">
+                                                                <rect key="frame" x="562" y="8" width="30" height="30"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="width" constant="30" id="IYW-5k-GtW"/>
+                                                                    <constraint firstAttribute="height" constant="30" id="aDL-2Q-3r0"/>
+                                                                </constraints>
+                                                                <state key="normal" image="stopEditing"/>
+                                                                <connections>
+                                                                    <action selector="stopCurrentActionLocationsVisitedClicked:" destination="5av-Vm-EAH" eventType="touchUpInside" id="rDB-gm-AQQ"/>
+                                                                </connections>
+                                                            </button>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bXf-9G-vZ0">
                                                                 <rect key="frame" x="562" y="8" width="30" height="30"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="width" constant="30" id="WcB-y5-hF6"/>
                                                                     <constraint firstAttribute="height" constant="30" id="Xag-bi-qb0"/>
                                                                 </constraints>
-                                                                <state key="normal" title="Button" image="addPhoto"/>
+                                                                <state key="normal" image="addPhoto"/>
+                                                                <connections>
+                                                                    <action selector="addNewLocationVisitedClicked:" destination="5av-Vm-EAH" eventType="touchUpInside" id="Xpo-V1-gjf"/>
+                                                                </connections>
                                                             </button>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dz8-5o-5kk">
                                                                 <rect key="frame" x="524" y="8" width="30" height="30"/>
@@ -1063,25 +1101,39 @@
                                                                     <constraint firstAttribute="width" constant="30" id="G6m-nJ-Swd"/>
                                                                     <constraint firstAttribute="height" constant="30" id="jFl-D8-4xC"/>
                                                                 </constraints>
-                                                                <state key="normal" title="Button" image="removePhoto"/>
+                                                                <state key="normal" image="removePhoto"/>
+                                                                <connections>
+                                                                    <action selector="removeLocationClicked:" destination="5av-Vm-EAH" eventType="touchUpInside" id="ghc-jJ-zlf"/>
+                                                                </connections>
                                                             </button>
-                                                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="NRN-2n-Edi">
-                                                                <rect key="frame" x="12" y="42" width="576" height="200"/>
-                                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                            </tableView>
+                                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aUS-lI-2ro">
+                                                                <rect key="frame" x="486" y="8" width="30" height="30"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" constant="30" id="9yU-mk-RRM"/>
+                                                                    <constraint firstAttribute="width" constant="30" id="jlS-Zd-9FV"/>
+                                                                </constraints>
+                                                                <state key="normal" image="editTable"/>
+                                                                <connections>
+                                                                    <action selector="moveRowsLocationsVisitedClicked:" destination="5av-Vm-EAH" eventType="touchUpInside" id="ypp-za-uba"/>
+                                                                </connections>
+                                                            </button>
                                                         </subviews>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                         <constraints>
                                                             <constraint firstAttribute="trailing" secondItem="NRN-2n-Edi" secondAttribute="trailing" constant="12" id="4r6-uR-fYd"/>
                                                             <constraint firstItem="NRN-2n-Edi" firstAttribute="leading" secondItem="FCQ-xg-YRf" secondAttribute="leading" constant="12" id="6aA-Q7-ktk"/>
+                                                            <constraint firstItem="aUS-lI-2ro" firstAttribute="top" secondItem="FCQ-xg-YRf" secondAttribute="top" constant="8" id="7lU-NY-yFP"/>
                                                             <constraint firstAttribute="bottom" secondItem="NRN-2n-Edi" secondAttribute="bottom" constant="8" id="8Sr-9Q-PNY"/>
                                                             <constraint firstItem="NRN-2n-Edi" firstAttribute="top" secondItem="Vo6-K7-NeL" secondAttribute="bottom" constant="13" id="ETV-Z1-evL"/>
+                                                            <constraint firstItem="k5p-YG-Kg6" firstAttribute="top" secondItem="FCQ-xg-YRf" secondAttribute="top" constant="8" id="Gh9-E3-BGM"/>
                                                             <constraint firstItem="Vo6-K7-NeL" firstAttribute="top" secondItem="FCQ-xg-YRf" secondAttribute="top" constant="8" id="HBI-g0-6kn"/>
                                                             <constraint firstItem="Vo6-K7-NeL" firstAttribute="leading" secondItem="FCQ-xg-YRf" secondAttribute="leading" constant="12" id="K0m-FK-PuD"/>
+                                                            <constraint firstItem="dz8-5o-5kk" firstAttribute="leading" secondItem="aUS-lI-2ro" secondAttribute="trailing" constant="8" id="Oyd-cw-BGZ"/>
                                                             <constraint firstItem="dz8-5o-5kk" firstAttribute="top" secondItem="FCQ-xg-YRf" secondAttribute="top" constant="8" id="a1k-zh-wuI"/>
                                                             <constraint firstItem="bXf-9G-vZ0" firstAttribute="top" secondItem="FCQ-xg-YRf" secondAttribute="top" constant="8" id="bTA-qk-8OL"/>
                                                             <constraint firstAttribute="height" constant="250" id="ju2-cU-2hV"/>
                                                             <constraint firstItem="bXf-9G-vZ0" firstAttribute="leading" secondItem="dz8-5o-5kk" secondAttribute="trailing" constant="8" id="mqg-ma-Oth"/>
+                                                            <constraint firstAttribute="trailing" secondItem="k5p-YG-Kg6" secondAttribute="trailing" constant="8" id="oSx-ff-4cB"/>
                                                             <constraint firstAttribute="trailing" secondItem="bXf-9G-vZ0" secondAttribute="trailing" constant="8" id="uYd-63-oma"/>
                                                             <constraint firstAttribute="trailing" secondItem="Vo6-K7-NeL" secondAttribute="trailing" constant="12" id="xdh-tB-434"/>
                                                         </constraints>
@@ -1145,6 +1197,12 @@
                     <connections>
                         <outlet property="descriptionTextField" destination="4nw-C0-3B6" id="cbM-bl-cSX"/>
                         <outlet property="descriptionTextFieldHolder" destination="YDe-Ke-Ri8" id="1YO-6z-CPH"/>
+                        <outlet property="locationVisitedTable" destination="NRN-2n-Edi" id="Dve-kH-Cqj"/>
+                        <outlet property="locationsUserVisitedHolder" destination="FCQ-xg-YRf" id="bO6-f8-bd2"/>
+                        <outlet property="locationsVisitedAddNewButton" destination="bXf-9G-vZ0" id="1VS-wh-J9m"/>
+                        <outlet property="locationsVisitedRemoveMultipleButton" destination="dz8-5o-5kk" id="egl-1q-da5"/>
+                        <outlet property="locationsVisitedReorderLocationsButton" destination="aUS-lI-2ro" id="0NR-D6-5dE"/>
+                        <outlet property="locationsVisitedStopActionButton" destination="k5p-YG-Kg6" id="Vly-Vs-HBf"/>
                         <outlet property="logPhotosCollectionView" destination="FUp-xR-1Dm" id="zPS-gP-A7x"/>
                         <outlet property="logPhotosMainHolder" destination="6an-A0-3gi" id="Fr5-ue-9AW"/>
                         <outlet property="logPhotosMainScrollView" destination="K28-vP-qLW" id="bdo-A5-lAX"/>
@@ -1357,12 +1415,14 @@
         <image name="background1" width="375" height="500"/>
         <image name="background2" width="405" height="540"/>
         <image name="cloudUpload" width="256" height="256"/>
+        <image name="editTable" width="256" height="256"/>
         <image name="emailIcon" width="256" height="256"/>
         <image name="locationBlackPin" width="256" height="256"/>
         <image name="logo" width="256" height="256"/>
         <image name="nameIcon" width="256" height="256"/>
         <image name="passwordIcon" width="170" height="170"/>
         <image name="removePhoto" width="256" height="256"/>
+        <image name="stopEditing" width="128" height="128"/>
         <image name="userIcon" width="256" height="256"/>
         <image name="usernameIcon" width="170" height="170"/>
     </resources>
