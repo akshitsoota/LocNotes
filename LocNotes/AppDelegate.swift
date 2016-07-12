@@ -6,6 +6,7 @@
 //  Copyright © 2016 axe. All rights reserved.
 //
 
+import AWSCore
 import CoreData
 import UIKit
 
@@ -23,6 +24,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         pageController.pageIndicatorTintColor = UIColor.lightGrayColor()
         pageController.currentPageIndicatorTintColor = UIColor.blackColor()
         pageController.backgroundColor = UIColor.clearColor()
+        
+        // Configure AWS SDK; Fetch credentials from Properties List
+        var keys: NSDictionary?
+        
+        if let path = NSBundle.mainBundle().pathForResource("amazon-aws-credentials", ofType: "plist") {
+            keys = NSDictionary(contentsOfFile: path)
+        }
+        if let dict = keys {
+            let accessKey: String! = dict["accesskey"] as! String
+            let secretKey: String! = dict["secretkey"] as! String
+
+            // Setup AWS Credentials Provider
+            let credentialsProvider = AWSStaticCredentialsProvider(accessKey: accessKey, secretKey: secretKey)
+            let configuration = AWSServiceConfiguration(region: .USEast1, credentialsProvider: credentialsProvider)
+            AWSServiceManager.defaultServiceManager().defaultServiceConfiguration = configuration
+        }
         
         // Return true, the default
         return true
