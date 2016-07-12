@@ -43,11 +43,11 @@ class CommonUtils {
         return emailTest.evaluateWithObject(testStr)
     }
     
-    static func returnProgressLoadingScreenView(target: UIViewController!) -> ProgressLoadingScreenView! {
+    static func returnProgressLoadingScreenView(target: UIViewController!, size: CGRect!) -> ProgressLoadingScreenView! {
         // Get the view and set the frame
         let nibArray: [AnyObject] = NSBundle.mainBundle().loadNibNamed("ProgressLoadingScreenView", owner: target, options: nil)
         let toReturn = nibArray[0] as! ProgressLoadingScreenView
-        toReturn.frame = target.view.frame
+        toReturn.frame = size
         // Now return
         return toReturn
     }

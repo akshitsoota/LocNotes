@@ -1187,9 +1187,15 @@
                     <navigationItem key="navigationItem" title="New Location Log" id="o1a-6a-J0j">
                         <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="kIo-eK-qRy">
                             <color key="tintColor" red="1" green="0.38039215686274508" blue="0.35686274509803922" alpha="1" colorSpace="calibratedRGB"/>
+                            <connections>
+                                <action selector="cancelLogClicked:" destination="5av-Vm-EAH" id="N34-Oj-CtQ"/>
+                            </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="done" id="8sp-88-NZw">
                             <color key="tintColor" red="0.35686274509803922" green="1" blue="0.38039215686274508" alpha="1" colorSpace="calibratedRGB"/>
+                            <connections>
+                                <action selector="doneLogClicked:" destination="5av-Vm-EAH" id="df9-9h-xwA"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>

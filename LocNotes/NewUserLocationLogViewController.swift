@@ -6,6 +6,7 @@
 //  Copyright © 2016 axe. All rights reserved.
 //
 
+import CoreData
 import Photos
 import UIKit
 
@@ -39,11 +40,20 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     var locationsUserVisited: [String] = []
     // Holds what action is happening in Locations Visited Table
     var locationsVisitedTableAction: Int = -1 // -1 = Nothing; 0 = Multi-Remove; 1 = Re-order mode
+    // Loading Progress View
+    var loadingProgressView: ProgressLoadingScreenView!
+    
+    // Core Data Dispatch Queue
+    let coreDataSaveQueue = dispatch_queue_create("coreDataSaveQueue", DISPATCH_QUEUE_CONCURRENT)
+    // Core Data Managed Context
+    var managedContext: NSManagedObjectContext?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Setup view
         setupView()
+        // Setup CoreData
+        setupCoreData()
     }
     
     override func didReceiveMemoryWarning() {
@@ -109,6 +119,12 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         
         // Hide stop action button in Locations Visited by default
         self.locationsVisitedStopActionButton.hidden = true
+    }
+    
+    func setupCoreData() {
+        dispatch_sync(self.coreDataSaveQueue) {
+            self.managedContext = AppDelegate().managedObjectContext
+        }
     }
     
     // MARK: - TextView Delegate functions to deal with placeholder text
@@ -432,6 +448,27 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         // At the end, set unknown state
         self.locationsVisitedTableAction = -1 // Unknown state
     }
+    
+    // MARK: - Navigation Bar Actions here
+    @IBAction func cancelLogClicked(sender: AnyObject) {
+    }
+    
+    @IBAction func doneLogClicked(sender: AnyObject) {
+        // TODO: Run validation tests
+        
+        // Show the loading view
+        if( self.loadingProgressView != nil ) {
+            self.loadingProgressView.removeFromSuperview()      // If it is visible SOMEHOW
+        }
+        self.loadingProgressView = CommonUtils.returnProgressLoadingScreenView(self, size: UIScreen.mainScreen().bounds)
+        self.navigationController?.view.addSubview(self.loadingProgressView)
+        
+        // Setup the loading view
+        self.loadingProgressView.loadingProgressIndicator.startAnimating()
+        self.loadingProgressView.loadingProgressLabel.text = "Saving your location log to the cloud..."
+        self.loadingProgressView.loadingProgressBar.progress = 0
+    }
+    
     // MARK: - Segue actions handler here
     @IBAction func unwindSegue(segue: UIStoryboardSegue) {
         if( segue.sourceViewController.isKindOfClass(AddLocationToLocationLogViewController) ) {

@@ -68,9 +68,7 @@
                             <constraint firstAttribute="trailing" secondItem="5jq-R1-iJ0" secondAttribute="trailing" id="pHp-hh-ks2"/>
                         </constraints>
                     </view>
-                    <vibrancyEffect>
-                        <blurEffect style="light"/>
-                    </vibrancyEffect>
+                    <blurEffect style="dark"/>
                 </visualEffectView>
             </subviews>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
