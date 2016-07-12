@@ -6,6 +6,9 @@
 //  Copyright © 2016 axe. All rights reserved.
 //
 
+import AWSCore
+import AWSS3
+
 import CoreData
 import Photos
 import UIKit
@@ -43,10 +46,14 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     // Loading Progress View
     var loadingProgressView: ProgressLoadingScreenView!
     
-    // Core Data Dispatch Queue
+    // Dispatch Queues
+    let amazonS3Queue = dispatch_queue_create("amazonS3SaveAndUploadQueue", DISPATCH_QUEUE_CONCURRENT)
     let coreDataSaveQueue = dispatch_queue_create("coreDataSaveQueue", DISPATCH_QUEUE_CONCURRENT)
     // Core Data Managed Context
     var managedContext: NSManagedObjectContext?
+    
+    // Amazon S3 Upload Status
+    var cancelFuture: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -267,6 +274,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         }
         
         newPhotoView.thumbnailImage = resizeImage(info[UIImagePickerControllerOriginalImage] as! UIImage, newHeight: 128)
+        newPhotoView.realImage = info[UIImagePickerControllerOriginalImage] as? UIImage
         // Add it tot the list of PhotoViews
         self.photoViews.append(newPhotoView)
         // Now force an update of the CollectionView
@@ -467,6 +475,86 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         self.loadingProgressView.loadingProgressIndicator.startAnimating()
         self.loadingProgressView.loadingProgressLabel.text = "Saving your location log to the cloud..."
         self.loadingProgressView.loadingProgressBar.progress = 0
+        
+        // By default, we want the upload to progress through
+        self.cancelFuture = false
+        
+        // Spawn off the uploads to Amazon S3
+        // CITATION: https://github.com/awslabs/aws-sdk-ios-samples/blob/master/S3TransferManager-Sample/Swift/S3TransferManagerSampleSwift/UploadViewController.swift
+        
+        for photo in photoViews {
+            // Iterate over each of the photos and store temporarily in the app's directory
+            dispatch_barrier_async(amazonS3Queue, {
+                
+                // If the future tasks were cancelled, we must quit
+                if( self.cancelFuture ) {
+                    NSLog("Upload \(photo.photoViewIndex + 1) out of \(self.photoViews.count) was cancelled!")
+                    return
+                }
+                
+                // Create temporary directory for our Amazon S3 Uploads
+                do {
+                    try NSFileManager.defaultManager().createDirectoryAtURL(
+                        NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent("amazons3upload"),
+                        withIntermediateDirectories: true,
+                        attributes: nil)
+                } catch {
+                    // Maybe the directory exists already
+                }
+                
+                // Now save the image to the temporary directory for the Amazon S3 Transfer Manager to pick up
+                let fileName: String = NSProcessInfo.processInfo().globallyUniqueString.stringByAppendingString(".png")
+                let fileURL: NSURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent("amazons3upload").URLByAppendingPathComponent(fileName)
+                let realImage: UIImage = photo.realImage!
+                
+                let imageData: NSData? = UIImagePNGRepresentation(realImage)
+                do {
+                    _ = try Bool(imageData!.writeToFile(fileURL.path!, options: NSDataWritingOptions.DataWritingAtomic))
+                    NSLog("Saved image \(photo.photoViewIndex + 1) out of \(self.photoViews.count). Beginning Amazon S3 Upload now")
+                } catch {
+                    // Cancel future uploads
+                    self.cancelFuture = true
+                    // We failed to save the image, tell the user on the main thread
+                    dispatch_async(dispatch_get_main_queue(), {
+                        // Remove the loading screen
+                        self.loadingProgressView.removeFromSuperview()
+                        // Tell the user where we hit a snag
+                        CommonUtils.showDefaultAlertToUser(self, title: "Hit a Snag!", alertContents: "We had issues saving the images to be uploaded. Please try again later!")
+                    })
+                }
+                
+                // Spawn off the Amazon S3 Request now
+                let amazonS3UploadRequest: AWSS3TransferManagerUploadRequest = AWSS3TransferManagerUploadRequest()
+                amazonS3UploadRequest.body = fileURL
+                amazonS3UploadRequest.key = fileName // TO CHANGE
+                amazonS3UploadRequest.bucket = CommonUtils.fetchFromPropertiesList("amazon-aws-credentials", fileExtension: "plist", key: "s3bucketname")
+                
+                // Send it to the Transfer Manager
+                let amazonTransferManager: AWSS3TransferManager = AWSS3TransferManager.defaultS3TransferManager()
+                let uploadTask: AWSTask = amazonTransferManager.upload(amazonS3UploadRequest)
+                uploadTask.continueWithBlock{(task) -> AnyObject! in
+                    if let error = task.error {
+                        NSLog("\(error)")
+                        return nil
+                    }
+                    
+                    if let exception = task.exception {
+                        print("upload() failed: [\(exception)]")
+                        return nil
+                    }
+                    
+                    NSLog("Done uploading \(photo.photoViewIndex + 1) out of \(self.photoViews.count)")
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.loadingProgressView.loadingProgressBar.progress = Float(photo.photoViewIndex + 1) / Float(self.photoViews.count)
+                    })
+                    return nil
+                    
+                }
+                // Wait for it to end
+                uploadTask.waitUntilFinished()
+                
+            })
+        }
     }
     
     // MARK: - Segue actions handler here

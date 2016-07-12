@@ -26,20 +26,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         pageController.backgroundColor = UIColor.clearColor()
         
         // Configure AWS SDK; Fetch credentials from Properties List
-        var keys: NSDictionary?
-        
-        if let path = NSBundle.mainBundle().pathForResource("amazon-aws-credentials", ofType: "plist") {
-            keys = NSDictionary(contentsOfFile: path)
-        }
-        if let dict = keys {
-            let accessKey: String! = dict["accesskey"] as! String
-            let secretKey: String! = dict["secretkey"] as! String
+        let accessKey: String! = CommonUtils.fetchFromPropertiesList("amazon-aws-credentials", fileExtension: "plist", key: "accesskey")
+        let secretKey: String! = CommonUtils.fetchFromPropertiesList("amazon-aws-credentials", fileExtension: "plist", key: "secretkey")
 
-            // Setup AWS Credentials Provider
-            let credentialsProvider = AWSStaticCredentialsProvider(accessKey: accessKey, secretKey: secretKey)
-            let configuration = AWSServiceConfiguration(region: .USEast1, credentialsProvider: credentialsProvider)
-            AWSServiceManager.defaultServiceManager().defaultServiceConfiguration = configuration
-        }
+        // Setup AWS Credentials Provider
+        let credentialsProvider = AWSStaticCredentialsProvider(accessKey: accessKey, secretKey: secretKey)
+        let configuration = AWSServiceConfiguration(region: .USEast1, credentialsProvider: credentialsProvider)
+        AWSServiceManager.defaultServiceManager().defaultServiceConfiguration = configuration
+        
+        // Configure the AWSLogger logging level
+        AWSLogger.defaultLogger().logLevel = .None
         
         // Return true, the default
         return true

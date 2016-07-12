@@ -6,6 +6,7 @@
 //  Copyright © 2016 axe. All rights reserved.
 //
 
+import AssetsLibrary
 import MapKit
 import UIKit
 
@@ -66,6 +67,24 @@ class CommonUtils {
             }
         }
         // Else, return null
+        return nil
+    }
+    
+    static func fetchFromPropertiesList(fileName: String, fileExtension: String, key: String) -> String? {
+        // Fetch the values from the endpoints properties list
+        // REFERENCE: http://www.kaleidosblog.com/nsurlsession-in-swift-get-and-post-data
+
+        var keys: NSDictionary?
+        
+        if let path = NSBundle.mainBundle().pathForResource(fileName, ofType: fileExtension) {
+            keys = NSDictionary(contentsOfFile: path)
+        }
+        if let dict = keys {
+            let value: String! = dict[key] as! String
+            return value
+        }
+        
+        // Else, we'd a problem, so:
         return nil
     }
     

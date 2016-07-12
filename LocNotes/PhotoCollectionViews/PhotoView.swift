@@ -13,6 +13,8 @@ class PhotoView {
     
     // Holds the UIImage that is shown as the thumbnail
     var thumbnailImage: UIImage?
+    // Holds the UIImage that it is actually holding
+    var realImage: UIImage?
     // Holds the assets for the location of the UIImage
     var assetsLocation: NSURL?
     // Holds the PHAsset itself
