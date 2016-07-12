@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10174" systemVersion="15D21" minimumToolsVersion="Xcode 7.0">
+    <entity name="FullResolutionS3Image" representedClassName=".FullResolutionS3Image" syncable="YES">
+        <attribute name="amazonS3link" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="s3id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="storeDate" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="imageThumbnail" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ImageThumbnail" inverseName="fullResImage" inverseEntity="ImageThumbnail" syncable="YES"/>
+        <relationship name="locationLog" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LocationLog" inverseName="fullResS3Image" inverseEntity="LocationLog" syncable="YES"/>
+    </entity>
+    <entity name="ImageThumbnail" representedClassName=".ImageThumbnail" syncable="YES">
+        <attribute name="fullResS3id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <relationship name="fullResImage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FullResolutionS3Image" inverseName="imageThumbnail" inverseEntity="FullResolutionS3Image" syncable="YES"/>
+    </entity>
+    <entity name="LocationLog" representedClassName=".LocationLog" syncable="YES">
+        <attribute name="addedDate" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="imageS3ids" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="locationNames" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="logDesc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="logID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="logTitle" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updateDate" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="fullResS3Image" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FullResolutionS3Image" inverseName="locationLog" inverseEntity="FullResolutionS3Image" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="LocationLog" positionX="-81" positionY="-13" width="128" height="163"/>
+        <element name="FullResolutionS3Image" positionX="142" positionY="-42" width="128" height="133"/>
+        <element name="ImageThumbnail" positionX="144" positionY="137" width="128" height="88"/>
+    </elements>
+</model>
