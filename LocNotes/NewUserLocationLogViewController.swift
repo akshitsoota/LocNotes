@@ -132,28 +132,49 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     
     // MARK: - PhotoCollectionView Functions
     func addPhotoButtonClicked(sender: AnyObject) -> Void {
+        // Setup the Image Picker
+        self.imagePicker.delegate = self
         // Allow the user to pick photos now; Check for authorization now
         if PHPhotoLibrary.authorizationStatus() != .Authorized {
-            // Complain as we don't have access
-            
-            // Setup the Alert Controller
-            let alertController: UIAlertController = UIAlertController(title: "Attention", message: "Please allow us to access your photo library in the Settings so that you can pick and add photos to your location log. Goto settings?", preferredStyle: .Alert)
-            
-            // Setup the Action Buttons for the Alert
-            let settingsAction: UIAlertAction = UIAlertAction(title: "Settings", style: .Default) {(_) -> Void in
-                let settingsUrl = NSURL(string: UIApplicationOpenSettingsURLString)
-                if let url = settingsUrl {
-                    UIApplication.sharedApplication().openURL(url)
+            // Complain as we don't have access:
+            // Attempt to gain access
+            PHPhotoLibrary.requestAuthorization({(authStatus: PHAuthorizationStatus) in
+                // Again, check if we've got access
+                if( authStatus != PHAuthorizationStatus.Authorized ) {
+                    // Complain; Setup the Alert Controller
+                    let alertController: UIAlertController = UIAlertController(title: "Attention", message: "Please allow us to access your photo library in the Settings so that you can pick and add photos to your location log. Goto settings?", preferredStyle: .Alert)
+                    
+                    // Setup the Action Buttons for the Alert
+                    let settingsAction: UIAlertAction = UIAlertAction(title: "Settings", style: .Default) {(_) -> Void in
+                        let settingsUrl = NSURL(string: UIApplicationOpenSettingsURLString)
+                        if let url = settingsUrl {
+                            UIApplication.sharedApplication().openURL(url)
+                        }
+                    }
+                    let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
+                    
+                    // Now attach the action buttons to the Alert Controller
+                    alertController.addAction(settingsAction)
+                    alertController.addAction(cancelAction)
+                    
+                    // Now show it; on the main thread
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.presentViewController(alertController, animated: true, completion: nil)
+                    })
+                } else {
+                    // We've got access to their photos, so:
+                    if UIImagePickerController.isSourceTypeAvailable(.PhotoLibrary) {
+                        // Setup some things up
+                        self.imagePicker.sourceType = .PhotoLibrary
+                        self.imagePicker.allowsEditing = false
+                        
+                        // Now present the controller; but on the main thread
+                        dispatch_async(dispatch_get_main_queue(), {
+                            self.presentViewController(self.imagePicker, animated: true, completion: nil)
+                        })
+                    }
                 }
-            }
-            let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
-            
-            // Now attach the action buttons to the Alert Controller
-            alertController.addAction(settingsAction)
-            alertController.addAction(cancelAction)
-            // Now show it
-            self.presentViewController(alertController, animated: true, completion: nil)
-            
+            })
         } else {
             // We have access to their photos
             if UIImagePickerController.isSourceTypeAvailable(.PhotoLibrary) {
