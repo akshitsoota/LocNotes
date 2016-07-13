@@ -6,7 +6,7 @@
 //  Copyright © 2016 axe. All rights reserved.
 //
 
-import AssetsLibrary
+import Photos
 import MapKit
 import UIKit
 
@@ -86,6 +86,22 @@ class CommonUtils {
         
         // Else, we'd a problem, so:
         return nil
+    }
+    
+    static func fetchUIImageFromPHAsset(asset: PHAsset!) -> UIImage? {
+        let photoManager: PHImageManager = PHImageManager.defaultManager()
+        let fetchOptions: PHImageRequestOptions = PHImageRequestOptions()
+        fetchOptions.synchronous = true
+        
+        var realImage: UIImage? = nil
+        photoManager.requestImageDataForAsset(asset, options: fetchOptions) {(result, name, imageOrientation, info) in
+            if( result != nil ) {
+                realImage = UIImage(data: result!)
+            }
+        }
+        
+        // Return
+        return realImage
     }
     
 }

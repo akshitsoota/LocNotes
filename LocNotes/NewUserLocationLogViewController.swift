@@ -274,7 +274,6 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         }
         
         newPhotoView.thumbnailImage = resizeImage(info[UIImagePickerControllerOriginalImage] as! UIImage, newHeight: 128)
-        newPhotoView.realImage = info[UIImagePickerControllerOriginalImage] as? UIImage
         // Add it tot the list of PhotoViews
         self.photoViews.append(newPhotoView)
         // Now force an update of the CollectionView
@@ -505,7 +504,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                 // Now save the image to the temporary directory for the Amazon S3 Transfer Manager to pick up
                 let fileName: String = NSProcessInfo.processInfo().globallyUniqueString.stringByAppendingString(".png")
                 let fileURL: NSURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent("amazons3upload").URLByAppendingPathComponent(fileName)
-                let realImage: UIImage = photo.realImage!
+                let realImage: UIImage = CommonUtils.fetchUIImageFromPHAsset(photo.photoAsset)!
                 
                 let imageData: NSData? = UIImagePNGRepresentation(realImage)
                 do {
