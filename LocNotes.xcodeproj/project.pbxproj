@@ -87,6 +87,7 @@
 		FC605F2F1D29FE2700AC5F73 /* endpoints.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = endpoints.plist; sourceTree = "<group>"; };
 		FC605F331D2B092800AC5F73 /* LoadingScreenView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LoadingScreenView.xib; path = CommonUtils/LoadingScreenView.xib; sourceTree = "<group>"; };
 		FC605F351D2B1B8300AC5F73 /* CommonUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CommonUtils.swift; path = CommonUtils/CommonUtils.swift; sourceTree = "<group>"; };
+		FCCC8F181D36B80A00BF49DB /* LocNotes-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LocNotes-Bridging-Header.h"; sourceTree = "<group>"; };
 		FCFA5AEB1D2365D20092ADDC /* NewUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserViewController.swift; sourceTree = "<group>"; };
 		FCFA5AED1D242E450092ADDC /* NewUserPageContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserPageContentViewController.swift; sourceTree = "<group>"; };
 		FCFD7E3F1D2ED7B200727BD6 /* ProgressLoadingScreenView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProgressLoadingScreenView.xib; sourceTree = "<group>"; };
@@ -134,6 +135,7 @@
 		FC1913EF1D1B869800146224 /* LocNotes */ = {
 			isa = PBXGroup;
 			children = (
+				FCCC8F181D36B80A00BF49DB /* LocNotes-Bridging-Header.h */,
 				FC605F271D28CF1F00AC5F73 /* CommonUtils */,
 				FC392BEE1D348461009DD959 /* CoreData */,
 				FCFD7E4D1D300B5B00727BD6 /* PhotoCollectionViews */,
@@ -445,6 +447,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.axe.LocNotes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "LocNotes/LocNotes-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -461,6 +464,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.axe.LocNotes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "LocNotes/LocNotes-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;

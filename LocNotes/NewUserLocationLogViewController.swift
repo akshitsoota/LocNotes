@@ -10,6 +10,7 @@ import AWSCore
 import AWSS3
 
 import CoreData
+import MapKit
 import Photos
 import UIKit
 
@@ -40,15 +41,14 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     // ImagePicker for the user to pick pictures from the saved photos
     var imagePicker = UIImagePickerController()
     // Holds the locations the user visited
-    var locationsUserVisited: [String] = []
+    var locationsUserVisited: [MKMapItem] = []
     // Holds what action is happening in Locations Visited Table
     var locationsVisitedTableAction: Int = -1 // -1 = Nothing; 0 = Multi-Remove; 1 = Re-order mode
     // Loading Progress View
     var loadingProgressView: ProgressLoadingScreenView!
     
     // Dispatch Queues
-    let amazonS3Queue = dispatch_queue_create("amazonS3SaveAndUploadQueue", DISPATCH_QUEUE_CONCURRENT)
-    let coreDataSaveQueue = dispatch_queue_create("coreDataSaveQueue", DISPATCH_QUEUE_CONCURRENT)
+    let uploadLocationLogQueue = dispatch_queue_create("LocationLogUploadQueue", DISPATCH_QUEUE_CONCURRENT)
     // Core Data Managed Context
     var managedContext: NSManagedObjectContext?
     
@@ -129,7 +129,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     }
     
     func setupCoreData() {
-        dispatch_sync(self.coreDataSaveQueue) {
+        dispatch_sync(self.uploadLocationLogQueue) {
             self.managedContext = AppDelegate().managedObjectContext
         }
     }
@@ -332,7 +332,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         // Return the location that the user visited
         let cell: UITableViewCell = tableView.dequeueReusableCellWithIdentifier("locationCell")!
-        cell.textLabel?.text = self.locationsUserVisited[indexPath.row]
+        cell.textLabel?.text = self.locationsUserVisited[indexPath.row].placemark.title!
         
         return cell
     }
@@ -390,7 +390,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     
     func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
         // Table re-ordering is taking place
-        let objectMoved: String = self.locationsUserVisited[sourceIndexPath.row]
+        let objectMoved: MKMapItem = self.locationsUserVisited[sourceIndexPath.row]
         self.locationsUserVisited.removeAtIndex(sourceIndexPath.row)
         self.locationsUserVisited.insert(objectMoved, atIndex: destinationIndexPath.row)
         // Refresh the data
@@ -462,6 +462,8 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     
     @IBAction func doneLogClicked(sender: AnyObject) {
         // TODO: Run validation tests
+        // TODO: Verify login token
+        // TODO: Check for WiFi
         
         // Show the loading view
         if( self.loadingProgressView != nil ) {
@@ -472,44 +474,53 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         
         // Setup the loading view
         self.loadingProgressView.loadingProgressIndicator.startAnimating()
-        self.loadingProgressView.loadingProgressLabel.text = "Saving your location log to the cloud..."
+        self.loadingProgressView.loadingProgressLabel.text = "Preparing to save your Location Log in the cloud..."
         self.loadingProgressView.loadingProgressBar.progress = 0
         
         // By default, we want the upload to progress through
         self.cancelFuture = false
         
+        // Create temporary directory for our Amazon S3 Uploads
+        do {
+            try NSFileManager.defaultManager().createDirectoryAtURL(
+                NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent("amazons3upload"),
+                withIntermediateDirectories: true,
+                attributes: nil)
+        } catch {
+            // Maybe the directory exists already
+        }
+        
+        // Generate a unique Log ID
+        let userName: String? = KeychainWrapper.defaultKeychainWrapper().stringForKey("LocNotes-username")
+        let userLoginToken: String? = KeychainWrapper.defaultKeychainWrapper().stringForKey("LocNotes-loginToken")
+        let currentTime: String = String(Int64(NSDate().timeIntervalSince1970))
+        
+        let uniqueLogID: String = CommonUtils.generateSHA512("\(userName)\(userLoginToken)\(currentTime)".dataUsingEncoding(NSUTF8StringEncoding)!)
+        
         // Spawn off the uploads to Amazon S3
         // CITATION: https://github.com/awslabs/aws-sdk-ios-samples/blob/master/S3TransferManager-Sample/Swift/S3TransferManagerSampleSwift/UploadViewController.swift
-        
-        for photo in photoViews {
+        for photoIndex in photoViews.indices {
             // Iterate over each of the photos and store temporarily in the app's directory
-            dispatch_barrier_async(amazonS3Queue, {
+            dispatch_barrier_async(uploadLocationLogQueue, {
                 
                 // If the future tasks were cancelled, we must quit
                 if( self.cancelFuture ) {
-                    NSLog("Upload \(photo.photoViewIndex + 1) out of \(self.photoViews.count) was cancelled!")
                     return
                 }
-                
-                // Create temporary directory for our Amazon S3 Uploads
-                do {
-                    try NSFileManager.defaultManager().createDirectoryAtURL(
-                        NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent("amazons3upload"),
-                        withIntermediateDirectories: true,
-                        attributes: nil)
-                } catch {
-                    // Maybe the directory exists already
+                // See if we have a corresponding Amazon S3 Link and S3 ID with this photo view
+                if( self.photoViews[photoIndex].amazonS3link != nil && !self.photoViews[photoIndex].amazonS3link!.isEmpty &&
+                    self.photoViews[photoIndex].uniqueS3ID != nil && !self.photoViews[photoIndex].uniqueS3ID!.isEmpty ) {
+                    return // We can skip uploading this image as we've got already got it down
                 }
                 
                 // Now save the image to the temporary directory for the Amazon S3 Transfer Manager to pick up
                 let fileName: String = NSProcessInfo.processInfo().globallyUniqueString.stringByAppendingString(".png")
                 let fileURL: NSURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent("amazons3upload").URLByAppendingPathComponent(fileName)
-                let realImage: UIImage = CommonUtils.fetchUIImageFromPHAsset(photo.photoAsset)!
+                let realImage: UIImage = CommonUtils.fetchUIImageFromPHAsset(self.photoViews[photoIndex].photoAsset)!
                 
                 let imageData: NSData? = UIImagePNGRepresentation(realImage)
                 do {
                     _ = try Bool(imageData!.writeToFile(fileURL.path!, options: NSDataWritingOptions.DataWritingAtomic))
-                    NSLog("Saved image \(photo.photoViewIndex + 1) out of \(self.photoViews.count). Beginning Amazon S3 Upload now")
                 } catch {
                     // Cancel future uploads
                     self.cancelFuture = true
@@ -520,40 +531,534 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                         // Tell the user where we hit a snag
                         CommonUtils.showDefaultAlertToUser(self, title: "Hit a Snag!", alertContents: "We had issues saving the images to be uploaded. Please try again later!")
                     })
+                    // Exit
+                    return
                 }
                 
+                // Generate a unique S3 Image ID
+                let uniqueS3CurrentTime: String = String(Int64(NSDate().timeIntervalSince1970))
+                let uniqueS3ID: String = CommonUtils.generateSHA512("\(userLoginToken)\(uniqueLogID)\(uniqueS3CurrentTime)".dataUsingEncoding(NSUTF8StringEncoding)!)
+                
+                // Resolve the destination S3 Bucket Name
+                let awsUploadBucketName: String? = CommonUtils.fetchFromPropertiesList("amazon-aws-credentials", fileExtension: "plist", key: "s3bucketname")
+                let awsUploadKey: String = "\(uniqueLogID)_\(uniqueS3ID)"
                 // Spawn off the Amazon S3 Request now
                 let amazonS3UploadRequest: AWSS3TransferManagerUploadRequest = AWSS3TransferManagerUploadRequest()
                 amazonS3UploadRequest.body = fileURL
-                amazonS3UploadRequest.key = fileName // TO CHANGE
-                amazonS3UploadRequest.bucket = CommonUtils.fetchFromPropertiesList("amazon-aws-credentials", fileExtension: "plist", key: "s3bucketname")
+                amazonS3UploadRequest.key = awsUploadKey
+                amazonS3UploadRequest.bucket = awsUploadBucketName
                 
                 // Send it to the Transfer Manager
                 let amazonTransferManager: AWSS3TransferManager = AWSS3TransferManager.defaultS3TransferManager()
                 let uploadTask: AWSTask = amazonTransferManager.upload(amazonS3UploadRequest)
                 uploadTask.continueWithBlock{(task) -> AnyObject! in
-                    if let error = task.error {
-                        NSLog("\(error)")
-                        return nil
+                    if let _ = task.error {
+                        
+                        self.cancelFuture = true
+                        // We failed to save the image, tell the user on the main thread
+                        dispatch_async(dispatch_get_main_queue(), {
+                            // Remove the loading screen
+                            self.loadingProgressView.removeFromSuperview()
+                            // Tell the user where we hit a snag
+                            CommonUtils.showDefaultAlertToUser(self, title: "Hit a Snag!", alertContents: "We had issues saving the images to be uploaded. Please try again later!")
+                        })
+                        
+                    } else if let _ = task.exception {
+                        
+                        self.cancelFuture = true
+                        // We failed to save the image, tell the user on the main thread
+                        dispatch_async(dispatch_get_main_queue(), {
+                            // Remove the loading screen
+                            self.loadingProgressView.removeFromSuperview()
+                            // Tell the user where we hit a snag
+                            CommonUtils.showDefaultAlertToUser(self, title: "Hit a Snag!", alertContents: "We had issues saving the images to be uploaded. Please try again later!")
+                        })
+                        
+                    } else {
+                        // Successful
+
+                        // Update the UI Progress
+                        dispatch_async(dispatch_get_main_queue(), {
+                            self.loadingProgressView.loadingProgressBar.progress = Float(self.photoViews[photoIndex].photoViewIndex + 1) / Float((self.photoViews.count * 3) + 1)
+                            self.loadingProgressView.loadingProgressLabel.text = "Done uploading \(self.photoViews[photoIndex].photoViewIndex + 1) of \(self.photoViews.count) photos to Amazon S3"
+                        })
+                        // Also, fill in the PhotoViews array
+                        self.photoViews[photoIndex].uniqueS3ID = uniqueS3ID
+                        self.photoViews[photoIndex].amazonS3link = "https://s3.amazonaws.com/\(awsUploadBucketName)/\(awsUploadKey).png"
                     }
-                    
-                    if let exception = task.exception {
-                        print("upload() failed: [\(exception)]")
-                        return nil
-                    }
-                    
-                    NSLog("Done uploading \(photo.photoViewIndex + 1) out of \(self.photoViews.count)")
-                    dispatch_async(dispatch_get_main_queue(), {
-                        self.loadingProgressView.loadingProgressBar.progress = Float(photo.photoViewIndex + 1) / Float(self.photoViews.count)
-                    })
+                    // This is suppose to return nil
                     return nil
+                }
+                // Wait for it to end; Block this thread till the upload finishes
+                uploadTask.waitUntilFinished()
+            })
+        }
+        
+        // Prepare for next step
+        let awsEndpoint: String = CommonUtils.fetchFromPropertiesList("endpoints", fileExtension: "plist", key: "awsEC2EndpointURL")!
+        let addS3ImageURL: String = CommonUtils.fetchFromPropertiesList("endpoints", fileExtension: "plist", key: "addS3imageURL")!
+        let addLocationLogURL: String = CommonUtils.fetchFromPropertiesList("endpoints", fileExtension: "plist", key: "addLocationLogURL")!
+        var s3IDs: [String] = []
+        
+        // Give a pause before we perform the next set of tasks
+        if self.photoViews.count != 0 {
+            // If we've got photos to process, then pause
+            dispatch_barrier_async(uploadLocationLogQueue, {
+                if self.cancelFuture {
+                    return              // We are not suppose to be executing
+                }
+                // Sleep for two seconds
+                sleep(2)
+                // Tell the user about the new action
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.loadingProgressView.loadingProgressLabel.text = "Preparing to upload S3 links to LocNotes backend..."
+                })
+                // Wait another two seconds
+                sleep(2)
+            })
+        }
+        
+        // Now post the S3 links to the server
+        for photoIndex in photoViews.indices {
+            // Iterating over each of the PhotoViews now
+            dispatch_barrier_async(uploadLocationLogQueue, {
+                
+                // If the future tasks were cancelled, we must quit
+                if( self.cancelFuture ) {
+                    return
+                }
+                
+                // Add the current PhotoView's S3 ID to our list
+                s3IDs.append(self.photoViews[photoIndex].uniqueS3ID!)
+                
+                // Now upload to our backend; Start the SYNC request
+                let syncRequestURL: NSURL! = NSURL(string: "http://" + awsEndpoint + addS3ImageURL)
+                let syncSession: NSURLSession! = NSURLSession.sharedSession()
+                
+                let syncRequest: NSMutableURLRequest! = NSMutableURLRequest(URL: syncRequestURL)
+                syncRequest.HTTPMethod = "POST"
+                syncRequest.cachePolicy = .ReloadIgnoringLocalCacheData
+                syncRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+                syncRequest.setValue(CommonUtils.generateAuthorizationHeader(userName, userLoginToken: userLoginToken), forHTTPHeaderField: "Authorization")
+                
+                // Form LatLng String
+                var latLng: String = ""
+                if( self.photoViews[photoIndex].photoLocation != nil ) {
+                    latLng = "\(self.photoViews[photoIndex].photoLocation?.coordinate.latitude),\(self.photoViews[photoIndex].photoLocation?.coordinate.longitude)"
+                }
+                
+                // Let us form a dictionary of <K, V> pairs to be sent
+                // REFERENCE: http://stackoverflow.com/a/28009796/705471
+                let requestParams: Dictionary<String, String>! = ["locationlogid": uniqueLogID,
+                                                                  "imageurl": self.photoViews[photoIndex].amazonS3link!,
+                                                                  "s3id": self.photoViews[photoIndex].uniqueS3ID!,
+                                                                  "width": String(self.photoViews[photoIndex].photoAsset!.pixelWidth),
+                                                                  "height": String(self.photoViews[photoIndex].photoAsset!.pixelHeight),
+                                                                  "latlng": latLng]
+                var firstParamAdded: Bool! = false
+                let paramKeys: Array<String>! = Array(requestParams.keys)
+                var requestBody = ""
+                for key in paramKeys {
+                    if( !firstParamAdded ) {
+                        requestBody += key + "=" + requestParams[key]!
+                        firstParamAdded = true
+                    } else {
+                        requestBody += "&" + key + "=" + requestParams[key]!
+                    }
+                }
+                
+                requestBody = requestBody.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
+                syncRequest.HTTPBody = requestBody.dataUsingEncoding(NSUTF8StringEncoding)
+                
+                // Create semaphore to give a feel of a Synchronous Request via an Async Handler xD
+                // CITATION: http://stackoverflow.com/a/34308158/705471
+                let semaphore = dispatch_semaphore_create(0)
+                var syncResponse: (data: NSData?, response: NSURLResponse?, error: NSError?)? = nil
+                
+                let asyncTask = syncSession.dataTaskWithRequest(syncRequest, completionHandler: {(data: NSData?, response: NSURLResponse?, error: NSError?) -> () in
+                    syncResponse = (data, response, error)
+                    // Release the semaphore
+                    dispatch_semaphore_signal(semaphore)
+                })
+                asyncTask.resume() // Start the task now
+                
+                // But wait for the request to finish and read the response
+                dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+                
+                // Process the response as the request is done
+                if( syncResponse?.error != nil ) {
+                    // We've got an error; Cancel future tasks
+                    self.cancelFuture = true
+                    // Tell the user; and return
+                    dispatch_async(dispatch_get_main_queue(), {
+                        // Hide the loading view
+                        self.loadingProgressView.removeFromSuperview()
+                        // Also, alert the user
+                        CommonUtils.showDefaultAlertToUser(self, title: "Hit a snag!", alertContents: "We were unable to upload the S3 images to our backend. Please try again!")
+                    })
+                    // Now, return
+                    return
+                }
+                
+                // If we've got a response, check it
+                do {
+                    
+                    let jsonResponse: [String: AnyObject] = try (NSJSONSerialization.JSONObjectWithData(syncResponse!.data!, options: NSJSONReadingOptions()) as? [String: AnyObject])!
+                    // Now process the response
+                    let status = jsonResponse["status"]
+                    
+                    if( status == nil ) {
+                        // We've got an error; Cancel future tasks
+                        self.cancelFuture = true
+                        // Warn the user
+                        dispatch_async(dispatch_get_main_queue(), {
+                            self.loadingProgressView.removeFromSuperview() // Hide the loading screen
+                            // We've got some problems parsing the response; Show an alert to the user
+                            CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Please try again!")
+                        })
+                        // Return
+                        return
+                    }
+                    
+                    let strStatus: String! = status as! String
+                    
+                    if( strStatus == "success" ) {
+                        
+                        // Update the Progress View
+                        dispatch_async(dispatch_get_main_queue(), {
+                            self.loadingProgressView.loadingProgressBar.progress = Float(self.photoViews.count + (self.photoViews[photoIndex].photoViewIndex + 1)) / Float((self.photoViews.count * 3) + 1)
+                            self.loadingProgressView.loadingProgressLabel.text = "Done adding \(self.photoViews[photoIndex].photoViewIndex + 1) of \(self.photoViews.count) photos to LocNotes backend"
+                        })
+                        
+                    } else if( strStatus == "failed" ) {
+                        // Stop. We've gotta warn the user; Cancel future tasks
+                        self.cancelFuture = true
+                        // Warn the user
+                        dispatch_async(dispatch_get_main_queue(), {
+                            self.loadingProgressView.removeFromSuperview() // Hide the loading screen
+                            // We've got some problems parsing the response; Show an alert to the user
+                            CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Please try to login again!")
+                        })
+                        // Return
+                        return
+                    }
+                    
+                } catch {
+                    
+                    // We've got an error; Cancel future tasks
+                    self.cancelFuture = true
+                    // Warn the user
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.loadingProgressView.removeFromSuperview() // Hide the loading screen
+                        // We've got some problems parsing the response; Show an alert to the user
+                        CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Please try to login again!")
+                    })
+                    // Return
+                    return
                     
                 }
-                // Wait for it to end
-                uploadTask.waitUntilFinished()
+            })
+        }
+        
+        // Give a pause before we perform the next set of tasks
+        if self.photoViews.count != 0 {
+            // If we've got photos to process, then pause
+            dispatch_barrier_async(uploadLocationLogQueue, {
+                if self.cancelFuture {
+                    return              // We are not suppose to be executing
+                }
+                // Sleep for two seconds
+                sleep(2)
+                // Tell the user about the new action
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.loadingProgressView.loadingProgressLabel.text = "Preparing to save your Location Log photos to local storage..."
+                })
+                // Wait another two seconds
+                sleep(2)
+            })
+        }
+        
+        // Add the images to our CoreData set
+        for photoIndex in photoViews.indices {
+            // Iterating over each of the PhotoViews now
+            dispatch_barrier_async(uploadLocationLogQueue, {
+                
+                // If the future tasks were cancelled, we must quit
+                if( self.cancelFuture ) {
+                    return
+                }
+                
+                // CITATION:
+                // http://stackoverflow.com/a/27996685/705471
+                
+                if self.managedContext == nil {
+                    // We've got serious issues here; Warn the user
+                    self.cancelFuture = true
+                    // TODO
+                    return
+                }
+                
+                guard let fullResolutionS3Image: FullResolutionS3Image = NSEntityDescription.insertNewObjectForEntityForName("FullResolutionS3Image", inManagedObjectContext: self.managedContext!) as? FullResolutionS3Image, let imageThumbnail: ImageThumbnail = NSEntityDescription.insertNewObjectForEntityForName("ImageThumbnail", inManagedObjectContext: self.managedContext!) as? ImageThumbnail else
+                {
+                    // TODO
+                    self.cancelFuture = true
+                    
+                    return
+                }
+                
+                // Fill out the information
+                fullResolutionS3Image.amazonS3link = self.photoViews[photoIndex].amazonS3link
+                fullResolutionS3Image.image = UIImagePNGRepresentation(CommonUtils.fetchUIImageFromPHAsset(self.photoViews[photoIndex].photoAsset)!)
+                fullResolutionS3Image.s3id = self.photoViews[photoIndex].uniqueS3ID
+                fullResolutionS3Image.storeDate = NSNumber(longLong: Int64(NSDate().timeIntervalSince1970))
+                
+                imageThumbnail.fullResS3id = self.photoViews[photoIndex].uniqueS3ID
+                imageThumbnail.image = UIImagePNGRepresentation(self.photoViews[photoIndex].thumbnailImage!)
+                
+                // Save the new objects
+                do {
+                    try self.managedContext?.save()
+                } catch {
+                    // TODO
+                    self.cancelFuture = true
+                    
+                    return
+                }
+                
+                // Clear to free up memory
+                self.managedContext?.refreshAllObjects()
+                
+                // Update the UI; Update the Progress View
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.loadingProgressView.loadingProgressBar.progress = Float((2 * self.photoViews.count) + (self.photoViews[photoIndex].photoViewIndex + 1)) / Float((self.photoViews.count * 3) + 1)
+                    self.loadingProgressView.loadingProgressLabel.text = "Done adding \(self.photoViews[photoIndex].photoViewIndex + 1) of \(self.photoViews.count) photos to local storage"
+                })
                 
             })
         }
+        
+        // Give a pause before we perform the next set of tasks
+        if self.photoViews.count != 0 {
+            // If we've got photos to process, then pause
+            dispatch_barrier_async(uploadLocationLogQueue, {
+                if self.cancelFuture {
+                    return              // We are not suppose to be executing
+                }
+                // Sleep for two seconds
+                sleep(2)
+                // Tell the user about the new action
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.loadingProgressView.loadingProgressLabel.text = "Compiling all the information for the LocNotes backend..."
+                })
+                // Wait another two seconds
+                sleep(2)
+            })
+        }
+        
+        // Finally, upload it to the LocNotes Backend
+        dispatch_barrier_async(uploadLocationLogQueue, {
+            
+            // If the future tasks were cancelled, we must quit
+            if( self.cancelFuture ) {
+                return
+            }
+            
+            // Compile the S3 IDs
+            var s3AddedFirst: Bool = false
+            var s3IDsCompiled: String = ""
+            
+            for s3id in s3IDs {
+                if !s3AddedFirst {
+                    s3IDsCompiled = s3IDsCompiled + ";" + s3id      // Add delimiter and then the next item
+                } else {
+                    s3AddedFirst = true     // Toggle that
+                    s3IDsCompiled = s3id    // Add the first item to the list
+                }
+            }
+            
+            // Compile Location Names and Location Points
+            var locNameAddedFirst: Bool = false
+            var locNameListCompiled: String = ""
+            var locPointsListCompiled: String = ""
+            
+            for location in self.locationsUserVisited {
+                if !locNameAddedFirst {
+                    locNameListCompiled = locNameListCompiled + ";;;" + location.placemark.title!       // Add delimiter and then the next item
+                    locPointsListCompiled = locPointsListCompiled + ";" + "\(location.placemark.coordinate.latitude),\(location.placemark.coordinate.longitude)"    // Add the next location coord after the delimiter
+                } else {
+                    locNameAddedFirst = true    // Toggle that
+                    locNameListCompiled = location.placemark.title!     // Add the first location name
+                    locPointsListCompiled = "\(location.placemark.coordinate.latitude),\(location.placemark.coordinate.longitude)"      // Add the first location coord
+                }
+            }
+            
+            // Make a synchronous request to the LocNotes EC2 backend
+            let syncRequestURL: NSURL! = NSURL(string: "http://" + awsEndpoint + addLocationLogURL)
+            let syncSession: NSURLSession! = NSURLSession.sharedSession()
+            
+            let syncRequest: NSMutableURLRequest! = NSMutableURLRequest(URL: syncRequestURL)
+            syncRequest.HTTPMethod = "POST"
+            syncRequest.cachePolicy = .ReloadIgnoringLocalCacheData
+            syncRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            syncRequest.setValue(CommonUtils.generateAuthorizationHeader(userName, userLoginToken: userLoginToken), forHTTPHeaderField: "Authorization")
+            
+            // Let us form a dictionary of <K, V> pairs to be sent
+            // REFERENCE: http://stackoverflow.com/a/28009796/705471
+            let requestParams: Dictionary<String, String>! = ["locationlogid": uniqueLogID,
+                                                              "title": self.titleTextField.text!,
+                                                              "desc": self.descriptionTextField.text!,
+                                                              "s3ids": s3IDsCompiled,
+                                                              "locnames": locNameListCompiled,
+                                                              "locpoints": locPointsListCompiled]
+            var firstParamAdded: Bool! = false
+            let paramKeys: Array<String>! = Array(requestParams.keys)
+            var requestBody = ""
+            for key in paramKeys {
+                if( !firstParamAdded ) {
+                    requestBody += key + "=" + requestParams[key]!
+                    firstParamAdded = true
+                } else {
+                    requestBody += "&" + key + "=" + requestParams[key]!
+                }
+            }
+            
+            requestBody = requestBody.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
+            syncRequest.HTTPBody = requestBody.dataUsingEncoding(NSUTF8StringEncoding)
+            
+            // Create semaphore to give a feel of a Synchronous Request via an Async Handler xD
+            // CITATION: http://stackoverflow.com/a/34308158/705471
+            let semaphore = dispatch_semaphore_create(0)
+            var syncResponse: (data: NSData?, response: NSURLResponse?, error: NSError?)? = nil
+            
+            let asyncTask = syncSession.dataTaskWithRequest(syncRequest, completionHandler: {(data: NSData?, response: NSURLResponse?, error: NSError?) -> () in
+                syncResponse = (data, response, error)
+                // Release the semaphore
+                dispatch_semaphore_signal(semaphore)
+            })
+            asyncTask.resume() // Start the task now
+            
+            // But wait for the request to finish and read the response
+            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+            
+            // Process the response now
+            if( syncResponse?.error != nil ) {
+                // We've got a problem
+                self.cancelFuture = true
+                
+                // Exit the function now
+                return
+            }
+            
+            // Now process the response as we've got no errors
+            do {
+                
+                let jsonResponse: [String: AnyObject] = try (NSJSONSerialization.JSONObjectWithData(syncResponse!.data!, options: NSJSONReadingOptions()) as? [String: AnyObject])!
+                // Now process the response
+                let status = jsonResponse["status"]
+                
+                if( status == nil ) {
+                    // We've got an error; Cancel future tasks
+                    self.cancelFuture = true
+                    // Warn the user
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.loadingProgressView.removeFromSuperview() // Hide the loading screen
+                        // We've got some problems parsing the response; Show an alert to the user
+                        CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Please try again!")
+                    })
+                    // Return
+                    return
+                }
+                
+                let strStatus: String! = status as! String
+                
+                if( strStatus == "success" ) {
+                    
+                    // Update the Progress View
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.loadingProgressView.loadingProgressLabel.text = "Updated the LocNotes backend"
+                    })
+                    // Get the Added Date
+                    let addedTime: NSNumber = jsonResponse["addedate"] as! NSNumber
+                    
+                    // Now save it in CoreData
+                    if self.managedContext == nil {
+                        // We've got serious issues here; Warn the user
+                        self.cancelFuture = true
+                        // TODO
+                        return
+                    }
+                    
+                    guard let locationLog: LocationLog = NSEntityDescription.insertNewObjectForEntityForName("LocationLog", inManagedObjectContext: self.managedContext!) as? LocationLog else
+                    {
+                        // TODO
+                        self.cancelFuture = true
+                        
+                        return
+                    }
+                    
+                    // Fill out the information
+                    locationLog.addedDate = addedTime
+                    locationLog.imageS3ids = s3IDsCompiled
+                    locationLog.locationNames = locNameListCompiled
+                    locationLog.logDesc = self.descriptionTextField.text!
+                    locationLog.logID = uniqueLogID
+                    locationLog.logTitle = self.titleTextField.text!
+                    locationLog.updateDate = addedTime
+                    
+                    // Attempt to save it now
+                    do {
+                        try self.managedContext?.save()
+                    } catch {
+                        // TODO
+                        self.cancelFuture = true
+                        
+                        return
+                    }
+                    
+                    // Clear to free up memory
+                    self.managedContext?.refreshAllObjects()
+                    
+                    // Update the UI; Update the Progress View
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.loadingProgressView.loadingProgressBar.progress = 1
+                        self.loadingProgressView.loadingProgressLabel.text = "Done saving your location log"
+                        self.loadingProgressView.loadingProgressIndicator.hidden = true
+                    })
+                    
+                } else if( strStatus == "failed" ) {
+                    // Stop. We've gotta warn the user; Cancel future tasks
+                    self.cancelFuture = true
+                    // Warn the user
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.loadingProgressView.removeFromSuperview() // Hide the loading screen
+                        // We've got some problems parsing the response; Show an alert to the user
+                        CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Please try to login again!")
+                    })
+                    // Return
+                    return
+                }
+                
+            } catch {
+                
+                // We've got an error; Cancel future tasks
+                self.cancelFuture = true
+                // Warn the user
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.loadingProgressView.removeFromSuperview() // Hide the loading screen
+                    // We've got some problems parsing the response; Show an alert to the user
+                    CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Please try to login again!")
+                })
+                // Return
+                return
+                
+            }
+        })
+        
+        // Andddd, we're done
+        // Finally, tell the user and take him back to the list of Location Logs screen
+        // Be sure to have that view refreshed
+        // TODO
+        
     }
     
     // MARK: - Segue actions handler here
@@ -563,7 +1068,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
             let sourceVC: AddLocationToLocationLogViewController = segue.sourceViewController as! AddLocationToLocationLogViewController
             // Iterate over each of the MapItems the user chose and add it to our list and force the Locations Visited Table to refresh
             for mapItem in sourceVC.confirmedMapItems {
-                self.locationsUserVisited.append(mapItem.placemark.title!)
+                self.locationsUserVisited.append(mapItem)
             }
             self.locationVisitedTable.reloadData()
         }

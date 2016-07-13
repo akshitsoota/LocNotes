@@ -12,5 +12,9 @@
 	<string>/dummyRenewToken</string>
 	<key>invalidateLoginTokenURL</key>
 	<string>/dummyInvalidateToken</string>
+	<key>addS3imageURL</key>
+	<string>/dummyAddS3Image</string>
+	<key>addLocationLogURL</key>
+	<string>/dummyAddLocationLogURL</string>
 </dict>
 </plist>

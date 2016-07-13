@@ -104,4 +104,76 @@ class CommonUtils {
         return realImage
     }
     
+    // CITATION:
+    // http://blog.appliedinformaticsinc.com/swift-sha256-ios-10-minute-quick-hack/
+    // and
+    // http://stackoverflow.com/questions/24044851/how-do-you-use-string-substringwithrange-or-how-do-ranges-work-in-swift
+    
+    static func generateSHA256(data : NSData) -> String {
+        let res = NSMutableData(length: Int(CC_SHA256_DIGEST_LENGTH))
+        CC_SHA256(data.bytes, CC_LONG(data.length), UnsafeMutablePointer(res!.mutableBytes))
+        
+        var toReturn: String = "\(res!)".stringByReplacingOccurrencesOfString(" ", withString: "")
+        toReturn = toReturn.substringWithRange(Range<String.Index>(start: toReturn.startIndex.advancedBy(1),
+                                                                   end: toReturn.endIndex.advancedBy(-1)))
+        
+        return toReturn
+    }
+    
+    static func generateSHA512(data : NSData) -> String {
+        let res = NSMutableData(length: Int(CC_SHA512_DIGEST_LENGTH))
+        CC_SHA512(data.bytes, CC_LONG(data.length), UnsafeMutablePointer(res!.mutableBytes))
+        
+        var toReturn: String = "\(res!)".stringByReplacingOccurrencesOfString(" ", withString: "")
+        toReturn = toReturn.substringWithRange(Range<String.Index>(start: toReturn.startIndex.advancedBy(1),
+            end: toReturn.endIndex.advancedBy(-1)))
+        
+        return toReturn
+    }
+    
+    // Return the Authorization Header required for Auth-based requests to the EC2 Backend
+    static func generateAuthorizationHeader(username: String?, userLoginToken: String?) -> String {
+        let authValue: String = "\(username):\(userLoginToken)".toBase64()
+        return "Basic \(authValue)"
+    }
+    
 }
+
+// CITATION:
+// http://stackoverflow.com/a/34308158/705471
+extension NSURLSession {
+    
+    func synchronousDataTaskWithURL(url: NSURL) -> (NSData?, NSURLResponse?, NSError?) {
+        var data: NSData?, response: NSURLResponse?, error: NSError?
+        
+        let semaphore = dispatch_semaphore_create(0)
+        
+        dataTaskWithURL(url) {
+            data = $0; response = $1; error = $2
+            dispatch_semaphore_signal(semaphore)
+            }.resume()
+        
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+        
+        return (data, response, error)
+    }
+    
+}
+
+
+// CITATION:
+// http://stackoverflow.com/a/35360697/705471
+extension String {
+    func fromBase64() -> String
+    {
+        let data = NSData(base64EncodedString: self, options: NSDataBase64DecodingOptions(rawValue: 0))
+        return String(data: data!, encoding: NSUTF8StringEncoding)!
+    }
+    
+    func toBase64() -> String
+    {
+        let data = self.dataUsingEncoding(NSUTF8StringEncoding)
+        return data!.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0))
+    }
+}
+
