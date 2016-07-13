@@ -18,44 +18,10 @@
 		FC392BEB1D348453009DD959 /* LocationLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC392BE51D348453009DD959 /* LocationLog.swift */; };
 		FC392BEC1D348453009DD959 /* FullResolutionS3Image+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC392BE61D348453009DD959 /* FullResolutionS3Image+CoreDataProperties.swift */; };
 		FC392BED1D348453009DD959 /* FullResolutionS3Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC392BE71D348453009DD959 /* FullResolutionS3Image.swift */; };
-		FC392C061D355D1E009DD959 /* AWSAPIGateway.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BF31D355D1D009DD959 /* AWSAPIGateway.framework */; };
-		FC392C071D355D1E009DD959 /* AWSAPIGateway.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BF31D355D1D009DD959 /* AWSAPIGateway.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FC392C081D355D1E009DD959 /* AWSAutoScaling.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BF41D355D1D009DD959 /* AWSAutoScaling.framework */; };
-		FC392C091D355D1E009DD959 /* AWSAutoScaling.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BF41D355D1D009DD959 /* AWSAutoScaling.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FC392C0A1D355D1E009DD959 /* AWSCloudWatch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BF51D355D1D009DD959 /* AWSCloudWatch.framework */; };
-		FC392C0B1D355D1E009DD959 /* AWSCloudWatch.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BF51D355D1D009DD959 /* AWSCloudWatch.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FC392C0C1D355D1E009DD959 /* AWSCognito.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BF61D355D1E009DD959 /* AWSCognito.framework */; };
-		FC392C0D1D355D1E009DD959 /* AWSCognito.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BF61D355D1E009DD959 /* AWSCognito.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FC392C0E1D355D1E009DD959 /* AWSCognitoIdentityProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BF71D355D1E009DD959 /* AWSCognitoIdentityProvider.framework */; };
-		FC392C0F1D355D1E009DD959 /* AWSCognitoIdentityProvider.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BF71D355D1E009DD959 /* AWSCognitoIdentityProvider.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FC392C101D355D1E009DD959 /* AWSCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BF81D355D1E009DD959 /* AWSCore.framework */; };
 		FC392C111D355D1E009DD959 /* AWSCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BF81D355D1E009DD959 /* AWSCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FC392C121D355D1E009DD959 /* AWSDynamoDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BF91D355D1E009DD959 /* AWSDynamoDB.framework */; };
-		FC392C131D355D1E009DD959 /* AWSDynamoDB.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BF91D355D1E009DD959 /* AWSDynamoDB.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FC392C141D355D1E009DD959 /* AWSEC2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BFA1D355D1E009DD959 /* AWSEC2.framework */; };
-		FC392C151D355D1E009DD959 /* AWSEC2.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BFA1D355D1E009DD959 /* AWSEC2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FC392C161D355D1E009DD959 /* AWSElasticLoadBalancing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BFB1D355D1E009DD959 /* AWSElasticLoadBalancing.framework */; };
-		FC392C171D355D1E009DD959 /* AWSElasticLoadBalancing.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BFB1D355D1E009DD959 /* AWSElasticLoadBalancing.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FC392C181D355D1E009DD959 /* AWSIoT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BFC1D355D1E009DD959 /* AWSIoT.framework */; };
-		FC392C191D355D1E009DD959 /* AWSIoT.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BFC1D355D1E009DD959 /* AWSIoT.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FC392C1A1D355D1E009DD959 /* AWSKinesis.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BFD1D355D1E009DD959 /* AWSKinesis.framework */; };
-		FC392C1B1D355D1E009DD959 /* AWSKinesis.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BFD1D355D1E009DD959 /* AWSKinesis.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FC392C1C1D355D1E009DD959 /* AWSLambda.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BFE1D355D1E009DD959 /* AWSLambda.framework */; };
-		FC392C1D1D355D1E009DD959 /* AWSLambda.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BFE1D355D1E009DD959 /* AWSLambda.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FC392C1E1D355D1E009DD959 /* AWSMachineLearning.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BFF1D355D1E009DD959 /* AWSMachineLearning.framework */; };
-		FC392C1F1D355D1E009DD959 /* AWSMachineLearning.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FC392BFF1D355D1E009DD959 /* AWSMachineLearning.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FC392C201D355D1E009DD959 /* AWSMobileAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC392C001D355D1E009DD959 /* AWSMobileAnalytics.framework */; };
-		FC392C211D355D1E009DD959 /* AWSMobileAnalytics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FC392C001D355D1E009DD959 /* AWSMobileAnalytics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FC392C221D355D1E009DD959 /* AWSS3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC392C011D355D1E009DD959 /* AWSS3.framework */; };
 		FC392C231D355D1E009DD959 /* AWSS3.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FC392C011D355D1E009DD959 /* AWSS3.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FC392C241D355D1E009DD959 /* AWSSES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC392C021D355D1E009DD959 /* AWSSES.framework */; };
-		FC392C251D355D1E009DD959 /* AWSSES.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FC392C021D355D1E009DD959 /* AWSSES.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FC392C261D355D1E009DD959 /* AWSSimpleDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC392C031D355D1E009DD959 /* AWSSimpleDB.framework */; };
-		FC392C271D355D1E009DD959 /* AWSSimpleDB.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FC392C031D355D1E009DD959 /* AWSSimpleDB.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FC392C281D355D1E009DD959 /* AWSSNS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC392C041D355D1E009DD959 /* AWSSNS.framework */; };
-		FC392C291D355D1E009DD959 /* AWSSNS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FC392C041D355D1E009DD959 /* AWSSNS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FC392C2A1D355D1E009DD959 /* AWSSQS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC392C051D355D1E009DD959 /* AWSSQS.framework */; };
-		FC392C2B1D355D1E009DD959 /* AWSSQS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FC392C051D355D1E009DD959 /* AWSSQS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FC392C301D355FAA009DD959 /* amazon-aws-credentials.plist in Resources */ = {isa = PBXBuildFile; fileRef = FC392C2F1D355FAA009DD959 /* amazon-aws-credentials.plist */; };
 		FC5B6ECA1D2CA87500EC9C88 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC5B6EC21D2CA66400EC9C88 /* LocalAuthentication.framework */; };
 		FC5B6ECE1D2CAA2300EC9C88 /* KeychainWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC5B6ECC1D2CAA2300EC9C88 /* KeychainWrapper.swift */; };
@@ -85,23 +51,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				FC392C2B1D355D1E009DD959 /* AWSSQS.framework in Embed Frameworks */,
-				FC392C0B1D355D1E009DD959 /* AWSCloudWatch.framework in Embed Frameworks */,
-				FC392C291D355D1E009DD959 /* AWSSNS.framework in Embed Frameworks */,
-				FC392C151D355D1E009DD959 /* AWSEC2.framework in Embed Frameworks */,
-				FC392C251D355D1E009DD959 /* AWSSES.framework in Embed Frameworks */,
-				FC392C071D355D1E009DD959 /* AWSAPIGateway.framework in Embed Frameworks */,
-				FC392C1D1D355D1E009DD959 /* AWSLambda.framework in Embed Frameworks */,
-				FC392C191D355D1E009DD959 /* AWSIoT.framework in Embed Frameworks */,
-				FC392C0D1D355D1E009DD959 /* AWSCognito.framework in Embed Frameworks */,
-				FC392C171D355D1E009DD959 /* AWSElasticLoadBalancing.framework in Embed Frameworks */,
-				FC392C211D355D1E009DD959 /* AWSMobileAnalytics.framework in Embed Frameworks */,
-				FC392C1F1D355D1E009DD959 /* AWSMachineLearning.framework in Embed Frameworks */,
-				FC392C1B1D355D1E009DD959 /* AWSKinesis.framework in Embed Frameworks */,
-				FC392C0F1D355D1E009DD959 /* AWSCognitoIdentityProvider.framework in Embed Frameworks */,
-				FC392C271D355D1E009DD959 /* AWSSimpleDB.framework in Embed Frameworks */,
-				FC392C091D355D1E009DD959 /* AWSAutoScaling.framework in Embed Frameworks */,
-				FC392C131D355D1E009DD959 /* AWSDynamoDB.framework in Embed Frameworks */,
 				FC392C111D355D1E009DD959 /* AWSCore.framework in Embed Frameworks */,
 				FC392C231D355D1E009DD959 /* AWSS3.framework in Embed Frameworks */,
 			);
@@ -124,25 +73,8 @@
 		FC392BE51D348453009DD959 /* LocationLog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationLog.swift; path = CoreData/LocationLog.swift; sourceTree = "<group>"; };
 		FC392BE61D348453009DD959 /* FullResolutionS3Image+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "FullResolutionS3Image+CoreDataProperties.swift"; path = "CoreData/FullResolutionS3Image+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		FC392BE71D348453009DD959 /* FullResolutionS3Image.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FullResolutionS3Image.swift; path = CoreData/FullResolutionS3Image.swift; sourceTree = "<group>"; };
-		FC392BF31D355D1D009DD959 /* AWSAPIGateway.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSAPIGateway.framework; sourceTree = "<group>"; };
-		FC392BF41D355D1D009DD959 /* AWSAutoScaling.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSAutoScaling.framework; sourceTree = "<group>"; };
-		FC392BF51D355D1D009DD959 /* AWSCloudWatch.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSCloudWatch.framework; sourceTree = "<group>"; };
-		FC392BF61D355D1E009DD959 /* AWSCognito.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSCognito.framework; sourceTree = "<group>"; };
-		FC392BF71D355D1E009DD959 /* AWSCognitoIdentityProvider.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSCognitoIdentityProvider.framework; sourceTree = "<group>"; };
 		FC392BF81D355D1E009DD959 /* AWSCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSCore.framework; sourceTree = "<group>"; };
-		FC392BF91D355D1E009DD959 /* AWSDynamoDB.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSDynamoDB.framework; sourceTree = "<group>"; };
-		FC392BFA1D355D1E009DD959 /* AWSEC2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSEC2.framework; sourceTree = "<group>"; };
-		FC392BFB1D355D1E009DD959 /* AWSElasticLoadBalancing.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSElasticLoadBalancing.framework; sourceTree = "<group>"; };
-		FC392BFC1D355D1E009DD959 /* AWSIoT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSIoT.framework; sourceTree = "<group>"; };
-		FC392BFD1D355D1E009DD959 /* AWSKinesis.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSKinesis.framework; sourceTree = "<group>"; };
-		FC392BFE1D355D1E009DD959 /* AWSLambda.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSLambda.framework; sourceTree = "<group>"; };
-		FC392BFF1D355D1E009DD959 /* AWSMachineLearning.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSMachineLearning.framework; sourceTree = "<group>"; };
-		FC392C001D355D1E009DD959 /* AWSMobileAnalytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSMobileAnalytics.framework; sourceTree = "<group>"; };
 		FC392C011D355D1E009DD959 /* AWSS3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSS3.framework; sourceTree = "<group>"; };
-		FC392C021D355D1E009DD959 /* AWSSES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSSES.framework; sourceTree = "<group>"; };
-		FC392C031D355D1E009DD959 /* AWSSimpleDB.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSSimpleDB.framework; sourceTree = "<group>"; };
-		FC392C041D355D1E009DD959 /* AWSSNS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSSNS.framework; sourceTree = "<group>"; };
-		FC392C051D355D1E009DD959 /* AWSSQS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSSQS.framework; sourceTree = "<group>"; };
 		FC392C2F1D355FAA009DD959 /* amazon-aws-credentials.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "amazon-aws-credentials.plist"; sourceTree = "<group>"; };
 		FC5B6EC21D2CA66400EC9C88 /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
 		FC5B6EC61D2CA82E00EC9C88 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -172,27 +104,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FC392C0C1D355D1E009DD959 /* AWSCognito.framework in Frameworks */,
 				FC392C221D355D1E009DD959 /* AWSS3.framework in Frameworks */,
-				FC392C1A1D355D1E009DD959 /* AWSKinesis.framework in Frameworks */,
-				FC392C141D355D1E009DD959 /* AWSEC2.framework in Frameworks */,
-				FC392C201D355D1E009DD959 /* AWSMobileAnalytics.framework in Frameworks */,
 				FC392C101D355D1E009DD959 /* AWSCore.framework in Frameworks */,
-				FC392C0A1D355D1E009DD959 /* AWSCloudWatch.framework in Frameworks */,
-				FC392C261D355D1E009DD959 /* AWSSimpleDB.framework in Frameworks */,
-				FC392C1C1D355D1E009DD959 /* AWSLambda.framework in Frameworks */,
-				FC392C061D355D1E009DD959 /* AWSAPIGateway.framework in Frameworks */,
-				FC392C121D355D1E009DD959 /* AWSDynamoDB.framework in Frameworks */,
-				FC392C281D355D1E009DD959 /* AWSSNS.framework in Frameworks */,
-				FC392C0E1D355D1E009DD959 /* AWSCognitoIdentityProvider.framework in Frameworks */,
-				FC392C2A1D355D1E009DD959 /* AWSSQS.framework in Frameworks */,
-				FC392C161D355D1E009DD959 /* AWSElasticLoadBalancing.framework in Frameworks */,
-				FC392C081D355D1E009DD959 /* AWSAutoScaling.framework in Frameworks */,
 				FCFD7E591D318F0C00727BD6 /* MapKit.framework in Frameworks */,
-				FC392C241D355D1E009DD959 /* AWSSES.framework in Frameworks */,
 				FC5B6ECA1D2CA87500EC9C88 /* LocalAuthentication.framework in Frameworks */,
-				FC392C1E1D355D1E009DD959 /* AWSMachineLearning.framework in Frameworks */,
-				FC392C181D355D1E009DD959 /* AWSIoT.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,25 +172,8 @@
 		FC392C2D1D355D2B009DD959 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				FC392BF31D355D1D009DD959 /* AWSAPIGateway.framework */,
-				FC392BF41D355D1D009DD959 /* AWSAutoScaling.framework */,
-				FC392BF51D355D1D009DD959 /* AWSCloudWatch.framework */,
-				FC392BF61D355D1E009DD959 /* AWSCognito.framework */,
-				FC392BF71D355D1E009DD959 /* AWSCognitoIdentityProvider.framework */,
 				FC392BF81D355D1E009DD959 /* AWSCore.framework */,
-				FC392BF91D355D1E009DD959 /* AWSDynamoDB.framework */,
-				FC392BFA1D355D1E009DD959 /* AWSEC2.framework */,
-				FC392BFB1D355D1E009DD959 /* AWSElasticLoadBalancing.framework */,
-				FC392BFC1D355D1E009DD959 /* AWSIoT.framework */,
-				FC392BFD1D355D1E009DD959 /* AWSKinesis.framework */,
-				FC392BFE1D355D1E009DD959 /* AWSLambda.framework */,
-				FC392BFF1D355D1E009DD959 /* AWSMachineLearning.framework */,
-				FC392C001D355D1E009DD959 /* AWSMobileAnalytics.framework */,
 				FC392C011D355D1E009DD959 /* AWSS3.framework */,
-				FC392C021D355D1E009DD959 /* AWSSES.framework */,
-				FC392C031D355D1E009DD959 /* AWSSimpleDB.framework */,
-				FC392C041D355D1E009DD959 /* AWSSNS.framework */,
-				FC392C051D355D1E009DD959 /* AWSSQS.framework */,
 				FCFD7E581D318F0C00727BD6 /* MapKit.framework */,
 				FC5B6EC61D2CA82E00EC9C88 /* Security.framework */,
 				FC5B6EC21D2CA66400EC9C88 /* LocalAuthentication.framework */,
