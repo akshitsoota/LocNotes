@@ -15,6 +15,8 @@ class UserSettingsViewController: UIViewController {
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var touchIDViewHolder: UIView!
     @IBOutlet weak var touchIDSwitch: UISwitch!
+    @IBOutlet weak var uploadOnWifiViewHolder: UIView!
+    @IBOutlet weak var uploadOnWifiSwitch: UISwitch!
     @IBOutlet weak var deleteAllLocationLogsViewHolder: UIView!
     @IBOutlet weak var logOutOfAccountViewHolder: UIView!
     
@@ -72,15 +74,25 @@ class UserSettingsViewController: UIViewController {
         
         generateBottomBorder(self.userNameViewHolder, color: nil)
         generateBottomBorder(self.touchIDViewHolder, color: nil)
+        generateBottomBorder(self.uploadOnWifiViewHolder, color: UIColor.lightGrayColor())
         generateBottomBorder(self.deleteAllLocationLogsViewHolder, color: UIColor.lightGrayColor())
         generateBottomBorder(self.logOutOfAccountViewHolder, color: nil)
         
         // Pull information from Keychain
         let userName: String! = KeychainWrapper.defaultKeychainWrapper().stringForKey("LocNotes-username")!
         let touchIDEnabled: Bool! = KeychainWrapper.defaultKeychainWrapper().boolForKey("LocNotes-TouchIDEnabled")!
+        var preferredWifi: Bool? = KeychainWrapper.defaultKeychainWrapper().boolForKey("LocNotes-PrefferedUploadMediumIsWiFi")
+        // Check and set defaults if necessary
+        if( preferredWifi == nil ) {
+            // Save one and proceed
+            KeychainWrapper.defaultKeychainWrapper().setBool(true, forKey: "LocNotes-PrefferedUploadMediumIsWiFi")
+            preferredWifi = true
+        }
+        
         // Show it on the screen
         self.userNameLabel.text = "Username: \(userName)"
         self.touchIDSwitch.on = touchIDEnabled
+        self.uploadOnWifiSwitch.on = preferredWifi!
     }
     
     // MARK: - Orientation Change Listener
@@ -115,6 +127,11 @@ class UserSettingsViewController: UIViewController {
             // Update Keychain
             KeychainWrapper.defaultKeychainWrapper().setBool(false, forKey: "LocNotes-TouchIDEnabled")
         }
+    }
+    
+    @IBAction func wifiSwitchToggled(sender: AnyObject) {
+        // Save it to Keychain
+        KeychainWrapper.defaultKeychainWrapper().setBool(self.uploadOnWifiSwitch.on, forKey: "LocNotes-PrefferedUploadMediumIsWiFi")
     }
     
     @IBAction func deleteLocationLogsButtonClicked(sender: AnyObject) {

@@ -1349,8 +1349,36 @@
                                                             <constraint firstAttribute="trailing" secondItem="zUJ-QW-LIh" secondAttribute="trailing" constant="12" id="xjx-jn-AsD"/>
                                                         </constraints>
                                                     </view>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="awa-Mg-vIc">
+                                                        <rect key="frame" x="0.0" y="134" width="600" height="47"/>
+                                                        <subviews>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Only upload on Wi-Fi" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jM7-iY-jdb">
+                                                                <rect key="frame" x="12" y="2" width="576" height="43"/>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                                <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="NS6-x9-YmJ">
+                                                                <rect key="frame" x="535" y="8" width="51" height="31"/>
+                                                                <connections>
+                                                                    <action selector="touchIDSwitchToggled:" destination="8HT-tT-Wo3" eventType="valueChanged" id="3re-3i-KAJ"/>
+                                                                    <action selector="wifiSwitchToggled:" destination="8HT-tT-Wo3" eventType="valueChanged" id="yE8-Yz-F5o"/>
+                                                                </connections>
+                                                            </switch>
+                                                        </subviews>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <constraints>
+                                                            <constraint firstItem="NS6-x9-YmJ" firstAttribute="top" secondItem="awa-Mg-vIc" secondAttribute="top" constant="8" id="8MZ-7x-owt"/>
+                                                            <constraint firstAttribute="trailing" secondItem="NS6-x9-YmJ" secondAttribute="trailing" constant="16" id="8Ow-kp-Yyv"/>
+                                                            <constraint firstItem="jM7-iY-jdb" firstAttribute="leading" secondItem="awa-Mg-vIc" secondAttribute="leading" constant="12" id="Hcd-CF-hmC"/>
+                                                            <constraint firstAttribute="trailing" secondItem="jM7-iY-jdb" secondAttribute="trailing" constant="12" id="Oqh-gZ-Ias"/>
+                                                            <constraint firstItem="jM7-iY-jdb" firstAttribute="top" secondItem="awa-Mg-vIc" secondAttribute="top" constant="2" id="ekD-e4-ziF"/>
+                                                            <constraint firstAttribute="bottom" secondItem="NS6-x9-YmJ" secondAttribute="bottom" constant="8" id="mQI-Ni-V8B"/>
+                                                            <constraint firstAttribute="bottom" secondItem="jM7-iY-jdb" secondAttribute="bottom" constant="2" id="p9N-zP-LTs"/>
+                                                        </constraints>
+                                                    </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ilq-x0-Psm" userLabel="Delete All Location Logs View Holder">
-                                                        <rect key="frame" x="0.0" y="154" width="600" height="47"/>
+                                                        <rect key="frame" x="0.0" y="201" width="600" height="47"/>
                                                         <subviews>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SJ2-ld-h6U">
                                                                 <rect key="frame" x="12" y="2" width="576" height="43"/>
@@ -1373,7 +1401,7 @@
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Cn-Zb-eJg" userLabel="Log Out Account Button View">
-                                                        <rect key="frame" x="0.0" y="201" width="600" height="47"/>
+                                                        <rect key="frame" x="0.0" y="248" width="600" height="47"/>
                                                         <subviews>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yfJ-Eg-aGA">
                                                                 <rect key="frame" x="12" y="2" width="576" height="43"/>
@@ -1403,12 +1431,15 @@
                                                     <constraint firstAttribute="height" constant="580" id="5mL-eH-EgU"/>
                                                     <constraint firstItem="E8j-fa-0Dj" firstAttribute="width" secondItem="Zr0-7K-zn6" secondAttribute="width" id="5nd-Tb-a99"/>
                                                     <constraint firstItem="E8j-fa-0Dj" firstAttribute="top" secondItem="MIy-Fb-KF7" secondAttribute="bottom" constant="20" id="DKu-8e-bJu"/>
+                                                    <constraint firstItem="Ilq-x0-Psm" firstAttribute="top" secondItem="awa-Mg-vIc" secondAttribute="bottom" constant="20" id="MGj-rb-7Gg"/>
+                                                    <constraint firstItem="awa-Mg-vIc" firstAttribute="centerX" secondItem="Zr0-7K-zn6" secondAttribute="centerX" id="NVj-RB-Cqb"/>
                                                     <constraint firstItem="3Cn-Zb-eJg" firstAttribute="centerX" secondItem="Zr0-7K-zn6" secondAttribute="centerX" id="VTc-W3-KJr"/>
+                                                    <constraint firstItem="awa-Mg-vIc" firstAttribute="top" secondItem="E8j-fa-0Dj" secondAttribute="bottom" id="XPw-3d-9sc"/>
                                                     <constraint firstItem="3Cn-Zb-eJg" firstAttribute="top" secondItem="Ilq-x0-Psm" secondAttribute="bottom" id="bLk-1e-Yjc"/>
                                                     <constraint firstItem="MIy-Fb-KF7" firstAttribute="top" secondItem="Zr0-7K-zn6" secondAttribute="top" constant="20" id="bUv-Il-EM7"/>
-                                                    <constraint firstItem="Ilq-x0-Psm" firstAttribute="top" secondItem="E8j-fa-0Dj" secondAttribute="bottom" constant="20" id="h4R-JT-wU6"/>
                                                     <constraint firstItem="Ilq-x0-Psm" firstAttribute="centerX" secondItem="Zr0-7K-zn6" secondAttribute="centerX" id="hI2-rF-npV"/>
                                                     <constraint firstItem="MIy-Fb-KF7" firstAttribute="width" secondItem="Zr0-7K-zn6" secondAttribute="width" id="oFZ-Dd-hJo"/>
+                                                    <constraint firstItem="awa-Mg-vIc" firstAttribute="width" secondItem="Zr0-7K-zn6" secondAttribute="width" id="rVQ-sL-cYj"/>
                                                     <constraint firstItem="MIy-Fb-KF7" firstAttribute="centerX" secondItem="Zr0-7K-zn6" secondAttribute="centerX" id="s7z-N3-KHb"/>
                                                     <constraint firstItem="Ilq-x0-Psm" firstAttribute="width" secondItem="Zr0-7K-zn6" secondAttribute="width" id="u6E-ZA-hSw"/>
                                                 </constraints>
@@ -1454,6 +1485,8 @@
                         <outlet property="logOutOfAccountViewHolder" destination="3Cn-Zb-eJg" id="SEM-xQ-ZoA"/>
                         <outlet property="touchIDSwitch" destination="K6A-WA-Rjf" id="e3h-m9-MlZ"/>
                         <outlet property="touchIDViewHolder" destination="E8j-fa-0Dj" id="bXs-4t-572"/>
+                        <outlet property="uploadOnWifiSwitch" destination="NS6-x9-YmJ" id="4ix-i6-9CT"/>
+                        <outlet property="uploadOnWifiViewHolder" destination="awa-Mg-vIc" id="57c-cE-swZ"/>
                         <outlet property="userNameLabel" destination="MbU-Q4-Y5g" id="kLu-yZ-WrM"/>
                         <outlet property="userNameViewHolder" destination="MIy-Fb-KF7" id="qJB-10-OTu"/>
                         <segue destination="Zki-Tw-MpL" kind="unwind" identifier="backToUserLocationLogs" unwindAction="unwindSegue:" id="ZC0-Ad-MQt"/>

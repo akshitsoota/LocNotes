@@ -589,7 +589,15 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
             return              // Tests failed
         }
         // STEP: Check for an internet connection
-        if( !CommonUtils.isInternetConnectionAvailable() ) {
+        var preferredWifi: Bool? = KeychainWrapper.defaultKeychainWrapper().boolForKey("LocNotes-PrefferedUploadMediumIsWiFi")
+        if( preferredWifi == nil ) {
+            // Save one and proceed
+            KeychainWrapper.defaultKeychainWrapper().setBool(true, forKey: "LocNotes-PrefferedUploadMediumIsWiFi")
+            preferredWifi = true
+        }
+        
+        let connectionType: CommonUtils.ConnectionStatus = CommonUtils.findIntentConnectionType()
+        if( connectionType == CommonUtils.ConnectionStatus.ConnectionTypeCellular && preferredWifi! ) {
             // Tell the user that we plan to queue it up for later
             // TODO: Warn user, queue it up, take him back and update the screen
             // Return

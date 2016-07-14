@@ -131,9 +131,53 @@ class CommonUtils {
     }
     
     // CITATION:
-    // http://stackoverflow.com/a/33757311/705471
+    // http://stackoverflow.com/a/29244451/705471
     
-    static func isInternetConnectionAvailable() -> Bool {
+    enum ConnectionStatus {
+        case ConnectionTypeUnknown
+        case ConnectionTypeNone
+        case ConnectionTypeCellular
+        case ConnectionTypeWiFi
+    }
+    
+    static func findIntentConnectionType() -> ConnectionStatus {
+        let reachability: SCNetworkReachabilityRef = SCNetworkReachabilityCreateWithName(nil, "8.8.8.8")!
+        var flags: SCNetworkReachabilityFlags = SCNetworkReachabilityFlags()
+        if SCNetworkReachabilityGetFlags(reachability, &flags) == false {
+            return ConnectionStatus.ConnectionTypeUnknown
+        }
+        
+        let isReachable: Bool = (flags.rawValue & UInt32(kSCNetworkFlagsReachable)) != 0
+        let needsConnection: Bool = (flags.rawValue & UInt32(kSCNetworkFlagsConnectionRequired)) != 0
+        let isNetworkReachable: Bool = isReachable && !needsConnection
+        
+        if( !isNetworkReachable ) {
+            return ConnectionStatus.ConnectionTypeNone
+        } else if( (flags.rawValue & UInt32(SCNetworkReachabilityFlags.IsWWAN.rawValue)) != 0 ) {
+            return ConnectionStatus.ConnectionTypeCellular
+        } else {
+            return ConnectionStatus.ConnectionTypeWiFi
+        }
+        
+        /* SCNetworkReachabilityRef reachability = SCNetworkReachabilityCreateWithName(NULL, "8.8.8.8");
+        SCNetworkReachabilityFlags flags;
+        BOOL success = SCNetworkReachabilityGetFlags(reachability, &flags);
+        CFRelease(reachability);
+        if (!success) {
+            return ConnectionTypeUnknown;
+        }
+        BOOL isReachable = ((flags & kSCNetworkReachabilityFlagsReachable) != 0);
+        BOOL needsConnection = ((flags & kSCNetworkReachabilityFlagsConnectionRequired) != 0);
+        BOOL isNetworkReachable = (isReachable && !needsConnection);
+        
+        if (!isNetworkReachable) {
+            return ConnectionTypeNone;
+        } else if ((flags & kSCNetworkReachabilityFlagsIsWWAN) != 0) {
+            return ConnectionType3G;
+        } else {
+            return ConnectionTypeWiFi;
+        }
+        
         let rechability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, "www.apple.com")
         var flags: SCNetworkReachabilityFlags = SCNetworkReachabilityFlags()
         
@@ -144,7 +188,7 @@ class CommonUtils {
         let isReachable = (flags.rawValue & UInt32(kSCNetworkFlagsReachable)) != 0
         let needsConnection = (flags.rawValue & UInt32(kSCNetworkFlagsConnectionRequired)) != 0
         
-        return (isReachable && !needsConnection)
+        return (isReachable && !needsConnection) */
     }
     
 }
