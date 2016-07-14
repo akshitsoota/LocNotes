@@ -6,6 +6,7 @@
 //  Copyright © 2016 axe. All rights reserved.
 //
 
+import SystemConfiguration
 import Photos
 import MapKit
 import UIKit
@@ -114,8 +115,7 @@ class CommonUtils {
         CC_SHA256(data.bytes, CC_LONG(data.length), UnsafeMutablePointer(res!.mutableBytes))
         
         var toReturn: String = "\(res!)".stringByReplacingOccurrencesOfString(" ", withString: "")
-        toReturn = toReturn.substringWithRange(Range<String.Index>(start: toReturn.startIndex.advancedBy(1),
-                                                                   end: toReturn.endIndex.advancedBy(-1)))
+        toReturn = toReturn.substringWithRange(Range<String.Index>(toReturn.startIndex.advancedBy(1)..<toReturn.endIndex.advancedBy(-1)))
         
         return toReturn
     }
@@ -125,16 +125,26 @@ class CommonUtils {
         CC_SHA512(data.bytes, CC_LONG(data.length), UnsafeMutablePointer(res!.mutableBytes))
         
         var toReturn: String = "\(res!)".stringByReplacingOccurrencesOfString(" ", withString: "")
-        toReturn = toReturn.substringWithRange(Range<String.Index>(start: toReturn.startIndex.advancedBy(1),
-            end: toReturn.endIndex.advancedBy(-1)))
+        toReturn = toReturn.substringWithRange(Range<String.Index>(toReturn.startIndex.advancedBy(1)..<toReturn.endIndex.advancedBy(-1)))
         
         return toReturn
     }
     
-    // Return the Authorization Header required for Auth-based requests to the EC2 Backend
-    static func generateAuthorizationHeader(username: String?, userLoginToken: String?) -> String {
-        let authValue: String = "\(username!):\(userLoginToken!)".toBase64()
-        return "Basic \(authValue)"
+    // CITATION:
+    // http://stackoverflow.com/a/33757311/705471
+    
+    static func isInternetConnectionAvailable() -> Bool {
+        let rechability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, "www.apple.com")
+        var flags: SCNetworkReachabilityFlags = SCNetworkReachabilityFlags()
+        
+        if SCNetworkReachabilityGetFlags(rechability!, &flags) == false {
+            return false
+        }
+        
+        let isReachable = (flags.rawValue & UInt32(kSCNetworkFlagsReachable)) != 0
+        let needsConnection = (flags.rawValue & UInt32(kSCNetworkFlagsConnectionRequired)) != 0
+        
+        return (isReachable && !needsConnection)
     }
     
 }

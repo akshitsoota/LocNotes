@@ -126,6 +126,8 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         
         // Hide stop action button in Locations Visited by default
         self.locationsVisitedStopActionButton.hidden = true
+        
+        // TODO: Keyboard scroll up and deal with return key
     }
     
     func setupCoreData() {
@@ -461,9 +463,21 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     }
     
     @IBAction func doneLogClicked(sender: AnyObject) {
-        // TODO: Run validation tests
-        // TODO: Verify login token
-        // TODO: Check for WiFi
+        
+        // Hide the keyboard if visible
+        self.view.endEditing(true)
+        
+        // STEP: Run Validation on the Location Log before we proceed with the submission
+        if( !locationLogSubmissionValidationTests() ) {
+            return              // Tests failed
+        }
+        // STEP: Check for an internet connection
+        if( !CommonUtils.isInternetConnectionAvailable() ) {
+            // Tell the user that we plan to queue it up for later
+            // TODO: Warn user, queue it up, take him back and update the screen
+            // Return
+            return
+        }
         
         // Show the loading view
         if( self.loadingProgressView != nil ) {
@@ -496,6 +510,80 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         let currentTime: String = String(Int64(NSDate().timeIntervalSince1970))
         
         let uniqueLogID: String = CommonUtils.generateSHA512("\(userName)\(userLoginToken)\(currentTime)".dataUsingEncoding(NSUTF8StringEncoding)!)
+        
+        // Check validity of user login token
+        dispatch_barrier_async(uploadLocationLogQueue, {
+            // Request for Login Token Renewal
+            let tokenRenewalState: NSDictionary? = UserAuthentication.renewLoginToken()
+            // Check if nil
+            if( tokenRenewalState == nil ) {
+                // Warn the user and cancel future
+                self.cancelFuture = true
+                // We failed to renew the login token, tell the user on the main thread
+                dispatch_async(dispatch_get_main_queue(), {
+                    // Remove the loading screen
+                    self.loadingProgressView.removeFromSuperview()
+                    // Tell the user where we hit a snag
+                    CommonUtils.showDefaultAlertToUser(self, title: "Hit a Snag!", alertContents: "We are having issues with our internal framework. Please try again later!")
+                })
+                // Exit
+                return
+            }
+            // Else, process
+            if(   tokenRenewalState!["status"] as! String == "invalid_non_json_response" ||
+                ( tokenRenewalState!["status"] as! String == "no_renewal" &&
+                  tokenRenewalState!["reason"] as! String == "backend_failure" ) ||
+                ( tokenRenewalState!["status"] as! String == "not_possible_request_error" ) ) {
+                
+                // Warn the user and cancel future
+                self.cancelFuture = true
+                // We failed to renew the login token, tell the user on the main thread
+                dispatch_async(dispatch_get_main_queue(), {
+                    // Remove the loading screen
+                    self.loadingProgressView.removeFromSuperview()
+                    // Tell the user where we hit a snag
+                    CommonUtils.showDefaultAlertToUser(self, title: "Hit a Snag!", alertContents: "The server returned an invalid response while attempting to verify your login credentials. Please try again later!")
+                })
+                // Exit
+                return
+                
+            } else if( tokenRenewalState!["status"] as! String == "renewed_but_failed" &&
+                       tokenRenewalState!["reason"] as! String == "keychain_failed" ) {
+                
+                // Warn the user and cancel future
+                self.cancelFuture = true
+                // We failed to renew the login token, tell the user on the main thread
+                dispatch_async(dispatch_get_main_queue(), {
+                    // Remove the loading screen
+                    self.loadingProgressView.removeFromSuperview()
+                    // Tell the user where we hit a snag
+                    CommonUtils.showDefaultAlertToUser(self, title: "Hit a Snag!", alertContents: "We failed to save your fresh login token into Keychain. Please try again later!")
+                })
+                // Exit
+                return
+                
+            } else if( tokenRenewalState!["status"] as! String == "no_renewal" &&
+                       tokenRenewalState!["reason"] as! String == "invalid_cred" ) {
+                
+                // Warn the user and cancel future
+                self.cancelFuture = true
+                // We failed to renew the login token, tell the user on the main thread
+                dispatch_async(dispatch_get_main_queue(), {
+                    // Remove the loading screen
+                    self.loadingProgressView.removeFromSuperview()
+                    // Tell the user where we hit a snag
+                    CommonUtils.showDefaultAlertToUser(self, title: "Hit a Snag!", alertContents: "Your login credentials have expired. Please try logout and log back in to create new Location Logs.")
+                })
+                // Exit
+                return
+                
+            } else if( ( tokenRenewalState!["status"] as! String == "no_renewal" && tokenRenewalState!["reason"] as! String == "not_needed" ) ||
+                       ( tokenRenewalState!["status"] as! String == "renewed" && tokenRenewalState!["reason"] == nil ) ) {
+                
+                // Perfect, just proceed with the rest of the tasks
+                
+            }
+        })
         
         // Spawn off the uploads to Amazon S3
         // CITATION: https://github.com/awslabs/aws-sdk-ios-samples/blob/master/S3TransferManager-Sample/Swift/S3TransferManagerSampleSwift/UploadViewController.swift
@@ -655,7 +743,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                 syncRequest.HTTPMethod = "POST"
                 syncRequest.cachePolicy = .ReloadIgnoringLocalCacheData
                 syncRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-                syncRequest.setValue(CommonUtils.generateAuthorizationHeader(userName, userLoginToken: userLoginToken), forHTTPHeaderField: "Authorization")
+                syncRequest.setValue(UserAuthentication.generateAuthorizationHeader(userName, userLoginToken: userLoginToken), forHTTPHeaderField: "Authorization")
                 
                 // Form LatLng String
                 var latLng: String = ""
@@ -951,7 +1039,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                                                               "locpoints": locPointsListCompiled]
             // Form the request with these parameters
             let syncRequest: NSMutableURLRequest! = MultipartFormDataHTTP().createRequest(syncRequestURL, param: requestParams)
-            syncRequest.setValue(CommonUtils.generateAuthorizationHeader(userName, userLoginToken: userLoginToken), forHTTPHeaderField: "Authorization")
+            syncRequest.setValue(UserAuthentication.generateAuthorizationHeader(userName, userLoginToken: userLoginToken), forHTTPHeaderField: "Authorization")
             
             // Create semaphore to give a feel of a Synchronous Request via an Async Handler xD
             // CITATION: http://stackoverflow.com/a/34308158/705471
@@ -1012,7 +1100,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                         self.loadingProgressView.loadingProgressLabel.text = "Updated the LocNotes backend"
                     })
                     // Get the Added Date
-                    let addedTime: NSNumber = jsonResponse["addedate"] as! NSNumber
+                    let addedTime: Double! = (jsonResponse["token_expiry"] as? NSNumber)?.doubleValue
                     
                     // Now save it in CoreData
                     if self.managedContext == nil {
@@ -1120,6 +1208,28 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         // Be sure to have that view refreshed
         // TODO
         
+    }
+    
+    // MARK: - Validation Tests
+    func locationLogSubmissionValidationTests() -> Bool {
+        // Check the title
+        if( self.titleTextField.text?.isEmpty == true ) {
+            // Tell the user and return
+            CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "You cannot have an empty title for a Location Log. Please enter a title to proceed saving your Location Log!")
+            // Return
+            return false
+        }
+        
+        // Check for the description
+        if( self.descriptionTextField.text?.isEmpty == true || self.descriptionTextField.text == self.defaultDescriptionTextFieldPlaceholder ) {
+            // Tell the user and return
+            CommonUtils.showDefaultAlertToUser(self, title: "Validation Error", alertContents: "You cannot have an empty description for a Location Log. Please enter a description to proceed saving your Location Log!")
+            // Return
+            return false
+        }
+        
+        // Else, return true
+        return true
     }
     
     // MARK: - Segue actions handler here

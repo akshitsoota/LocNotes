@@ -33,6 +33,8 @@
 		FC605F341D2B092800AC5F73 /* LoadingScreenView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FC605F331D2B092800AC5F73 /* LoadingScreenView.xib */; };
 		FC605F361D2B1B8300AC5F73 /* CommonUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC605F351D2B1B8300AC5F73 /* CommonUtils.swift */; };
 		FCCC8F1A1D37434400BF49DB /* MultipartFormDataHTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCCC8F191D37434400BF49DB /* MultipartFormDataHTTP.swift */; };
+		FCCC8F1C1D37EFF500BF49DB /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCCC8F1B1D37EFF500BF49DB /* SystemConfiguration.framework */; };
+		FCCC8F1E1D37F67800BF49DB /* UserAuthentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCCC8F1D1D37F67800BF49DB /* UserAuthentication.swift */; };
 		FCFA5AEC1D2365D20092ADDC /* NewUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFA5AEB1D2365D20092ADDC /* NewUserViewController.swift */; };
 		FCFA5AEE1D242E450092ADDC /* NewUserPageContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFA5AED1D242E450092ADDC /* NewUserPageContentViewController.swift */; };
 		FCFD7E401D2ED7B200727BD6 /* ProgressLoadingScreenView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FCFD7E3F1D2ED7B200727BD6 /* ProgressLoadingScreenView.xib */; };
@@ -90,6 +92,8 @@
 		FC605F351D2B1B8300AC5F73 /* CommonUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CommonUtils.swift; path = CommonUtils/CommonUtils.swift; sourceTree = "<group>"; };
 		FCCC8F181D36B80A00BF49DB /* LocNotes-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LocNotes-Bridging-Header.h"; sourceTree = "<group>"; };
 		FCCC8F191D37434400BF49DB /* MultipartFormDataHTTP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MultipartFormDataHTTP.swift; path = CommonUtils/MultipartFormDataHTTP.swift; sourceTree = "<group>"; };
+		FCCC8F1B1D37EFF500BF49DB /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		FCCC8F1D1D37F67800BF49DB /* UserAuthentication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserAuthentication.swift; path = CommonUtils/UserAuthentication.swift; sourceTree = "<group>"; };
 		FCFA5AEB1D2365D20092ADDC /* NewUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserViewController.swift; sourceTree = "<group>"; };
 		FCFA5AED1D242E450092ADDC /* NewUserPageContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserPageContentViewController.swift; sourceTree = "<group>"; };
 		FCFD7E3F1D2ED7B200727BD6 /* ProgressLoadingScreenView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProgressLoadingScreenView.xib; sourceTree = "<group>"; };
@@ -107,6 +111,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FCCC8F1C1D37EFF500BF49DB /* SystemConfiguration.framework in Frameworks */,
 				FC392C221D355D1E009DD959 /* AWSS3.framework in Frameworks */,
 				FC392C101D355D1E009DD959 /* AWSCore.framework in Frameworks */,
 				FCFD7E591D318F0C00727BD6 /* MapKit.framework in Frameworks */,
@@ -176,6 +181,7 @@
 		FC392C2D1D355D2B009DD959 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FCCC8F1B1D37EFF500BF49DB /* SystemConfiguration.framework */,
 				FC392BF81D355D1E009DD959 /* AWSCore.framework */,
 				FC392C011D355D1E009DD959 /* AWSS3.framework */,
 				FCFD7E581D318F0C00727BD6 /* MapKit.framework */,
@@ -204,6 +210,7 @@
 				FCFD7E3F1D2ED7B200727BD6 /* ProgressLoadingScreenView.xib */,
 				FCFD7E431D2EE3C800727BD6 /* ProgressLoadingScreenView.swift */,
 				FCCC8F191D37434400BF49DB /* MultipartFormDataHTTP.swift */,
+				FCCC8F1D1D37F67800BF49DB /* UserAuthentication.swift */,
 			);
 			name = CommonUtils;
 			sourceTree = "<group>";
@@ -335,6 +342,7 @@
 				FC5B6ECE1D2CAA2300EC9C88 /* KeychainWrapper.swift in Sources */,
 				FC605F361D2B1B8300AC5F73 /* CommonUtils.swift in Sources */,
 				FC392BE91D348453009DD959 /* ImageThumbnail.swift in Sources */,
+				FCCC8F1E1D37F67800BF49DB /* UserAuthentication.swift in Sources */,
 				FC392BED1D348453009DD959 /* FullResolutionS3Image.swift in Sources */,
 				FCFD7E511D300D6500727BD6 /* PhotoCollectionViewCell.swift in Sources */,
 				FC5B6ECF1D2CAA2300EC9C88 /* KeychainOptions.swift in Sources */,
