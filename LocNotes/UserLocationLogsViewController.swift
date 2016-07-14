@@ -31,6 +31,11 @@ class UserLocationLogsViewController: UIViewController {
     }
     
     // MARK: - Actions received here
+    @IBAction func navigationBarSettingsButtonClicked(sender: UIBarButtonItem) {
+        // Navigate to the Settings Page
+        self.performSegueWithIdentifier("showSettingsPage", sender: self)
+    }
+    
     @IBAction func navigationBarAddButtonClicked(sender: UIBarButtonItem) {
         // Navigate to the add location log screen
         self.navigationController!.performSegueWithIdentifier("showNewOrUpdateLocationLog", sender: self)

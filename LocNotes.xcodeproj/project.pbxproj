@@ -35,6 +35,7 @@
 		FCCC8F1A1D37434400BF49DB /* MultipartFormDataHTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCCC8F191D37434400BF49DB /* MultipartFormDataHTTP.swift */; };
 		FCCC8F1C1D37EFF500BF49DB /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCCC8F1B1D37EFF500BF49DB /* SystemConfiguration.framework */; };
 		FCCC8F1E1D37F67800BF49DB /* UserAuthentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCCC8F1D1D37F67800BF49DB /* UserAuthentication.swift */; };
+		FCCD4C2B1D38354900656E3A /* UserSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCCD4C2A1D38354900656E3A /* UserSettingsViewController.swift */; };
 		FCFA5AEC1D2365D20092ADDC /* NewUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFA5AEB1D2365D20092ADDC /* NewUserViewController.swift */; };
 		FCFA5AEE1D242E450092ADDC /* NewUserPageContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFA5AED1D242E450092ADDC /* NewUserPageContentViewController.swift */; };
 		FCFD7E401D2ED7B200727BD6 /* ProgressLoadingScreenView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FCFD7E3F1D2ED7B200727BD6 /* ProgressLoadingScreenView.xib */; };
@@ -94,6 +95,7 @@
 		FCCC8F191D37434400BF49DB /* MultipartFormDataHTTP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MultipartFormDataHTTP.swift; path = CommonUtils/MultipartFormDataHTTP.swift; sourceTree = "<group>"; };
 		FCCC8F1B1D37EFF500BF49DB /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		FCCC8F1D1D37F67800BF49DB /* UserAuthentication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserAuthentication.swift; path = CommonUtils/UserAuthentication.swift; sourceTree = "<group>"; };
+		FCCD4C2A1D38354900656E3A /* UserSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSettingsViewController.swift; sourceTree = "<group>"; };
 		FCFA5AEB1D2365D20092ADDC /* NewUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserViewController.swift; sourceTree = "<group>"; };
 		FCFA5AED1D242E450092ADDC /* NewUserPageContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserPageContentViewController.swift; sourceTree = "<group>"; };
 		FCFD7E3F1D2ED7B200727BD6 /* ProgressLoadingScreenView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProgressLoadingScreenView.xib; sourceTree = "<group>"; };
@@ -157,6 +159,7 @@
 				FC605F191D289E1000AC5F73 /* SignUpUserViewController.swift */,
 				FC5B6ED11D2E049D00EC9C88 /* UserLocationLogsViewController.swift */,
 				FCFD7E471D2F42B400727BD6 /* NewUserLocationLogViewController.swift */,
+				FCCD4C2A1D38354900656E3A /* UserSettingsViewController.swift */,
 				FCFD7E561D30B1DA00727BD6 /* AddLocationToLocationLogViewController.swift */,
 				FC605F2F1D29FE2700AC5F73 /* endpoints.plist */,
 				FC392C2F1D355FAA009DD959 /* amazon-aws-credentials.plist */,
@@ -324,6 +327,7 @@
 			files = (
 				FC605F161D276D5E00AC5F73 /* LoginUserViewController.swift in Sources */,
 				FC5B6ED21D2E049D00EC9C88 /* UserLocationLogsViewController.swift in Sources */,
+				FCCD4C2B1D38354900656E3A /* UserSettingsViewController.swift in Sources */,
 				FC392BEB1D348453009DD959 /* LocationLog.swift in Sources */,
 				FC1913F31D1B869800146224 /* SplashScreenController.swift in Sources */,
 				FCFD7E531D300F8E00727BD6 /* PhotoView.swift in Sources */,
