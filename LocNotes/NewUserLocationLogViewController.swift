@@ -491,8 +491,8 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         }
         
         // Generate a unique Log ID
-        let userName: String? = KeychainWrapper.defaultKeychainWrapper().stringForKey("LocNotes-username")
-        let userLoginToken: String? = KeychainWrapper.defaultKeychainWrapper().stringForKey("LocNotes-loginToken")
+        let userName: String! = KeychainWrapper.defaultKeychainWrapper().stringForKey("LocNotes-username")!
+        let userLoginToken: String! = KeychainWrapper.defaultKeychainWrapper().stringForKey("LocNotes-loginToken")!
         let currentTime: String = String(Int64(NSDate().timeIntervalSince1970))
         
         let uniqueLogID: String = CommonUtils.generateSHA512("\(userName)\(userLoginToken)\(currentTime)".dataUsingEncoding(NSUTF8StringEncoding)!)
@@ -579,12 +579,12 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
 
                         // Update the UI Progress
                         dispatch_async(dispatch_get_main_queue(), {
-                            self.loadingProgressView.loadingProgressBar.progress = Float(self.photoViews[photoIndex].photoViewIndex + 1) / Float((self.photoViews.count * 3) + 1)
+                            self.loadingProgressView.loadingProgressBar.setProgress(Float(self.photoViews[photoIndex].photoViewIndex + 1) / Float((self.photoViews.count * 3) + 1), animated: true)
                             self.loadingProgressView.loadingProgressLabel.text = "Done uploading \(self.photoViews[photoIndex].photoViewIndex + 1) of \(self.photoViews.count) photos to Amazon S3"
                         })
                         // Also, fill in the PhotoViews array
                         self.photoViews[photoIndex].uniqueS3ID = uniqueS3ID
-                        self.photoViews[photoIndex].amazonS3link = "https://s3.amazonaws.com/\(awsUploadBucketName)/\(awsUploadKey).png"
+                        self.photoViews[photoIndex].amazonS3link = "https://s3.amazonaws.com/\(awsUploadBucketName!)/\(awsUploadKey).png"
                     }
                     // This is suppose to return nil
                     return nil
@@ -644,7 +644,10 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                 // Form LatLng String
                 var latLng: String = ""
                 if( self.photoViews[photoIndex].photoLocation != nil ) {
-                    latLng = "\(self.photoViews[photoIndex].photoLocation?.coordinate.latitude),\(self.photoViews[photoIndex].photoLocation?.coordinate.longitude)"
+                    let latitude: String = NSNumber(double: (self.photoViews[photoIndex].photoLocation?.coordinate.latitude)! as Double).stringValue
+                    let longitude: String = NSNumber(double: (self.photoViews[photoIndex].photoLocation?.coordinate.longitude)! as Double).stringValue
+                    
+                    latLng = "\(latitude),\(longitude)"
                 }
                 
                 // Let us form a dictionary of <K, V> pairs to be sent
@@ -694,7 +697,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                         // Hide the loading view
                         self.loadingProgressView.removeFromSuperview()
                         // Also, alert the user
-                        CommonUtils.showDefaultAlertToUser(self, title: "Hit a snag!", alertContents: "We were unable to upload the S3 images to our backend. Please try again!")
+                        CommonUtils.showDefaultAlertToUser(self, title: "Hit a snag!", alertContents: "The server returned an invalid response. Please try again later!")
                     })
                     // Now, return
                     return
@@ -726,7 +729,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                         
                         // Update the Progress View
                         dispatch_async(dispatch_get_main_queue(), {
-                            self.loadingProgressView.loadingProgressBar.progress = Float(self.photoViews.count + (self.photoViews[photoIndex].photoViewIndex + 1)) / Float((self.photoViews.count * 3) + 1)
+                            self.loadingProgressView.loadingProgressBar.setProgress(Float(self.photoViews.count + (self.photoViews[photoIndex].photoViewIndex + 1)) / Float((self.photoViews.count * 3) + 1), animated: true)
                             self.loadingProgressView.loadingProgressLabel.text = "Done adding \(self.photoViews[photoIndex].photoViewIndex + 1) of \(self.photoViews.count) photos to LocNotes backend"
                         })
                         
@@ -794,15 +797,26 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                 if self.managedContext == nil {
                     // We've got serious issues here; Warn the user
                     self.cancelFuture = true
-                    // TODO
+                    // Warn the user
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.loadingProgressView.removeFromSuperview() // Hide the loading screen
+                        // We've got some problems parsing the response; Show an alert to the user
+                        CommonUtils.showDefaultAlertToUser(self, title: "System Error", alertContents: "CoreData API failed to save objects. Please try again later!")
+                    })
+                    // And return:
                     return
                 }
                 
                 guard let fullResolutionS3Image: FullResolutionS3Image = NSEntityDescription.insertNewObjectForEntityForName("FullResolutionS3Image", inManagedObjectContext: self.managedContext!) as? FullResolutionS3Image, let imageThumbnail: ImageThumbnail = NSEntityDescription.insertNewObjectForEntityForName("ImageThumbnail", inManagedObjectContext: self.managedContext!) as? ImageThumbnail else
                 {
-                    // TODO
                     self.cancelFuture = true
-                    
+                    // Warn the user
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.loadingProgressView.removeFromSuperview() // Hide the loading screen
+                        // We've got some problems parsing the response; Show an alert to the user
+                        CommonUtils.showDefaultAlertToUser(self, title: "System Error", alertContents: "CoreData API failed to save objects. Please try again later!")
+                    })
+                    // And return:
                     return
                 }
                 
@@ -819,9 +833,14 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                 do {
                     try self.managedContext?.save()
                 } catch {
-                    // TODO
                     self.cancelFuture = true
-                    
+                    // Warn the user
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.loadingProgressView.removeFromSuperview() // Hide the loading screen
+                        // We've got some problems parsing the response; Show an alert to the user
+                        CommonUtils.showDefaultAlertToUser(self, title: "System Error", alertContents: "CoreData API failed to save objects. Please try again later!")
+                    })
+                    // And return:
                     return
                 }
                 
@@ -830,7 +849,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                 
                 // Update the UI; Update the Progress View
                 dispatch_async(dispatch_get_main_queue(), {
-                    self.loadingProgressView.loadingProgressBar.progress = Float((2 * self.photoViews.count) + (self.photoViews[photoIndex].photoViewIndex + 1)) / Float((self.photoViews.count * 3) + 1)
+                    self.loadingProgressView.loadingProgressBar.setProgress(Float((2 * self.photoViews.count) + (self.photoViews[photoIndex].photoViewIndex + 1)) / Float((self.photoViews.count * 3) + 1), animated: true)
                     self.loadingProgressView.loadingProgressLabel.text = "Done adding \(self.photoViews[photoIndex].photoViewIndex + 1) of \(self.photoViews.count) photos to local storage"
                 })
                 
@@ -866,9 +885,10 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
             // Compile the S3 IDs
             var s3AddedFirst: Bool = false
             var s3IDsCompiled: String = ""
+            s3IDs = ["a","b","c"]
             
             for s3id in s3IDs {
-                if !s3AddedFirst {
+                if s3AddedFirst {
                     s3IDsCompiled = s3IDsCompiled + ";" + s3id      // Add delimiter and then the next item
                 } else {
                     s3AddedFirst = true     // Toggle that
@@ -882,7 +902,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
             var locPointsListCompiled: String = ""
             
             for location in self.locationsUserVisited {
-                if !locNameAddedFirst {
+                if locNameAddedFirst {
                     locNameListCompiled = locNameListCompiled + ";;;" + location.placemark.title!       // Add delimiter and then the next item
                     locPointsListCompiled = locPointsListCompiled + ";" + "\(location.placemark.coordinate.latitude),\(location.placemark.coordinate.longitude)"    // Add the next location coord after the delimiter
                 } else {
@@ -896,34 +916,15 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
             let syncRequestURL: NSURL! = NSURL(string: "http://" + awsEndpoint + addLocationLogURL)
             let syncSession: NSURLSession! = NSURLSession.sharedSession()
             
-            let syncRequest: NSMutableURLRequest! = NSMutableURLRequest(URL: syncRequestURL)
-            syncRequest.HTTPMethod = "POST"
-            syncRequest.cachePolicy = .ReloadIgnoringLocalCacheData
-            syncRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-            syncRequest.setValue(CommonUtils.generateAuthorizationHeader(userName, userLoginToken: userLoginToken), forHTTPHeaderField: "Authorization")
-            
-            // Let us form a dictionary of <K, V> pairs to be sent
-            // REFERENCE: http://stackoverflow.com/a/28009796/705471
             let requestParams: Dictionary<String, String>! = ["locationlogid": uniqueLogID,
                                                               "title": self.titleTextField.text!,
                                                               "desc": self.descriptionTextField.text!,
                                                               "s3ids": s3IDsCompiled,
                                                               "locnames": locNameListCompiled,
                                                               "locpoints": locPointsListCompiled]
-            var firstParamAdded: Bool! = false
-            let paramKeys: Array<String>! = Array(requestParams.keys)
-            var requestBody = ""
-            for key in paramKeys {
-                if( !firstParamAdded ) {
-                    requestBody += key + "=" + requestParams[key]!
-                    firstParamAdded = true
-                } else {
-                    requestBody += "&" + key + "=" + requestParams[key]!
-                }
-            }
-            
-            requestBody = requestBody.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
-            syncRequest.HTTPBody = requestBody.dataUsingEncoding(NSUTF8StringEncoding)
+            // Form the request with these parameters
+            let syncRequest: NSMutableURLRequest! = MultipartFormDataHTTP().createRequest(syncRequestURL, param: requestParams)
+            syncRequest.setValue(CommonUtils.generateAuthorizationHeader(userName, userLoginToken: userLoginToken), forHTTPHeaderField: "Authorization")
             
             // Create semaphore to give a feel of a Synchronous Request via an Async Handler xD
             // CITATION: http://stackoverflow.com/a/34308158/705471
@@ -944,7 +945,13 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
             if( syncResponse?.error != nil ) {
                 // We've got a problem
                 self.cancelFuture = true
-                
+                // Tell the user; and return
+                dispatch_async(dispatch_get_main_queue(), {
+                    // Hide the loading view
+                    self.loadingProgressView.removeFromSuperview()
+                    // Also, alert the user
+                    CommonUtils.showDefaultAlertToUser(self, title: "Hit a snag!", alertContents: "We got an invalid response from the server. Please try again later!")
+                })
                 // Exit the function now
                 return
             }
@@ -984,15 +991,26 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                     if self.managedContext == nil {
                         // We've got serious issues here; Warn the user
                         self.cancelFuture = true
-                        // TODO
+                        // Warn the user
+                        dispatch_async(dispatch_get_main_queue(), {
+                            self.loadingProgressView.removeFromSuperview() // Hide the loading screen
+                            // We've got some problems parsing the response; Show an alert to the user
+                            CommonUtils.showDefaultAlertToUser(self, title: "System Error", alertContents: "CoreData API failed to save objects. Please try again later!")
+                        })
+                        // And return:
                         return
                     }
                     
                     guard let locationLog: LocationLog = NSEntityDescription.insertNewObjectForEntityForName("LocationLog", inManagedObjectContext: self.managedContext!) as? LocationLog else
                     {
-                        // TODO
                         self.cancelFuture = true
-                        
+                        // Warn the user
+                        dispatch_async(dispatch_get_main_queue(), {
+                            self.loadingProgressView.removeFromSuperview() // Hide the loading screen
+                            // We've got some problems parsing the response; Show an alert to the user
+                            CommonUtils.showDefaultAlertToUser(self, title: "System Error", alertContents: "CoreData API failed to save objects. Please try again later!")
+                        })
+                        // And return:
                         return
                     }
                     
@@ -1009,9 +1027,14 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                     do {
                         try self.managedContext?.save()
                     } catch {
-                        // TODO
                         self.cancelFuture = true
-                        
+                        // Warn the user
+                        dispatch_async(dispatch_get_main_queue(), {
+                            self.loadingProgressView.removeFromSuperview() // Hide the loading screen
+                            // We've got some problems parsing the response; Show an alert to the user
+                            CommonUtils.showDefaultAlertToUser(self, title: "System Error", alertContents: "CoreData API failed to save objects. Please try again later!")
+                        })
+                        // And return:
                         return
                     }
                     
@@ -1020,7 +1043,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                     
                     // Update the UI; Update the Progress View
                     dispatch_async(dispatch_get_main_queue(), {
-                        self.loadingProgressView.loadingProgressBar.progress = 1
+                        self.loadingProgressView.loadingProgressBar.setProgress(1, animated: true)
                         self.loadingProgressView.loadingProgressLabel.text = "Done saving your location log"
                         self.loadingProgressView.loadingProgressIndicator.hidden = true
                     })

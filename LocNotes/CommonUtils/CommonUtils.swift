@@ -133,7 +133,7 @@ class CommonUtils {
     
     // Return the Authorization Header required for Auth-based requests to the EC2 Backend
     static func generateAuthorizationHeader(username: String?, userLoginToken: String?) -> String {
-        let authValue: String = "\(username):\(userLoginToken)".toBase64()
+        let authValue: String = "\(username!):\(userLoginToken!)".toBase64()
         return "Basic \(authValue)"
     }
     

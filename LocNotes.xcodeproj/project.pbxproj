@@ -32,6 +32,7 @@
 		FC605F301D29FE2700AC5F73 /* endpoints.plist in Resources */ = {isa = PBXBuildFile; fileRef = FC605F2F1D29FE2700AC5F73 /* endpoints.plist */; };
 		FC605F341D2B092800AC5F73 /* LoadingScreenView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FC605F331D2B092800AC5F73 /* LoadingScreenView.xib */; };
 		FC605F361D2B1B8300AC5F73 /* CommonUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC605F351D2B1B8300AC5F73 /* CommonUtils.swift */; };
+		FCCC8F1A1D37434400BF49DB /* MultipartFormDataHTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCCC8F191D37434400BF49DB /* MultipartFormDataHTTP.swift */; };
 		FCFA5AEC1D2365D20092ADDC /* NewUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFA5AEB1D2365D20092ADDC /* NewUserViewController.swift */; };
 		FCFA5AEE1D242E450092ADDC /* NewUserPageContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCFA5AED1D242E450092ADDC /* NewUserPageContentViewController.swift */; };
 		FCFD7E401D2ED7B200727BD6 /* ProgressLoadingScreenView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FCFD7E3F1D2ED7B200727BD6 /* ProgressLoadingScreenView.xib */; };
@@ -88,6 +89,7 @@
 		FC605F331D2B092800AC5F73 /* LoadingScreenView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LoadingScreenView.xib; path = CommonUtils/LoadingScreenView.xib; sourceTree = "<group>"; };
 		FC605F351D2B1B8300AC5F73 /* CommonUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CommonUtils.swift; path = CommonUtils/CommonUtils.swift; sourceTree = "<group>"; };
 		FCCC8F181D36B80A00BF49DB /* LocNotes-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LocNotes-Bridging-Header.h"; sourceTree = "<group>"; };
+		FCCC8F191D37434400BF49DB /* MultipartFormDataHTTP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MultipartFormDataHTTP.swift; path = CommonUtils/MultipartFormDataHTTP.swift; sourceTree = "<group>"; };
 		FCFA5AEB1D2365D20092ADDC /* NewUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserViewController.swift; sourceTree = "<group>"; };
 		FCFA5AED1D242E450092ADDC /* NewUserPageContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserPageContentViewController.swift; sourceTree = "<group>"; };
 		FCFD7E3F1D2ED7B200727BD6 /* ProgressLoadingScreenView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProgressLoadingScreenView.xib; sourceTree = "<group>"; };
@@ -201,6 +203,7 @@
 				FC605F351D2B1B8300AC5F73 /* CommonUtils.swift */,
 				FCFD7E3F1D2ED7B200727BD6 /* ProgressLoadingScreenView.xib */,
 				FCFD7E431D2EE3C800727BD6 /* ProgressLoadingScreenView.swift */,
+				FCCC8F191D37434400BF49DB /* MultipartFormDataHTTP.swift */,
 			);
 			name = CommonUtils;
 			sourceTree = "<group>";
@@ -326,6 +329,7 @@
 				FCFD7E481D2F42B400727BD6 /* NewUserLocationLogViewController.swift in Sources */,
 				FC392BEC1D348453009DD959 /* FullResolutionS3Image+CoreDataProperties.swift in Sources */,
 				FC392BE81D348453009DD959 /* ImageThumbnail+CoreDataProperties.swift in Sources */,
+				FCCC8F1A1D37434400BF49DB /* MultipartFormDataHTTP.swift in Sources */,
 				FC392BE11D3480C0009DD959 /* LocationLog.xcdatamodeld in Sources */,
 				FCFA5AEC1D2365D20092ADDC /* NewUserViewController.swift in Sources */,
 				FC5B6ECE1D2CAA2300EC9C88 /* KeychainWrapper.swift in Sources */,
