@@ -184,11 +184,18 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         // Once keyboard disappears, restore original positions
         let info: NSDictionary = notification.userInfo!
         let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue().size
-        let contentInsets: UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, -keyboardSize!.height, 0.0)
+        var scrollViewFrame: CGRect = self.scrollView.frame
         
-        self.scrollView.contentInset = contentInsets
-        self.scrollView.scrollIndicatorInsets = contentInsets
-        self.view.endEditing(true)
+        // Begin animation
+        UIView.beginAnimations(nil, context: nil)
+        UIView.setAnimationBeginsFromCurrentState(true)
+        UIView.setAnimationDuration(0.3)
+        
+        scrollViewFrame.size.height += (keyboardSize?.height)!
+        // Apply it
+        self.scrollView.frame = scrollViewFrame
+        // Now animate
+        UIView.commitAnimations()
     }
     
     func textFieldDidBeginEditing(textField: UITextField) {
@@ -203,7 +210,12 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         self.view.endEditing(true)
     }
     
-    // MARK: - TextView Delegate functions to deal with placeholder text
+    // MARK: - TextView Delegate functions to deal with placeholder text and keyboard actions
+    func textViewShouldBeginEditing(textView: UITextView) -> Bool {
+        self.activeField = textView
+        return true
+    }
+    
     func textViewDidBeginEditing(textView: UITextView) {
         if( textView == descriptionTextField &&
             textView.textColor == defaultDescriptionTextFieldPlaceholderColor ) {
@@ -211,8 +223,11 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
             textView.text = nil
             textView.textColor = UIColor.blackColor()
         }
-        // Set as active field as well
-        self.activeField = textView
+    }
+    
+    func textViewShouldEndEditing(textView: UITextView) -> Bool {
+        self.activeField = nil
+        return true
     }
     
     func textViewDidEndEditing(textView: UITextView) {
@@ -224,6 +239,15 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         }
         // Remove active field as well
         self.activeField = nil
+    }
+    
+    // MARK: - TextField return key functions dealt with here
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        if( textField == self.titleTextField ) {
+            self.descriptionTextField.becomeFirstResponder() // Let the description field take over
+        }
+        // Anyways, return:
+        return false
     }
     
     // MARK: - PhotoCollectionView Functions
