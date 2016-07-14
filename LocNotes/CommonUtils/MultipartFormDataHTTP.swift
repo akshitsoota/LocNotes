@@ -6,6 +6,8 @@
 //  Copyright © 2016 axe. All rights reserved.
 //
 
+// CITATION: http://stackoverflow.com/questions/26162616/upload-image-with-parameters-in-swift
+
 import Foundation
 import MobileCoreServices
 

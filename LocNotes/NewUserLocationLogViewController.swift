@@ -589,8 +589,24 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                     // This is suppose to return nil
                     return nil
                 }
-                // Wait for it to end; Block this thread till the upload finishes
-                uploadTask.waitUntilFinished()
+                
+                // Wait for it to end
+                while( !uploadTask.completed ) {
+                    // Sleep for one second
+                    sleep(1)
+                    // Now update the user with the progress of the upload
+                    amazonS3UploadRequest.uploadProgress = {(bytesSent, totalBytesSent, totalBytesExpectedToSend) -> Void in
+                        // Calculate the fresh progress
+                        let progressToAddNum: Double = Double(totalBytesSent)
+                        let progressToAddDenom: Double = Double(totalBytesExpectedToSend) * Double((self.photoViews.count * 3) + 1)
+                        let progressToAdd: Float = Float(progressToAddNum / progressToAddDenom) + Float(self.photoViews[photoIndex].photoViewIndex)
+                        let finalProgress: Float = Float(progressToAdd / Float((self.photoViews.count * 3) + 1))
+                        // Update the UI
+                        dispatch_async(dispatch_get_main_queue(), {
+                            self.loadingProgressView.loadingProgressBar.setProgress(finalProgress, animated: true)
+                        })
+                    }
+                }
             })
         }
         
@@ -741,6 +757,17 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                             self.loadingProgressView.removeFromSuperview() // Hide the loading screen
                             // We've got some problems parsing the response; Show an alert to the user
                             CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Please try to login again!")
+                        })
+                        // Return
+                        return
+                    } else if( strStatus == "unauthorized" ) {
+                        // Stop. We've gotta warn the user; Cancel future tasks
+                        self.cancelFuture = true
+                        // Warn the user
+                        dispatch_async(dispatch_get_main_queue(), {
+                            self.loadingProgressView.removeFromSuperview() // Hide the loading screen
+                            // We've got some problems parsing the response; Show an alert to the user
+                            CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server claims that your login credentials are invalid. Please try again! If that doesn't resolve the issue, please re-login and then try adding your Location Log.")
                         })
                         // Return
                         return
@@ -1056,6 +1083,17 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                         self.loadingProgressView.removeFromSuperview() // Hide the loading screen
                         // We've got some problems parsing the response; Show an alert to the user
                         CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server returned an invalid response. Please try to login again!")
+                    })
+                    // Return
+                    return
+                } else if( strStatus == "unauthorized" ) {
+                    // Stop. We've gotta warn the user; Cancel future tasks
+                    self.cancelFuture = true
+                    // Warn the user
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.loadingProgressView.removeFromSuperview() // Hide the loading screen
+                        // We've got some problems parsing the response; Show an alert to the user
+                        CommonUtils.showDefaultAlertToUser(self, title: "Network Error", alertContents: "The server claims that your login credentials are invalid. Please try again! If that doesn't resolve the issue, please re-login and then try adding your Location Log.")
                     })
                     // Return
                     return
