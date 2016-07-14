@@ -16,9 +16,11 @@ import UIKit
 
 class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UICollectionViewDataSource,
                                         UINavigationControllerDelegate, UIImagePickerControllerDelegate,
-                                        UICollectionViewDelegateFlowLayout, UITableViewDelegate, UITableViewDataSource
+                                        UICollectionViewDelegateFlowLayout, UITableViewDelegate, UITableViewDataSource,
+                                        UITextFieldDelegate
 {
 
+    @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var titleTextFieldHolder: UIView!
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var descriptionTextFieldHolder: UIView!
@@ -46,6 +48,8 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     var locationsVisitedTableAction: Int = -1 // -1 = Nothing; 0 = Multi-Remove; 1 = Re-order mode
     // Loading Progress View
     var loadingProgressView: ProgressLoadingScreenView!
+    // Keeps track of the active field on the View
+    var activeField: UIView?
     
     // Dispatch Queues
     let uploadLocationLogQueue = dispatch_queue_create("LocationLogUploadQueue", DISPATCH_QUEUE_CONCURRENT)
@@ -71,12 +75,16 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         super.viewWillAppear(animated)
         // Set the status bar color to the light color
         UIApplication.sharedApplication().statusBarStyle = .LightContent
+        // Let us receive keyboard notifications
+        registerForKeyboardNotifications()
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         // Set the status bar color back to default
         UIApplication.sharedApplication().statusBarStyle = .Default
+        // Anddd, let us stop receiving those keyboard notifications
+        deregisterFromKeyboardNotifications()
     }
     
     // MARK: - Setup functions
@@ -127,13 +135,72 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         // Hide stop action button in Locations Visited by default
         self.locationsVisitedStopActionButton.hidden = true
         
-        // TODO: Keyboard scroll up and deal with return key
+        // Have all events come to us
+        self.titleTextField.delegate = self
+        
+        // If user taps outside any field, we are to dismiss the keyboard
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(NewUserLocationLogViewController.dismissKeyboard))
+        self.view.addGestureRecognizer(tap)
     }
     
     func setupCoreData() {
         dispatch_sync(self.uploadLocationLogQueue) {
             self.managedContext = AppDelegate().managedObjectContext
         }
+    }
+    
+    // MARK: - Keyboard Scroll Issues Fix
+    // REFERENCE: http://stackoverflow.com/a/28813720/705471
+    
+    func registerForKeyboardNotifications() {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewUserLocationLogViewController.keyboardWasShown(_:)), name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewUserLocationLogViewController.keyboardWillBeHidden(_:)), name: UIKeyboardWillHideNotification, object: nil)
+    }
+    
+    func deregisterFromKeyboardNotifications() {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
+    }
+    
+    func keyboardWasShown(notification: NSNotification) {
+        // Need to calculate keyboard exact size due to Apple suggestions
+        let info: NSDictionary = notification.userInfo!
+        let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue().size
+        let contentInsets: UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize!.height, 0.0)
+        
+        self.scrollView.contentInset = contentInsets
+        self.scrollView.scrollIndicatorInsets = contentInsets
+        
+        var aRect: CGRect = self.view.frame
+        aRect.size.height -= keyboardSize!.height
+        if activeField != nil {
+            if (!CGRectContainsPoint(aRect, activeField!.frame.origin)) {
+                self.scrollView.scrollRectToVisible(activeField!.frame, animated: true)
+            }
+        }
+    }
+    
+    func keyboardWillBeHidden(notification: NSNotification) {
+        // Once keyboard disappears, restore original positions
+        let info: NSDictionary = notification.userInfo!
+        let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue().size
+        let contentInsets: UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, -keyboardSize!.height, 0.0)
+        
+        self.scrollView.contentInset = contentInsets
+        self.scrollView.scrollIndicatorInsets = contentInsets
+        self.view.endEditing(true)
+    }
+    
+    func textFieldDidBeginEditing(textField: UITextField) {
+        self.activeField = textField
+    }
+    
+    func textFieldDidEndEditing(textField: UITextField) {
+        self.activeField = nil
+    }
+    
+    func dismissKeyboard() {
+        self.view.endEditing(true)
     }
     
     // MARK: - TextView Delegate functions to deal with placeholder text
@@ -144,6 +211,8 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
             textView.text = nil
             textView.textColor = UIColor.blackColor()
         }
+        // Set as active field as well
+        self.activeField = textView
     }
     
     func textViewDidEndEditing(textView: UITextView) {
@@ -153,6 +222,8 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
             textView.text = defaultDescriptionTextFieldPlaceholder
             textView.textColor = defaultDescriptionTextFieldPlaceholderColor
         }
+        // Remove active field as well
+        self.activeField = nil
     }
     
     // MARK: - PhotoCollectionView Functions
@@ -460,6 +531,28 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     
     // MARK: - Navigation Bar Actions here
     @IBAction func cancelLogClicked(sender: AnyObject) {
+        // Check if the user has made any changes
+        if( self.titleTextField.text?.isEmpty == false || self.descriptionTextField.text != self.defaultDescriptionTextFieldPlaceholder ||
+            self.photoViews.count != 0 || self.locationsUserVisited.count != 0 ) {
+            
+            // Ask the user if he really wants to exit?
+            let actionSheet: UIAlertController = UIAlertController(title: nil, message: "Are you sure you want to discard changes to your location log?", preferredStyle: .ActionSheet)
+            let deleteAction: UIAlertAction = UIAlertAction(title: "Discard", style: .Destructive, handler: {(alert: UIAlertAction) -> Void in
+                self.performSegueWithIdentifier("unwindSegueToLocationLogListing", sender: self)
+            })
+            let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
+            // Add the options to the Action Sheet
+            actionSheet.addAction(deleteAction)
+            actionSheet.addAction(cancelAction)
+            // Now present the Action Sheet
+            self.presentViewController(actionSheet, animated: true, completion: nil)
+            
+        } else {
+            
+            // Just go back as usual
+            self.performSegueWithIdentifier("unwindSegueToLocationLogListing", sender: self)
+            
+        }
     }
     
     @IBAction func doneLogClicked(sender: AnyObject) {

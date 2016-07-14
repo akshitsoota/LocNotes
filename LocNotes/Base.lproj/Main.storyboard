@@ -1212,12 +1212,15 @@
                         <outlet property="logPhotosCollectionView" destination="FUp-xR-1Dm" id="zPS-gP-A7x"/>
                         <outlet property="logPhotosMainHolder" destination="6an-A0-3gi" id="Fr5-ue-9AW"/>
                         <outlet property="logPhotosMainScrollView" destination="K28-vP-qLW" id="bdo-A5-lAX"/>
+                        <outlet property="scrollView" destination="u8n-7E-Adq" id="Mdz-0E-qBy"/>
                         <outlet property="titleTextField" destination="7zy-0p-aTB" id="pCJ-5F-D4G"/>
                         <outlet property="titleTextFieldHolder" destination="njc-uu-Jpm" id="DHo-RH-O1k"/>
                         <segue destination="w3k-03-CJW" kind="show" identifier="showAddLocationToLog" id="Ysm-ip-clF"/>
+                        <segue destination="V8T-ep-MCW" kind="unwind" identifier="unwindSegueToLocationLogListing" unwindAction="unwindSegue:" id="geL-CE-edN"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Big-pU-9e5" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="V8T-ep-MCW" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="1562" y="-48"/>
         </scene>

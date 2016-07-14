@@ -35,5 +35,12 @@ class UserLocationLogsViewController: UIViewController {
         // Navigate to the add location log screen
         self.navigationController!.performSegueWithIdentifier("showNewOrUpdateLocationLog", sender: self)
     }
+    
+    // MARK: - Segue actions handler here
+    @IBAction func unwindSegue(segue: UIStoryboardSegue) {
+        if( segue.sourceViewController.isKindOfClass(NewUserLocationLogViewController) ) {
+            // TODO
+        }
+    }
 
 }
