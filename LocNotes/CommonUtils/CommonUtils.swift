@@ -22,6 +22,15 @@ class CommonUtils {
         return toReturn
     }
     
+    static func returnLoadingScreenView(target: UIViewController!, size: CGRect) -> UIView! {
+        // Get the view and set the frame
+        let nibArray: [AnyObject] = NSBundle.mainBundle().loadNibNamed("LoadingScreenView", owner: target, options: nil)
+        let toReturn = nibArray[0] as! UIView
+        toReturn.frame = size
+        // Now return
+        return toReturn
+    }
+    
     static func setLoadingTextOnLoadingScreenView(view: UIView!, newLabelContents: String) {
         // Try to set the label contents
         if( view.viewWithTag(2)!.isKindOfClass(UILabel) ) {

@@ -1375,5 +1375,12 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         super.viewWillLayoutSubviews() // Let the super do its stuff
         logPhotosCollectionView.collectionViewLayout.invalidateLayout()
     }
+    
+    // MARK: - Orientation Change Listener
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()           // Let the super do its stuff
+        // Re-setup the views
+        setupView()
+    }
 
 }

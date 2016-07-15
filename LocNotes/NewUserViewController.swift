@@ -31,6 +31,10 @@ class NewUserViewController: UIViewController, UIPageViewControllerDataSource, U
     override func viewDidLoad() {
         super.viewDidLoad() // Let the super do its stuff
         
+        // Clear up the Navigation Controller if any
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
+        self.navigationController?.setToolbarHidden(true, animated: false)
+        
         // Initialze the pageView array with the identifiers for the PageViewController pages
         pageViews.append("NewUserPageView1")
         pageViews.append("NewUserPageView2")

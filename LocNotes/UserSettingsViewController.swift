@@ -19,6 +19,8 @@ class UserSettingsViewController: UIViewController {
     @IBOutlet weak var uploadOnWifiSwitch: UISwitch!
     @IBOutlet weak var deleteAllLocationLogsViewHolder: UIView!
     @IBOutlet weak var logOutOfAccountViewHolder: UIView!
+    // Holds the loading screen that shows the user progress of their action
+    var loadingScreen: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -138,5 +140,138 @@ class UserSettingsViewController: UIViewController {
     }
     
     @IBAction func logOutAccountButtonClicked(sender: AnyObject) {
+        // Ask the user for confirmation
+        let actionSheet: UIAlertController = UIAlertController(title: nil, message: "Are you sure you want to log out of your account? You will not loose any location logs by doing so.", preferredStyle: .ActionSheet)
+        let deleteAction: UIAlertAction = UIAlertAction(title: "Log Out", style: .Destructive, handler: {(alert: UIAlertAction) -> Void in
+            // Show up a loading screen
+            self.loadingScreen = CommonUtils.returnLoadingScreenView(self, size: UIScreen.mainScreen().bounds)
+            CommonUtils.setLoadingTextOnLoadingScreenView(self.loadingScreen, newLabelContents: "Logging you out...")
+            self.navigationController?.view.addSubview(self.loadingScreen)
+            
+            // Send the request to log the user out
+            let awsEndpoint: String = CommonUtils.fetchFromPropertiesList("endpoints", fileExtension: "plist", key: "awsEC2EndpointURL")!
+            let invalidateTokenURL: String = CommonUtils.fetchFromPropertiesList("endpoints", fileExtension: "plist", key: "invalidateLoginTokenURL")!
+            
+            let userName: String! = KeychainWrapper.defaultKeychainWrapper().stringForKey("LocNotes-username")!
+            let userLoginToken: String! = KeychainWrapper.defaultKeychainWrapper().stringForKey("LocNotes-loginToken")!
+            let userTokenExpiry: Double! = KeychainWrapper.defaultKeychainWrapper().doubleForKey("LocNotes-tokenExpiry")!
+            
+            // Now start the async request
+            let asyncRequestURL: NSURL! = NSURL(string: "http://" + awsEndpoint + invalidateTokenURL)
+            let asyncSession: NSURLSession! = NSURLSession.sharedSession()
+            
+            let asyncRequest: NSMutableURLRequest! = NSMutableURLRequest(URL: asyncRequestURL)
+            asyncRequest.HTTPMethod = "POST"
+            asyncRequest.cachePolicy = .ReloadIgnoringLocalCacheData
+            asyncRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            
+            // Let us form a dictionary of <K, V> pairs to be sent
+            // REFERENCE: http://stackoverflow.com/a/28009796/705471
+            let requestParams: Dictionary<String, String>! = ["username": userName,
+                                                              "logintoken": userLoginToken,
+                                                              "logintokenexpiry": String(userTokenExpiry)]
+            var firstParamAdded: Bool! = false
+            let paramKeys: Array<String>! = Array(requestParams.keys)
+            var requestBody = ""
+            for key in paramKeys {
+                if( !firstParamAdded ) {
+                    requestBody += key + "=" + requestParams[key]!
+                    firstParamAdded = true
+                } else {
+                    requestBody += "&" + key + "=" + requestParams[key]!
+                }
+            }
+            
+            requestBody = requestBody.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
+            asyncRequest.HTTPBody = requestBody.dataUsingEncoding(NSUTF8StringEncoding)
+            
+            let asyncTask = asyncSession.dataTaskWithRequest(asyncRequest, completionHandler: {(data: NSData?, response: NSURLResponse?, error: NSError?) -> Void in
+                // Check for any errors
+                if( error != nil ) {
+                    // Tell the user that we failed to log them out
+                    dispatch_async(dispatch_get_main_queue(), {
+                        // Hide the loading screen
+                        self.loadingScreen.removeFromSuperview()
+                        // Alert the user
+                        CommonUtils.showDefaultAlertToUser(self, title: "Server Error", alertContents: "We received an invalid response from the server. Please try again later!")
+                    })
+                    // Return
+                    return
+                }
+                
+                // Check the response
+                do {
+                    
+                    let jsonResponse: [String: AnyObject] = try (NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions()) as? [String: AnyObject])!
+                    // Now process the response
+                    let status = jsonResponse["status"]
+                    
+                    if( status == nil ) {
+                        // We've got an error
+                        dispatch_async(dispatch_get_main_queue(), {
+                            // Hide the loading screen
+                            self.loadingScreen.removeFromSuperview()
+                            // Alert the user
+                            CommonUtils.showDefaultAlertToUser(self, title: "Server Error", alertContents: "We received an invalid response from the server. Please try again later!")
+                        })
+                        // Return
+                        return
+                    }
+                    
+                    let strStatus: String! = status as! String
+                    let strReason: String? = jsonResponse["reason"] as? String
+                    
+                    if( ( strStatus == "not_invalidated" && strReason! == "no_match") ||
+                        ( strStatus == "invalidation_successful" && strReason == nil ) ) {
+                        
+                        // Clean up Keychain
+                        KeychainWrapper.defaultKeychainWrapper().setString("", forKey: "LocNotes-username")
+                        KeychainWrapper.defaultKeychainWrapper().setString("", forKey: "LocNotes-loginToken")
+                        KeychainWrapper.defaultKeychainWrapper().setDouble(0, forKey: "LocNotes-tokenExpiry")
+                        KeychainWrapper.defaultKeychainWrapper().setBool(false, forKey: "LocNotes-userLoggedIn")
+                        KeychainWrapper.defaultKeychainWrapper().setDouble(0, forKey: "LocNotes-userLoggedInAt")
+                        KeychainWrapper.defaultKeychainWrapper().setBool(false, forKey: "LocNotes-TouchIDEnabled")
+                        // Take the user to the login screen
+                        dispatch_async(dispatch_get_main_queue(), {
+                            self.loadingScreen.removeFromSuperview()
+                            self.navigationController?.performSegueWithIdentifier("showNewUser", sender: self)
+                        })
+                        // And we're done
+                        return
+                        
+                    } else {
+                        // We've got issues
+                        dispatch_async(dispatch_get_main_queue(), {
+                            // Hide the loading screen
+                            self.loadingScreen.removeFromSuperview()
+                            // Alert the user
+                            CommonUtils.showDefaultAlertToUser(self, title: "Server Error", alertContents: "We received an invalid response from the server. Please try again later!")
+                        })
+                        // Return
+                        return
+                    }
+                    
+                } catch {
+                    // Tell the user that we couldn't log them out
+                    dispatch_async(dispatch_get_main_queue(), {
+                        // Hide the loading screen
+                        self.loadingScreen.removeFromSuperview()
+                        // Alert the user
+                        CommonUtils.showDefaultAlertToUser(self, title: "Server Error", alertContents: "We received an invalid response from the server. Please try again later!")
+                    })
+                    // Return
+                    return
+                }
+            })
+            asyncTask.resume() // Start the task now
+            // Return
+            return
+        })
+        let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
+        // Add the options to the Action Sheet
+        actionSheet.addAction(deleteAction)
+        actionSheet.addAction(cancelAction)
+        // Now present the Action Sheet
+        self.presentViewController(actionSheet, animated: true, completion: nil)
     }
 }
