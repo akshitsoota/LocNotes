@@ -1686,18 +1686,26 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Your Location Logs" id="uEc-NS-tiy">
-                        <barButtonItem key="leftBarButtonItem" title="Settings" id="9qf-3B-VFE">
+                        <barButtonItem key="leftBarButtonItem" image="navbarRefresh" id="EAr-kR-l27" userLabel="Refresh">
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
-                                <action selector="navigationBarSettingsButtonClicked:" destination="SlG-YX-iLH" id="knp-cP-cN0"/>
+                                <action selector="navigationBarRefreshButtonClicked:" destination="SlG-YX-iLH" id="xsA-lB-VBX"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="58h-7n-aEa">
-                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            <connections>
-                                <action selector="navigationBarAddButtonClicked:" destination="SlG-YX-iLH" id="e6o-RY-IfK"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="add" id="58h-7n-aEa">
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <action selector="navigationBarAddButtonClicked:" destination="SlG-YX-iLH" id="e6o-RY-IfK"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="navbarSettings" id="9qf-3B-VFE" userLabel="Settings Gear">
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <action selector="navigationBarSettingsButtonClicked:" destination="SlG-YX-iLH" id="knp-cP-cN0"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="locationLogsTableView" destination="58L-ld-j7Y" id="FaD-XE-Ohg"/>
@@ -1798,6 +1806,8 @@
         <image name="locationBlackPin" width="256" height="256"/>
         <image name="logo" width="256" height="256"/>
         <image name="nameIcon" width="256" height="256"/>
+        <image name="navbarRefresh" width="22" height="22"/>
+        <image name="navbarSettings" width="22" height="22"/>
         <image name="password" width="256" height="256"/>
         <image name="passwordIcon" width="170" height="170"/>
         <image name="removePhoto" width="256" height="256"/>

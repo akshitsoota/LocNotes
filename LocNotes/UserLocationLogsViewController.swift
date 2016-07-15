@@ -14,6 +14,8 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
     @IBOutlet weak var locationLogsTableView: UITableView!
     let reuseIdentifierlocationLogWithImage: String = "locationLogCellWithImage"
     let reuseIdentifierlocationLogWithoutImage: String = "locationLogCellWithoutImage"
+    // Holds the Refresh Button Navigation Bar Item
+    var navigationItemRefreshButton: UIBarButtonItem?
     // Array that holds all the Location Logs fetched from Core Data
     var locationLogs: [LocationLog] = []
     // Dictionary to hold the images for each Location Log that has images associated with them
@@ -128,6 +130,9 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
         let toReturn = nibArray[0] as! UIView
         toReturn.frame.size = self.locationLogsTableView.frame.size
         self.locationLogsTableView.backgroundView = toReturn
+        
+        // Grab the refresh button reference
+        self.navigationItemRefreshButton = self.navigationItem.leftBarButtonItem
     }
     
     // MARK: - UITableView Delegate and Data Source Functions
@@ -222,6 +227,18 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
     @IBAction func navigationBarAddButtonClicked(sender: UIBarButtonItem) {
         // Navigate to the add location log screen
         self.navigationController!.performSegueWithIdentifier("showNewOrUpdateLocationLog", sender: self)
+    }
+    
+    @IBAction func navigationBarRefreshButtonClicked(sender: AnyObject) {
+        // Show the activity indicator instead of the Refresh Button
+        let activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView.init(activityIndicatorStyle: .White)
+        let refreshBarButton: UIBarButtonItem = UIBarButtonItem(customView: activityIndicator)
+        self.navigationItem.leftBarButtonItem = refreshBarButton
+        activityIndicator.startAnimating()
+        // Show activity indicator on the Status Bar
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        
+        // TODO: Query the server and compare
     }
     
     // MARK: - Segue actions handler here
