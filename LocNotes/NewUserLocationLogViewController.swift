@@ -1229,7 +1229,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                         self.loadingProgressView.loadingProgressLabel.text = "Updated the LocNotes backend"
                     })
                     // Get the Added Date
-                    let addedTime: Double! = (jsonResponse["token_expiry"] as? NSNumber)?.doubleValue
+                    let addedTime: Double! = (jsonResponse["addedate"] as? NSNumber)?.doubleValue
                     
                     // Now save it in CoreData
                     if self.managedContext == nil {

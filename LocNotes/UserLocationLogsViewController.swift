@@ -92,7 +92,9 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
             let images: [FullResolutionS3Image] = imageResults as! [FullResolutionS3Image]
             
             // Save the Location Logs reversed
-            self.locationLogs = locationLogs.reverse()
+            self.locationLogs = locationLogs.sort({(first: LocationLog, second: LocationLog) -> Bool in
+                return Double(first.addedDate!) > Double(second.addedDate!)
+            })
             
             // Update the Image Array for the location logs
             self.locationLogImages = [String: UIImage]()
