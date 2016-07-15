@@ -115,13 +115,13 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         generateBottomBorder(self.logPhotosMainHolder)
         generateBottomBorder(self.locationsUserVisitedHolder)
         
-        // Let us handle the text view events to deal with the placeholder text
-        self.defaultDescriptionTextFieldPlaceholder = self.descriptionTextField.text
-        self.defaultDescriptionTextFieldPlaceholderColor = self.descriptionTextField.textColor
-        self.descriptionTextField.delegate = self
-        
         // If this is not a call by the Orientation Change Function, then execute this block
         if( !orientationCall ) {
+            // Let us handle the text view events to deal with the placeholder text
+            self.defaultDescriptionTextFieldPlaceholder = self.descriptionTextField.text
+            self.defaultDescriptionTextFieldPlaceholderColor = self.descriptionTextField.textColor
+            self.descriptionTextField.delegate = self
+            
             // Setup the background color for the CollectionView
             self.logPhotosCollectionView.backgroundColor = UIColor.clearColor()
             self.logPhotosCollectionView.backgroundView = UIView(frame: CGRectZero)
@@ -814,7 +814,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                     amazonS3UploadRequest.uploadProgress = {(bytesSent, totalBytesSent, totalBytesExpectedToSend) -> Void in
                         // Calculate the fresh progress
                         let progressToAddNum: Double = Double(totalBytesSent)
-                        let progressToAddDenom: Double = Double(totalBytesExpectedToSend) * Double((self.photoViews.count * 3) + 1)
+                        let progressToAddDenom: Double = Double(totalBytesExpectedToSend) * Double(self.photoViews.count)
                         let progressToAdd: Float = Float(progressToAddNum / progressToAddDenom) + Float(self.photoViews[photoIndex].photoViewIndex)
                         let finalProgress: Float = Float(progressToAdd / Float((self.photoViews.count * 3) + 1))
                         // Update the UI
@@ -1334,8 +1334,18 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         
         // Andddd, we're done
         // Finally, tell the user and take him back to the list of Location Logs screen
-        // Be sure to have that view refreshed
-        // TODO
+        dispatch_barrier_async(uploadLocationLogQueue, {
+            if self.cancelFuture {
+                return              // We are not suppose to be executing
+            }
+            // Sleep for two seconds
+            sleep(2)
+            // Tell the user about the new action
+            dispatch_async(dispatch_get_main_queue(), {
+                // Go back
+                self.performSegueWithIdentifier("unwindSegueToLocationLogListing", sender: self)
+            })
+        })
         
     }
     

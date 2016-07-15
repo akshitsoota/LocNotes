@@ -16,6 +16,8 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
     let reuseIdentifierlocationLogWithoutImage: String = "locationLogCellWithoutImage"
     // Array that holds all the Location Logs fetched from Core Data
     var locationLogs: [LocationLog] = []
+    // Dictionary to hold the images for each Location Log that has images associated with them
+    var locationLogImages: Dictionary<String, UIImage> = [String: UIImage]()
     // Holds if the TableView should show a loading cell or not
     var tableViewLoadingCellShown: Bool = false
     // Holds the TableView loading cell itself
@@ -50,17 +52,66 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
     
     // MARK: - Setup View Functions here
     func fetchLocationLogs() {
+        func resizeImage(image: UIImage, size: CGSize) -> UIImage {
+            // CITATION: http://stackoverflow.com/a/7775470/705471
+            
+            let newRect: CGRect = CGRectIntegral(CGRectMake(0, 0, size.width, size.height))
+            let imageRef: CGImageRef = image.CGImage!
+            
+            UIGraphicsBeginImageContextWithOptions(size, false, 0)
+            let context = UIGraphicsGetCurrentContext()
+            
+            CGContextSetInterpolationQuality(context, CGInterpolationQuality.High)
+            let flipVertical: CGAffineTransform = CGAffineTransformMake(1, 0, 0, -1, 0, size.height)
+            
+            CGContextConcatCTM(context, flipVertical)
+            CGContextDrawImage(context, newRect, imageRef)
+            
+            let newImageRef: CGImageRef = CGBitmapContextCreateImage(context)! as CGImage
+            let newImage: UIImage = UIImage(CGImage: newImageRef)
+            
+            UIGraphicsEndImageContext()
+            
+            return newImage
+        }
+        
         // Load the Managed Context from the AppDelegate
         if( self.managedContext == nil ) {
             self.managedContext = AppDelegate().managedObjectContext
         }
         // Proceed to querying it
         let fetchRequest: NSFetchRequest = NSFetchRequest(entityName: "LocationLog")
+        let imageFetchQuery: NSFetchRequest = NSFetchRequest(entityName: "FullResolutionS3Image")
         do {
             let results = try self.managedContext?.executeFetchRequest(fetchRequest)
             let locationLogs: [LocationLog] = results as! [LocationLog]
-            // Save the Location Logs
-            self.locationLogs = locationLogs
+            
+            let imageResults = try self.managedContext?.executeFetchRequest(imageFetchQuery)
+            let images: [FullResolutionS3Image] = imageResults as! [FullResolutionS3Image]
+            
+            // Save the Location Logs reversed
+            self.locationLogs = locationLogs.reverse()
+            
+            // Update the Image Array for the location logs
+            self.locationLogImages = [String: UIImage]()
+            // Iterate over each of the Location Logs
+            for locationLog in self.locationLogs {
+                // Check if this posses an image or not
+                if( locationLog.imageS3ids != nil && locationLog.imageS3ids?.isEmpty == false ) {
+                    // There is an image here
+                    let firstS3ImageID: String = (locationLog.imageS3ids?.characters.split(";").map(String.init)[0])!
+                    // Find the image here
+                    for anImage in images {
+                        if( anImage.respectiveLogID == locationLog.logID && anImage.s3id == firstS3ImageID ) {
+                            self.locationLogImages[locationLog.logID!] = resizeImage(UIImage(data: anImage.image!)!, size: CGSizeMake(UIScreen.mainScreen().bounds.width, 250))
+                            // We found the image and we saved it, so:
+                            break
+                        }
+                    }
+                    // Done!
+                }
+            }
+            
         } catch {
             CommonUtils.showDefaultAlertToUser(self, title: "CoreData Error", alertContents: "We were unable to pull your Location Logs using the CoreData API. Please re-open the application to try again!")
         }
@@ -131,29 +182,7 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
             // Now, set the information
             locationLogCell.locationLogTitle.text = self.locationLogs[llIndex].logTitle!
             locationLogCell.locationLogDesc.text = self.locationLogs[llIndex].logDesc!
-            // Fetch the Image from CoreData
-            let firstS3ImageID: String = (self.locationLogs[llIndex].imageS3ids?.characters.split(";").map(String.init)[0])!
-            // Query CoreData
-            var image: UIImage? = nil
-            let fetchQuery: NSFetchRequest = NSFetchRequest(entityName: "FullResolutionS3Image")
-            do {
-                let results = try self.managedContext?.executeFetchRequest(fetchQuery)
-                let images: [FullResolutionS3Image] = results as! [FullResolutionS3Image]
-                // Find the image and save it
-                for anImage in images {
-                    if( anImage.respectiveLogID == self.locationLogs[llIndex].logID &&
-                        anImage.s3id == firstS3ImageID ) {
-                        
-                        image = UIImage(data: anImage.image!)
-                        // We found the image, so:
-                        break
-                        
-                    }
-                }
-            } catch { }
-            
-            // Now render it
-            locationLogCell.imageHolder.image = image
+            locationLogCell.imageHolder.image = self.locationLogImages[self.locationLogs[llIndex].logID!]
             // Set TableViewCell Insets
             locationLogCell.preservesSuperviewLayoutMargins = false
             locationLogCell.separatorInset = UIEdgeInsetsZero
@@ -198,7 +227,12 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
     // MARK: - Segue actions handler here
     @IBAction func unwindSegue(segue: UIStoryboardSegue) {
         if( segue.sourceViewController.isKindOfClass(NewUserLocationLogViewController) ) {
-            // TODO
+            // Call the function to populate the LocationLogs from CoreData
+            self.fetchLocationLogs()
+            // And, refresh the TableView
+            self.locationLogsTableView.reloadData()
+            // Scroll to the top of the TableView
+            self.locationLogsTableView.setContentOffset(CGPointZero, animated: true)
         }
     }
 
