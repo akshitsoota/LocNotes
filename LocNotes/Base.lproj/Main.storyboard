@@ -882,14 +882,14 @@
                         <viewControllerLayoutGuide type="bottom" id="XJd-ms-PBc"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Lbs-b6-84P">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="900"/>
+                        <rect key="frame" x="0.0" y="64" width="600" height="836"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iMR-iI-2Vm" userLabel="Scroll View Holder">
-                                <rect key="frame" x="0.0" y="20" width="600" height="880"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="836"/>
                                 <subviews>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" keyboardDismissMode="interactive" translatesAutoresizingMaskIntoConstraints="NO" id="u8n-7E-Adq">
-                                        <rect key="frame" x="0.0" y="0.0" width="600" height="880"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="836"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="M02-S2-gtM" userLabel="Content View">
                                                 <rect key="frame" x="0.0" y="0.0" width="600" height="762"/>
@@ -1516,11 +1516,11 @@
                         <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="58L-ld-j7Y">
-                                <rect key="frame" x="0.0" y="20" width="600" height="580"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="58L-ld-j7Y">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="LocationLogCell" rowHeight="250" id="moX-ne-NIo">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="locationLogCellWithImage" rowHeight="250" id="moX-ne-NIo" customClass="LocationLogWithImageTableViewCell" customModule="LocNotes" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="600" height="250"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="moX-ne-NIo" id="VeU-VL-2Uh">
@@ -1530,24 +1530,109 @@
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="2ig-d8-fnp">
                                                     <rect key="frame" x="0.0" y="0.0" width="600" height="249.5"/>
                                                 </imageView>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9H6-ga-Lyq">
+                                                <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2yI-zr-PYT">
                                                     <rect key="frame" x="0.0" y="185" width="600" height="64"/>
+                                                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="Rio-HK-Gjf">
+                                                        <rect key="frame" x="0.0" y="0.0" width="600" height="64"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                        <subviews>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location Log Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rA8-3e-4Nv">
+                                                                <rect key="frame" x="8" y="8" width="584" height="20"/>
+                                                                <fontDescription key="fontDescription" name="HelveticaNeue-Italic" family="Helvetica Neue" pointSize="17"/>
+                                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location Log Description here" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" minimumFontSize="12" translatesAutoresizingMaskIntoConstraints="NO" id="j6D-UJ-RcO">
+                                                                <rect key="frame" x="8" y="33" width="584" height="23"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" constant="23" id="EcZ-de-RX2"/>
+                                                                </constraints>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                        </subviews>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                        <constraints>
+                                                            <constraint firstItem="j6D-UJ-RcO" firstAttribute="top" secondItem="rA8-3e-4Nv" secondAttribute="bottom" constant="5" id="DYv-4w-dUa"/>
+                                                            <constraint firstItem="rA8-3e-4Nv" firstAttribute="top" secondItem="Rio-HK-Gjf" secondAttribute="top" constant="8" id="ccC-uu-eY1"/>
+                                                            <constraint firstAttribute="trailing" secondItem="rA8-3e-4Nv" secondAttribute="trailing" constant="8" id="hZd-ZB-OMK"/>
+                                                            <constraint firstItem="j6D-UJ-RcO" firstAttribute="leading" secondItem="Rio-HK-Gjf" secondAttribute="leading" constant="8" id="jh1-WV-jhB"/>
+                                                            <constraint firstItem="rA8-3e-4Nv" firstAttribute="leading" secondItem="Rio-HK-Gjf" secondAttribute="leading" constant="8" id="wmQ-up-9cd"/>
+                                                            <constraint firstAttribute="trailing" secondItem="j6D-UJ-RcO" secondAttribute="trailing" constant="8" id="yYY-w3-ECh"/>
+                                                        </constraints>
+                                                    </view>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="64" id="u0F-dw-D4d"/>
+                                                    </constraints>
+                                                    <blurEffect style="light"/>
+                                                </visualEffectView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailingMargin" secondItem="2yI-zr-PYT" secondAttribute="trailing" constant="-8" id="8qQ-87-Gyk"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="2ig-d8-fnp" secondAttribute="trailing" constant="-8" id="Ann-Y2-4nb"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="2yI-zr-PYT" secondAttribute="bottom" constant="-7.5" id="JGs-Ho-Lxg"/>
+                                                <constraint firstItem="2ig-d8-fnp" firstAttribute="leading" secondItem="VeU-VL-2Uh" secondAttribute="leadingMargin" constant="-8" id="MTp-Zn-AZA"/>
+                                                <constraint firstItem="2yI-zr-PYT" firstAttribute="leading" secondItem="VeU-VL-2Uh" secondAttribute="leadingMargin" constant="-8" id="VLW-y7-ugm"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="2ig-d8-fnp" secondAttribute="bottom" constant="-8" id="eC7-xq-sAL"/>
+                                                <constraint firstItem="2ig-d8-fnp" firstAttribute="top" secondItem="VeU-VL-2Uh" secondAttribute="topMargin" constant="-8" id="kDI-f4-flC"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="imageHolder" destination="2ig-d8-fnp" id="yYG-bm-eIG"/>
+                                            <outlet property="imageView" destination="2ig-d8-fnp" id="wuj-kR-ixd"/>
+                                            <outlet property="locationLogDesc" destination="j6D-UJ-RcO" id="rz2-iy-t7X"/>
+                                            <outlet property="locationLogTitle" destination="rA8-3e-4Nv" id="Pry-FR-UNT"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="locationLogCellWithoutImage" rowHeight="64" id="e6n-Qo-H4t" customClass="LocationLogWithoutImageTableViewCell" customModule="LocNotes" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="278" width="600" height="64"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="e6n-Qo-H4t" id="GIf-13-MyQ">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="63.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7sG-a9-lBZ">
+                                                    <rect key="frame" x="0.0" y="0.0" width="600" height="63.5"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location Log Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nJf-Uf-ZxK">
+                                                            <rect key="frame" x="8" y="8" width="584" height="20"/>
+                                                            <fontDescription key="fontDescription" name="HelveticaNeue-Italic" family="Helvetica Neue" pointSize="17"/>
+                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location Log Description here" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" minimumFontSize="12" translatesAutoresizingMaskIntoConstraints="NO" id="Ngc-hB-fIn">
+                                                            <rect key="frame" x="8" y="33" width="584" height="23"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="23" id="lhz-gD-qAx"/>
+                                                            </constraints>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="64" id="AKX-Sc-3ZW"/>
+                                                        <constraint firstItem="Ngc-hB-fIn" firstAttribute="leading" secondItem="7sG-a9-lBZ" secondAttribute="leading" constant="8" id="HYS-5b-RhZ"/>
+                                                        <constraint firstItem="nJf-Uf-ZxK" firstAttribute="top" secondItem="7sG-a9-lBZ" secondAttribute="top" constant="8" id="df6-hG-d00"/>
+                                                        <constraint firstAttribute="trailing" secondItem="Ngc-hB-fIn" secondAttribute="trailing" constant="8" id="eAc-9m-ToA"/>
+                                                        <constraint firstAttribute="trailing" secondItem="nJf-Uf-ZxK" secondAttribute="trailing" constant="8" id="ktz-RO-9XR"/>
+                                                        <constraint firstItem="nJf-Uf-ZxK" firstAttribute="leading" secondItem="7sG-a9-lBZ" secondAttribute="leading" constant="8" id="lrp-dB-NS1"/>
+                                                        <constraint firstItem="Ngc-hB-fIn" firstAttribute="top" secondItem="nJf-Uf-ZxK" secondAttribute="bottom" constant="5" id="xUx-D2-saJ"/>
                                                     </constraints>
                                                 </view>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="trailingMargin" secondItem="2ig-d8-fnp" secondAttribute="trailing" constant="-8" id="Ann-Y2-4nb"/>
-                                                <constraint firstItem="9H6-ga-Lyq" firstAttribute="leading" secondItem="VeU-VL-2Uh" secondAttribute="leadingMargin" constant="-8" id="Fwb-Gy-RBF"/>
-                                                <constraint firstItem="2ig-d8-fnp" firstAttribute="leading" secondItem="VeU-VL-2Uh" secondAttribute="leadingMargin" constant="-8" id="MTp-Zn-AZA"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="9H6-ga-Lyq" secondAttribute="bottom" constant="-7.5" id="Q3D-a9-qnY"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="2ig-d8-fnp" secondAttribute="bottom" constant="-8" id="eC7-xq-sAL"/>
-                                                <constraint firstItem="2ig-d8-fnp" firstAttribute="top" secondItem="VeU-VL-2Uh" secondAttribute="topMargin" constant="-8" id="kDI-f4-flC"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="9H6-ga-Lyq" secondAttribute="trailing" constant="-8" id="vaj-KU-RfQ"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="7sG-a9-lBZ" secondAttribute="trailing" constant="-8" id="GTo-Ty-Dhv"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="7sG-a9-lBZ" secondAttribute="bottom" constant="-8" id="mbO-sP-HNA"/>
+                                                <constraint firstItem="7sG-a9-lBZ" firstAttribute="top" secondItem="GIf-13-MyQ" secondAttribute="topMargin" constant="-8" id="nXu-cb-P1J"/>
+                                                <constraint firstItem="7sG-a9-lBZ" firstAttribute="leading" secondItem="GIf-13-MyQ" secondAttribute="leadingMargin" constant="-8" id="vSs-BH-fe5"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="locationLogDesc" destination="Ngc-hB-fIn" id="u8y-4f-pTG"/>
+                                            <outlet property="locationLogTitle" destination="nJf-Uf-ZxK" id="K7o-Kx-tmk"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
@@ -1679,9 +1764,9 @@
         <image name="usernameIcon" width="170" height="170"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="B39-6l-1V2"/>
-        <segue reference="lBy-8L-5cV"/>
-        <segue reference="b4C-br-kGl"/>
+        <segue reference="tiQ-3l-giC"/>
+        <segue reference="LLn-GC-l9Y"/>
         <segue reference="bpy-dh-Cs3"/>
+        <segue reference="lBy-8L-5cV"/>
     </inferredMetricsTieBreakers>
 </document>

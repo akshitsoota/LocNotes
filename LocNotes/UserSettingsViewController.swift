@@ -230,7 +230,9 @@ class UserSettingsViewController: UIViewController {
                         KeychainWrapper.defaultKeychainWrapper().setDouble(0, forKey: "LocNotes-tokenExpiry")
                         KeychainWrapper.defaultKeychainWrapper().setBool(false, forKey: "LocNotes-userLoggedIn")
                         KeychainWrapper.defaultKeychainWrapper().setDouble(0, forKey: "LocNotes-userLoggedInAt")
+                        // Set default settings
                         KeychainWrapper.defaultKeychainWrapper().setBool(false, forKey: "LocNotes-TouchIDEnabled")
+                        KeychainWrapper.defaultKeychainWrapper().setBool(true, forKey: "LocNotes-PrefferedUploadMediumIsWiFi")
                         // Take the user to the login screen
                         dispatch_async(dispatch_get_main_queue(), {
                             self.loadingScreen.removeFromSuperview()
