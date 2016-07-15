@@ -14,8 +14,8 @@ import CoreData
 
 extension ImageThumbnail {
 
+    @NSManaged var respectiveLogID: String?
     @NSManaged var fullResS3id: String?
     @NSManaged var image: NSData?
-    @NSManaged var fullResImage: NSManagedObject?
 
 }

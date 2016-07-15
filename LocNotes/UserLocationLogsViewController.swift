@@ -6,15 +6,23 @@
 //  Copyright © 2016 axe. All rights reserved.
 //
 
+import CoreData
 import UIKit
 
 class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var locationLogsTableView: UITableView!
-    let TableCellReuseIdentifier_locationLogWithImage: String = "locationLogCellWithImage"
-    let TableCellReuseIdentifier_locationLogWithoutImage: String = "locationLogCellWithoutImage"
+    let reuseIdentifierlocationLogWithImage: String = "locationLogCellWithImage"
+    let reuseIdentifierlocationLogWithoutImage: String = "locationLogCellWithoutImage"
     // Array that holds all the Location Logs fetched from Core Data
     var locationLogs: [LocationLog] = []
+    // Holds if the TableView should show a loading cell or not
+    var tableViewLoadingCellShown: Bool = false
+    // Holds the TableView loading cell itself
+    var tableViewLoadingCell: UITableViewCell? // TODO
+    
+    // Core Data Managed Context
+    var managedContext : NSManagedObjectContext?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,7 +50,20 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
     
     // MARK: - Setup View Functions here
     func fetchLocationLogs() {
-        
+        // Load the Managed Context from the AppDelegate
+        if( self.managedContext == nil ) {
+            self.managedContext = AppDelegate().managedObjectContext
+        }
+        // Proceed to querying it
+        let fetchRequest: NSFetchRequest = NSFetchRequest(entityName: "LocationLog")
+        do {
+            let results = try self.managedContext?.executeFetchRequest(fetchRequest)
+            let locationLogs: [LocationLog] = results as! [LocationLog]
+            // Save the Location Logs
+            self.locationLogs = locationLogs
+        } catch {
+            CommonUtils.showDefaultAlertToUser(self, title: "CoreData Error", alertContents: "We were unable to pull your Location Logs using the CoreData API. Please re-open the application to try again!")
+        }
     }
     
     func setupViews() {
@@ -69,11 +90,98 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
             self.locationLogsTableView.backgroundView?.hidden = true
         }
         // Now return
+        if( self.tableViewLoadingCellShown ) {
+            return locationLogs.count + 1
+        }
         return locationLogs.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        // Check if we are loading something
+        if( self.tableViewLoadingCellShown && indexPath.row == 0 ) {
+            // Return the loading cell
+            // TODO:
+            return UITableViewCell()
+        }
+        // Now, fetch the TableViewCell accordingly
+        var llIndex: Int = indexPath.row
+        
+        if( self.tableViewLoadingCellShown ) {
+            llIndex -= 1      // The first cell is the Loading Cell
+        }
+        
+        if( self.locationLogs[llIndex].imageS3ids == nil || self.locationLogs[llIndex].imageS3ids?.isEmpty == true ) {
+            // We've got no images
+            let origTableCell: UITableViewCell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifierlocationLogWithoutImage)!
+            let locationLogCell: LocationLogWithoutImageTableViewCell = origTableCell as! LocationLogWithoutImageTableViewCell
+            // Now, set the information
+            locationLogCell.locationLogTitle.text = self.locationLogs[llIndex].logTitle!
+            locationLogCell.locationLogDesc.text = self.locationLogs[llIndex].logDesc!
+            // Set TableViewCell Insets
+            locationLogCell.preservesSuperviewLayoutMargins = false
+            locationLogCell.separatorInset = UIEdgeInsetsZero
+            locationLogCell.layoutMargins = UIEdgeInsetsZero
+            
+            // Now, return
+            return locationLogCell
+        } else {
+            // We've got images
+            let origTableCell: UITableViewCell = tableView.dequeueReusableCellWithIdentifier(reuseIdentifierlocationLogWithImage)!
+            let locationLogCell: LocationLogWithImageTableViewCell = origTableCell as! LocationLogWithImageTableViewCell
+            // Now, set the information
+            locationLogCell.locationLogTitle.text = self.locationLogs[llIndex].logTitle!
+            locationLogCell.locationLogDesc.text = self.locationLogs[llIndex].logDesc!
+            // Fetch the Image from CoreData
+            let firstS3ImageID: String = (self.locationLogs[llIndex].imageS3ids?.characters.split(";").map(String.init)[0])!
+            // Query CoreData
+            var image: UIImage? = nil
+            let fetchQuery: NSFetchRequest = NSFetchRequest(entityName: "FullResolutionS3Image")
+            do {
+                let results = try self.managedContext?.executeFetchRequest(fetchQuery)
+                let images: [FullResolutionS3Image] = results as! [FullResolutionS3Image]
+                // Find the image and save it
+                for anImage in images {
+                    if( anImage.respectiveLogID == self.locationLogs[llIndex].logID &&
+                        anImage.s3id == firstS3ImageID ) {
+                        
+                        image = UIImage(data: anImage.image!)
+                        // We found the image, so:
+                        break
+                        
+                    }
+                }
+            } catch { }
+            
+            // Now render it
+            locationLogCell.imageHolder.image = image
+            // Set TableViewCell Insets
+            locationLogCell.preservesSuperviewLayoutMargins = false
+            locationLogCell.separatorInset = UIEdgeInsetsZero
+            locationLogCell.layoutMargins = UIEdgeInsetsZero
+            
+            // Now, return
+            return locationLogCell
+        }
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        // Check if we are loading something
+        if( self.tableViewLoadingCellShown && indexPath.row == 0 ) {
+            return 64
+        }
+        // Else, check:
+        var llIndex: Int = indexPath.row
+        
+        if( self.tableViewLoadingCellShown ) {
+            llIndex -= 1      // The first cell is the Loading Cell
+        }
+        
+        if( self.locationLogs[llIndex].imageS3ids == nil || self.locationLogs[llIndex].imageS3ids?.isEmpty == true ) {
+            // No images cell => 64
+            return 64
+        } else {
+            return 250
+        }
     }
     
     // MARK: - Actions received here

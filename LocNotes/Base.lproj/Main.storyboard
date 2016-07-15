@@ -1541,7 +1541,7 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="600" height="249.5"/>
                                                 </imageView>
                                                 <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2yI-zr-PYT">
-                                                    <rect key="frame" x="0.0" y="185" width="600" height="64"/>
+                                                    <rect key="frame" x="0.0" y="186.5" width="600" height="64"/>
                                                     <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="Rio-HK-Gjf">
                                                         <rect key="frame" x="0.0" y="0.0" width="600" height="64"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1575,13 +1575,13 @@
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="64" id="u0F-dw-D4d"/>
                                                     </constraints>
-                                                    <blurEffect style="light"/>
+                                                    <blurEffect style="dark"/>
                                                 </visualEffectView>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="trailingMargin" secondItem="2yI-zr-PYT" secondAttribute="trailing" constant="-8" id="8qQ-87-Gyk"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="2ig-d8-fnp" secondAttribute="trailing" constant="-8" id="Ann-Y2-4nb"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="2yI-zr-PYT" secondAttribute="bottom" constant="-7.5" id="JGs-Ho-Lxg"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="2yI-zr-PYT" secondAttribute="bottom" constant="-9" id="JGs-Ho-Lxg"/>
                                                 <constraint firstItem="2ig-d8-fnp" firstAttribute="leading" secondItem="VeU-VL-2Uh" secondAttribute="leadingMargin" constant="-8" id="MTp-Zn-AZA"/>
                                                 <constraint firstItem="2yI-zr-PYT" firstAttribute="leading" secondItem="VeU-VL-2Uh" secondAttribute="leadingMargin" constant="-8" id="VLW-y7-ugm"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="2ig-d8-fnp" secondAttribute="bottom" constant="-8" id="eC7-xq-sAL"/>
@@ -1590,7 +1590,6 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="imageHolder" destination="2ig-d8-fnp" id="yYG-bm-eIG"/>
-                                            <outlet property="imageView" destination="2ig-d8-fnp" id="wuj-kR-ixd"/>
                                             <outlet property="locationLogDesc" destination="j6D-UJ-RcO" id="rz2-iy-t7X"/>
                                             <outlet property="locationLogTitle" destination="rA8-3e-4Nv" id="Pry-FR-UNT"/>
                                         </connections>
@@ -1643,6 +1642,37 @@
                                             <outlet property="locationLogDesc" destination="Ngc-hB-fIn" id="u8y-4f-pTG"/>
                                             <outlet property="locationLogTitle" destination="nJf-Uf-ZxK" id="K7o-Kx-tmk"/>
                                         </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="progressLocationLogCell" rowHeight="64" id="70Q-8n-zPj" customClass="LocationLogWithoutImageTableViewCell" customModule="LocNotes" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="342" width="600" height="64"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="70Q-8n-zPj" id="ptZ-WB-0f8">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="63.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Downloading xx of xx Location Log" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eiQ-45-gmD">
+                                                    <rect key="frame" x="8" y="8" width="290" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="290" id="y7y-ze-9jp"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="o0P-7m-LYi">
+                                                    <rect key="frame" x="8" y="44" width="584" height="2"/>
+                                                    <color key="tintColor" red="0.35686274509999999" green="1" blue="0.3803921569" alpha="1" colorSpace="calibratedRGB"/>
+                                                </progressView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="eiQ-45-gmD" firstAttribute="leading" secondItem="ptZ-WB-0f8" secondAttribute="leadingMargin" id="5oU-j0-u5b"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="o0P-7m-LYi" secondAttribute="bottom" constant="9.5" id="J4H-lH-aXL"/>
+                                                <constraint firstItem="eiQ-45-gmD" firstAttribute="top" secondItem="ptZ-WB-0f8" secondAttribute="topMargin" id="L85-AS-0T5"/>
+                                                <constraint firstItem="o0P-7m-LYi" firstAttribute="trailing" secondItem="ptZ-WB-0f8" secondAttribute="trailingMargin" id="Opc-fQ-eRV"/>
+                                                <constraint firstItem="o0P-7m-LYi" firstAttribute="leading" secondItem="ptZ-WB-0f8" secondAttribute="leadingMargin" id="Y2E-jR-GyI"/>
+                                                <constraint firstItem="o0P-7m-LYi" firstAttribute="top" secondItem="eiQ-45-gmD" secondAttribute="bottom" constant="15" id="oca-xS-hMY"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>

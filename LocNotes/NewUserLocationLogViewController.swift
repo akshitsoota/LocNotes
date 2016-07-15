@@ -62,7 +62,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     override func viewDidLoad() {
         super.viewDidLoad()
         // Setup view
-        setupView()
+        setupView(false)
         // Setup CoreData
         setupCoreData()
     }
@@ -88,7 +88,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     }
     
     // MARK: - Setup functions
-    func setupView() {
+    func setupView(orientationCall: Bool) {
         // Custom functions
         func generateTopBorder(forView: UIView!) {
             let topBorder: UIView = UIView(frame: CGRectMake(0, 0, forView.frame.size.width, 1))
@@ -120,27 +120,30 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         self.defaultDescriptionTextFieldPlaceholderColor = self.descriptionTextField.textColor
         self.descriptionTextField.delegate = self
         
-        // Setup the background color for the CollectionView
-        self.logPhotosCollectionView.backgroundColor = UIColor.clearColor()
-        self.logPhotosCollectionView.backgroundView = UIView(frame: CGRectZero)
-        // Let us handle the data source and delegate for the CollectionView of the photos
-        self.logPhotosCollectionView.dataSource = self
-        // We should handle the FlowLayout for the Photos CollectionView as well
-        self.logPhotosCollectionView.delegate = self
-        
-        // Setup the Locations Visited Table View
-        self.locationVisitedTable.dataSource = self
-        self.locationVisitedTable.delegate = self
-        
-        // Hide stop action button in Locations Visited by default
-        self.locationsVisitedStopActionButton.hidden = true
-        
-        // Have all events come to us
-        self.titleTextField.delegate = self
-        
-        // If user taps outside any field, we are to dismiss the keyboard
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(NewUserLocationLogViewController.dismissKeyboard))
-        self.view.addGestureRecognizer(tap)
+        // If this is not a call by the Orientation Change Function, then execute this block
+        if( !orientationCall ) {
+            // Setup the background color for the CollectionView
+            self.logPhotosCollectionView.backgroundColor = UIColor.clearColor()
+            self.logPhotosCollectionView.backgroundView = UIView(frame: CGRectZero)
+            // Let us handle the data source and delegate for the CollectionView of the photos
+            self.logPhotosCollectionView.dataSource = self
+            // We should handle the FlowLayout for the Photos CollectionView as well
+            self.logPhotosCollectionView.delegate = self
+            
+            // Setup the Locations Visited Table View
+            self.locationVisitedTable.dataSource = self
+            self.locationVisitedTable.delegate = self
+            
+            // Hide stop action button in Locations Visited by default
+            self.locationsVisitedStopActionButton.hidden = true
+            
+            // Have all events come to us
+            self.titleTextField.delegate = self
+            
+            // If user taps outside any field, we are to dismiss the keyboard
+            let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(NewUserLocationLogViewController.dismissKeyboard))
+            self.view.addGestureRecognizer(tap)
+        }
     }
     
     func setupCoreData() {
@@ -1065,9 +1068,11 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                 fullResolutionS3Image.image = UIImagePNGRepresentation(CommonUtils.fetchUIImageFromPHAsset(self.photoViews[photoIndex].photoAsset)!)
                 fullResolutionS3Image.s3id = self.photoViews[photoIndex].uniqueS3ID
                 fullResolutionS3Image.storeDate = NSNumber(longLong: Int64(NSDate().timeIntervalSince1970))
+                fullResolutionS3Image.respectiveLogID = uniqueLogID
                 
                 imageThumbnail.fullResS3id = self.photoViews[photoIndex].uniqueS3ID
                 imageThumbnail.image = UIImagePNGRepresentation(self.photoViews[photoIndex].thumbnailImage!)
+                imageThumbnail.respectiveLogID = uniqueLogID
                 
                 // Save the new objects
                 do {
@@ -1125,7 +1130,6 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
             // Compile the S3 IDs
             var s3AddedFirst: Bool = false
             var s3IDsCompiled: String = ""
-            s3IDs = ["a","b","c"]
             
             for s3id in s3IDs {
                 if s3AddedFirst {
@@ -1380,7 +1384,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()           // Let the super do its stuff
         // Re-setup the views
-        setupView()
+        setupView(true)
     }
 
 }

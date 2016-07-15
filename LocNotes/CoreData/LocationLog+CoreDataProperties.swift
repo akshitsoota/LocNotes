@@ -21,6 +21,5 @@ extension LocationLog {
     @NSManaged var locationNames: String?
     @NSManaged var addedDate: NSNumber?
     @NSManaged var updateDate: NSNumber?
-    @NSManaged var fullResS3Image: NSManagedObject?
 
 }
