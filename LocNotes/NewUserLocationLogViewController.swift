@@ -50,6 +50,8 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     var loadingProgressView: ProgressLoadingScreenView!
     // Keeps track of the active field on the View
     var activeField: UIView?
+    // Keeps track if the Keyboard was shown
+    var keyboardIsShown: Bool = false
     
     // Dispatch Queues
     let uploadLocationLogQueue = dispatch_queue_create("LocationLogUploadQueue", DISPATCH_QUEUE_CONCURRENT)
@@ -62,7 +64,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     override func viewDidLoad() {
         super.viewDidLoad()
         // Setup view
-        setupView()
+        setupView(false)
         // Setup CoreData
         setupCoreData()
     }
@@ -88,7 +90,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     }
     
     // MARK: - Setup functions
-    func setupView() {
+    func setupView(orientationCall: Bool) {
         // Custom functions
         func generateTopBorder(forView: UIView!) {
             let topBorder: UIView = UIView(frame: CGRectMake(0, 0, forView.frame.size.width, 1))
@@ -115,32 +117,34 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         generateBottomBorder(self.logPhotosMainHolder)
         generateBottomBorder(self.locationsUserVisitedHolder)
         
-        // Let us handle the text view events to deal with the placeholder text
-        self.defaultDescriptionTextFieldPlaceholder = self.descriptionTextField.text
-        self.defaultDescriptionTextFieldPlaceholderColor = self.descriptionTextField.textColor
-        self.descriptionTextField.delegate = self
-        
-        // Setup the background color for the CollectionView
-        self.logPhotosCollectionView.backgroundColor = UIColor.clearColor()
-        self.logPhotosCollectionView.backgroundView = UIView(frame: CGRectZero)
-        // Let us handle the data source and delegate for the CollectionView of the photos
-        self.logPhotosCollectionView.dataSource = self
-        // We should handle the FlowLayout for the Photos CollectionView as well
-        self.logPhotosCollectionView.delegate = self
-        
-        // Setup the Locations Visited Table View
-        self.locationVisitedTable.dataSource = self
-        self.locationVisitedTable.delegate = self
-        
-        // Hide stop action button in Locations Visited by default
-        self.locationsVisitedStopActionButton.hidden = true
-        
-        // Have all events come to us
-        self.titleTextField.delegate = self
-        
-        // If user taps outside any field, we are to dismiss the keyboard
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(NewUserLocationLogViewController.dismissKeyboard))
-        self.view.addGestureRecognizer(tap)
+        if( !orientationCall ) {
+            // Let us handle the text view events to deal with the placeholder text
+            self.defaultDescriptionTextFieldPlaceholder = String(self.descriptionTextField.text)
+            self.defaultDescriptionTextFieldPlaceholderColor = self.descriptionTextField.textColor
+            self.descriptionTextField.delegate = self
+            
+            // Setup the background color for the CollectionView
+            self.logPhotosCollectionView.backgroundColor = UIColor.clearColor()
+            self.logPhotosCollectionView.backgroundView = UIView(frame: CGRectZero)
+            // Let us handle the data source and delegate for the CollectionView of the photos
+            self.logPhotosCollectionView.dataSource = self
+            // We should handle the FlowLayout for the Photos CollectionView as well
+            self.logPhotosCollectionView.delegate = self
+            
+            // Setup the Locations Visited Table View
+            self.locationVisitedTable.dataSource = self
+            self.locationVisitedTable.delegate = self
+            
+            // Hide stop action button in Locations Visited by default
+            self.locationsVisitedStopActionButton.hidden = true
+            
+            // Have all events come to us
+            self.titleTextField.delegate = self
+            
+            // If user taps outside any field, we are to dismiss the keyboard
+            let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(NewUserLocationLogViewController.dismissKeyboard))
+            self.view.addGestureRecognizer(tap)
+        }
     }
     
     func setupCoreData() {
@@ -163,39 +167,43 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     }
     
     func keyboardWasShown(notification: NSNotification) {
+        // CITATION: http://stackoverflow.com/a/2703756/705471
+        if( self.keyboardIsShown ) {
+            return      // We needn't do anything
+        }
         // Need to calculate keyboard exact size due to Apple suggestions
         let info: NSDictionary = notification.userInfo!
         let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue().size
-        let contentInsets: UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize!.height, 0.0)
+        var viewFrame: CGRect = self.scrollView.frame
+        viewFrame.size.height -= (keyboardSize?.height)!
         
-        self.scrollView.contentInset = contentInsets
-        self.scrollView.scrollIndicatorInsets = contentInsets
+        // Animate it
+        UIView.beginAnimations(nil, context: nil)
+        UIView.setAnimationBeginsFromCurrentState(true)
+        self.scrollView.frame = viewFrame
+        UIView.commitAnimations()
         
-        var aRect: CGRect = self.view.frame
-        aRect.size.height -= keyboardSize!.height
-        if activeField != nil {
-            if (!CGRectContainsPoint(aRect, activeField!.frame.origin)) {
-                self.scrollView.scrollRectToVisible(activeField!.frame, animated: true)
-            }
-        }
+        // Set globally
+        self.keyboardIsShown = true
     }
-    
+ 
     func keyboardWillBeHidden(notification: NSNotification) {
         // Once keyboard disappears, restore original positions
         let info: NSDictionary = notification.userInfo!
         let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue().size
         var scrollViewFrame: CGRect = self.scrollView.frame
+        scrollViewFrame.size.height += (keyboardSize?.height)!
         
         // Begin animation
         UIView.beginAnimations(nil, context: nil)
         UIView.setAnimationBeginsFromCurrentState(true)
-        UIView.setAnimationDuration(0.3)
-        
-        scrollViewFrame.size.height += (keyboardSize?.height)!
         // Apply it
         self.scrollView.frame = scrollViewFrame
         // Now animate
         UIView.commitAnimations()
+        
+        // Set globally
+        self.keyboardIsShown = false
     }
     
     func textFieldDidBeginEditing(textField: UITextField) {
@@ -218,7 +226,8 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     
     func textViewDidBeginEditing(textView: UITextView) {
         if( textView == descriptionTextField &&
-            textView.textColor == defaultDescriptionTextFieldPlaceholderColor ) {
+            textView.textColor == defaultDescriptionTextFieldPlaceholderColor &&
+            textView.text == defaultDescriptionTextFieldPlaceholder ) {
             
             textView.text = nil
             textView.textColor = UIColor.blackColor()
@@ -237,8 +246,6 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
             textView.text = defaultDescriptionTextFieldPlaceholder
             textView.textColor = defaultDescriptionTextFieldPlaceholderColor
         }
-        // Remove active field as well
-        self.activeField = nil
     }
     
     // MARK: - TextField return key functions dealt with here
@@ -1380,7 +1387,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()           // Let the super do its stuff
         // Re-setup the views
-        setupView()
+        setupView(true)
     }
 
 }
