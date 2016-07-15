@@ -117,17 +117,85 @@ class UserSettingsViewController: UIViewController {
             if( LAContext().canEvaluatePolicy(.DeviceOwnerAuthenticationWithBiometrics, error: nil) ) {
                 // User has a Touch ID enabled phone
                 
-                // Update Keychain
-                KeychainWrapper.defaultKeychainWrapper().setBool(true, forKey: "LocNotes-TouchIDEnabled")
+                // Present Password Alert
+                // CITATION: http://stackoverflow.com/a/25713688/705471
+                
+                var inputTextField: UITextField?
+                let passwordPrompt = UIAlertController(title: "Enter Password", message: "Choose a backup password in case Touch ID fails to help you unlock LocNotes.", preferredStyle: UIAlertControllerStyle.Alert)
+                passwordPrompt.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: {(action) -> Void in
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.touchIDSwitch.setOn(false, animated: true)
+                    })
+                }))
+                passwordPrompt.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: {(action) -> Void in
+                    // Now do whatever you want with inputTextField (remember to unwrap the optional)
+                    if( inputTextField!.text?.isEmpty == false )
+                    {
+                        // If the password matched, then update keychain
+                        KeychainWrapper.defaultKeychainWrapper().setBool(true, forKey: "LocNotes-TouchIDEnabled")
+                        // And save the password
+                        KeychainWrapper.defaultKeychainWrapper().setString(CommonUtils.generateSHA512((inputTextField!.text?.dataUsingEncoding(NSUTF8StringEncoding))!), forKey: "LocNotes-TouchIDBackupPwd")
+                    } else {
+                        // Show failure message to the user
+                        dispatch_async(dispatch_get_main_queue(), {
+                            // Tell the user that we couldn't enable it as they entered an empty password
+                            CommonUtils.showDefaultAlertToUser(self, title: "Invalid Credentials", alertContents: "Unable to enable Touch ID as the backup password you entered was empty. Please enter a valid password and try again!")
+                            // Switch it back off
+                            self.touchIDSwitch.setOn(false, animated: true)
+                        })
+                    }
+                }))
+                passwordPrompt.addTextFieldWithConfigurationHandler({(textField: UITextField!) in
+                    textField.placeholder = "Password"
+                    textField.secureTextEntry = true
+                    inputTextField = textField
+                })
+                // Show the Password Box
+                self.presentViewController(passwordPrompt, animated: true, completion: nil)
+                
             } else {
                 // Tell the user that he/she cannot enroll for this
-                CommonUtils.showDefaultAlertToUser(self, title: "Settings Issue", alertContents: "Touch ID is not either available on this device or has not been enrolled. This feature cannot be used!")
+                CommonUtils.showDefaultAlertToUser(self, title: "Settings Issue", alertContents: "Touch ID is not either unavailable on this device or has not been enrolled. This feature cannot be used!")
                 // Switch it back off
                 self.touchIDSwitch.setOn(false, animated: true)
             }
         } else {
-            // Update Keychain
-            KeychainWrapper.defaultKeychainWrapper().setBool(false, forKey: "LocNotes-TouchIDEnabled")
+            // Present Password Alert
+            // CITATION: http://stackoverflow.com/a/25713688/705471
+            
+            var inputTextField: UITextField?
+            let passwordPrompt = UIAlertController(title: "Enter Password", message: "You had chosen a backup password to unlock LocNotes if Touch ID failed. Please enter that pasword now to disable Touch ID integration.", preferredStyle: UIAlertControllerStyle.Alert)
+            passwordPrompt.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: {(action) -> Void in
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.touchIDSwitch.setOn(true, animated: true)
+                })
+            }))
+            passwordPrompt.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: {(action) -> Void in
+                // Now do whatever you want with inputTextField (remember to unwrap the optional)
+                if( CommonUtils.generateSHA512((inputTextField!.text?.dataUsingEncoding(NSUTF8StringEncoding))!) ==
+                    KeychainWrapper.defaultKeychainWrapper().stringForKey("LocNotes-TouchIDBackupPwd")! )
+                {
+                    // If the password matched, then update keychain
+                    KeychainWrapper.defaultKeychainWrapper().setBool(false, forKey: "LocNotes-TouchIDEnabled")
+                    // And remove the password
+                    KeychainWrapper.defaultKeychainWrapper().setString("", forKey: "LocNotes-TouchIDBackupPwd")
+                } else {
+                    // Show failure message to the user
+                    dispatch_async(dispatch_get_main_queue(), {
+                        // Tell the user that it couldn't be disabled because the password didn't match
+                        CommonUtils.showDefaultAlertToUser(self, title: "Wrong Credentials", alertContents: "The backup password entered doesn't match the one you had used while enrolling for Touch ID. Please try again!")
+                        // Switch it back off
+                        self.touchIDSwitch.setOn(true, animated: true)
+                    })
+                }
+            }))
+            passwordPrompt.addTextFieldWithConfigurationHandler({(textField: UITextField!) in
+                textField.placeholder = "Password"
+                textField.secureTextEntry = true
+                inputTextField = textField
+            })
+            // Show the Password Box
+            self.presentViewController(passwordPrompt, animated: true, completion: nil)
         }
     }
     
@@ -233,6 +301,7 @@ class UserSettingsViewController: UIViewController {
                         // Set default settings
                         KeychainWrapper.defaultKeychainWrapper().setBool(false, forKey: "LocNotes-TouchIDEnabled")
                         KeychainWrapper.defaultKeychainWrapper().setBool(true, forKey: "LocNotes-PrefferedUploadMediumIsWiFi")
+                        KeychainWrapper.defaultKeychainWrapper().setString("", forKey: "LocNotes-TouchIDBackupPwd")
                         // Take the user to the login screen
                         dispatch_async(dispatch_get_main_queue(), {
                             self.loadingScreen.removeFromSuperview()

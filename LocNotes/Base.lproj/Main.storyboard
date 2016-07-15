@@ -65,9 +65,17 @@
                                     <constraint firstAttribute="width" constant="64" id="Pcc-eo-QxK"/>
                                 </constraints>
                             </imageView>
+                            <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="password" translatesAutoresizingMaskIntoConstraints="NO" id="cQS-lC-hpv">
+                                <rect key="frame" x="440" y="528" width="64" height="64"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="64" id="DbJ-Du-XeC"/>
+                                    <constraint firstAttribute="width" constant="64" id="VaX-ax-V3P"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.8784313725490196" green="0.99215686274509807" blue="0.8784313725490196" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="cQS-lC-hpv" secondAttribute="bottom" constant="8" id="9Km-4n-hEw"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="rqM-b7-FT6" secondAttribute="bottom" constant="8" id="C0J-eF-IE7"/>
                             <constraint firstItem="EpP-01-mdo" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="20" id="Jhw-Oo-LPH"/>
                             <constraint firstItem="EpP-01-mdo" firstAttribute="top" relation="greaterThanOrEqual" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="10" id="M4m-wS-03u"/>
@@ -75,11 +83,13 @@
                             <constraint firstItem="rqM-b7-FT6" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" constant="8" id="chB-gw-byG"/>
                             <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="EpP-01-mdo" secondAttribute="trailing" constant="20" id="rmS-kz-5II"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" relation="greaterThanOrEqual" secondItem="EpP-01-mdo" secondAttribute="bottom" constant="10" id="sE2-Au-uaD"/>
+                            <constraint firstItem="rqM-b7-FT6" firstAttribute="leading" secondItem="cQS-lC-hpv" secondAttribute="trailing" constant="20" id="wZv-pm-L4F"/>
                             <constraint firstItem="EpP-01-mdo" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="zsl-xN-qNI"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="fingerPrintImage" destination="rqM-b7-FT6" id="teX-XD-l4N"/>
+                        <outlet property="passwordImage" destination="cQS-lC-hpv" id="mtV-XJ-a2e"/>
                         <segue destination="Njh-km-45c" kind="show" identifier="showLoggedInUser" id="tiQ-3l-giC"/>
                         <segue destination="Jyj-eI-ThB" kind="show" identifier="showNewUser" id="LLn-GC-l9Y"/>
                     </connections>
@@ -1598,7 +1608,7 @@
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location Log Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nJf-Uf-ZxK">
                                                             <rect key="frame" x="8" y="8" width="584" height="20"/>
                                                             <fontDescription key="fontDescription" name="HelveticaNeue-Italic" family="Helvetica Neue" pointSize="17"/>
-                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location Log Description here" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" minimumFontSize="12" translatesAutoresizingMaskIntoConstraints="NO" id="Ngc-hB-fIn">
@@ -1607,7 +1617,7 @@
                                                                 <constraint firstAttribute="height" constant="23" id="lhz-gD-qAx"/>
                                                             </constraints>
                                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                     </subviews>
@@ -1757,6 +1767,7 @@
         <image name="locationBlackPin" width="256" height="256"/>
         <image name="logo" width="256" height="256"/>
         <image name="nameIcon" width="256" height="256"/>
+        <image name="password" width="256" height="256"/>
         <image name="passwordIcon" width="170" height="170"/>
         <image name="removePhoto" width="256" height="256"/>
         <image name="stopEditing" width="128" height="128"/>

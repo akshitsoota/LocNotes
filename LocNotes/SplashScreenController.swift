@@ -12,6 +12,7 @@ import UIKit
 class SplashScreenController: UIViewController {
     
     @IBOutlet weak var fingerPrintImage: UIImageView!
+    @IBOutlet weak var passwordImage: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,9 +22,13 @@ class SplashScreenController: UIViewController {
         )
         // Hide the fingerprint image by default
         self.fingerPrintImage.hidden = true
-        // Setup tap listener on it the image
+        self.passwordImage.hidden = true
+        // Setup tap listener on it the images
         let tapListener: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(SplashScreenController.promptTouchID))
         self.fingerPrintImage.addGestureRecognizer(tapListener)
+        
+        let tapListenerPassword: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(SplashScreenController.promptBackupPassword))
+        self.passwordImage.addGestureRecognizer(tapListenerPassword)
     }
     
     override func didReceiveMemoryWarning() {
@@ -77,12 +82,15 @@ class SplashScreenController: UIViewController {
                     // Show the finger on the screen
                     dispatch_async(dispatch_get_main_queue(), {
                         self.fingerPrintImage.hidden = false
+                        self.passwordImage.hidden = false
                     })
                     break;
                 case LAError.PasscodeNotSet.rawValue, LAError.TouchIDNotAvailable.rawValue, LAError.TouchIDNotEnrolled.rawValue:
                     // Tell the user
                     dispatch_async(dispatch_get_main_queue(), {
                         self.fingerPrintImage.hidden = false
+                        self.passwordImage.hidden = false
+                        
                         CommonUtils.showDefaultAlertToUser(self, title: "Touch ID issues", alertContents: "Please enable Touch ID to access your Location Logs.")
                     })
                     break;
@@ -93,6 +101,43 @@ class SplashScreenController: UIViewController {
             }
                                     
         })
+    }
+    
+    func promptBackupPassword() {
+        
+        // Present Password Alert
+        // CITATION: http://stackoverflow.com/a/25713688/705471
+        
+        var inputTextField: UITextField?
+        let passwordPrompt = UIAlertController(title: "Enter Password", message: "You had chosen a backup password to unlock LocNotes as an alternative to Touch ID. Please enter that pasword now to unlock LocNotes.", preferredStyle: UIAlertControllerStyle.Alert)
+        passwordPrompt.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: nil))
+        passwordPrompt.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: {(action) -> Void in
+            // Now do whatever you want with inputTextField (remember to unwrap the optional)
+            if( CommonUtils.generateSHA512((inputTextField!.text?.dataUsingEncoding(NSUTF8StringEncoding))!) ==
+                KeychainWrapper.defaultKeychainWrapper().stringForKey("LocNotes-TouchIDBackupPwd")! )
+            {
+                
+                // Run this on the main thread
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.performSegueWithIdentifier("showLoggedInUser", sender: self)       // Goto the Location Logs screen
+                })
+                
+            } else {
+                // Show failure message to the user
+                dispatch_async(dispatch_get_main_queue(), {
+                    // Tell the user that it couldn't be disabled because the password didn't match
+                    CommonUtils.showDefaultAlertToUser(self, title: "Wrong Credentials", alertContents: "The backup password entered doesn't match the one you had used while enrolling for Touch ID. Please try again!")
+                })
+            }
+        }))
+        passwordPrompt.addTextFieldWithConfigurationHandler({(textField: UITextField!) in
+            textField.placeholder = "Password"
+            textField.secureTextEntry = true
+            inputTextField = textField
+        })
+        // Show the Password Box
+        self.presentViewController(passwordPrompt, animated: true, completion: nil)
+        
     }
     
 }
