@@ -32,6 +32,7 @@
 		FC605F301D29FE2700AC5F73 /* endpoints.plist in Resources */ = {isa = PBXBuildFile; fileRef = FC605F2F1D29FE2700AC5F73 /* endpoints.plist */; };
 		FC605F341D2B092800AC5F73 /* LoadingScreenView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FC605F331D2B092800AC5F73 /* LoadingScreenView.xib */; };
 		FC605F361D2B1B8300AC5F73 /* CommonUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC605F351D2B1B8300AC5F73 /* CommonUtils.swift */; };
+		FCCB72E21D394952001CCDD6 /* NoLocationLogsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FCCB72E11D394952001CCDD6 /* NoLocationLogsView.xib */; };
 		FCCC8F1A1D37434400BF49DB /* MultipartFormDataHTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCCC8F191D37434400BF49DB /* MultipartFormDataHTTP.swift */; };
 		FCCC8F1C1D37EFF500BF49DB /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCCC8F1B1D37EFF500BF49DB /* SystemConfiguration.framework */; };
 		FCCC8F1E1D37F67800BF49DB /* UserAuthentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCCC8F1D1D37F67800BF49DB /* UserAuthentication.swift */; };
@@ -93,6 +94,7 @@
 		FC605F2F1D29FE2700AC5F73 /* endpoints.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = endpoints.plist; sourceTree = "<group>"; };
 		FC605F331D2B092800AC5F73 /* LoadingScreenView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LoadingScreenView.xib; path = CommonUtils/LoadingScreenView.xib; sourceTree = "<group>"; };
 		FC605F351D2B1B8300AC5F73 /* CommonUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CommonUtils.swift; path = CommonUtils/CommonUtils.swift; sourceTree = "<group>"; };
+		FCCB72E11D394952001CCDD6 /* NoLocationLogsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = NoLocationLogsView.xib; path = LocationLogTableViews/NoLocationLogsView.xib; sourceTree = "<group>"; };
 		FCCC8F181D36B80A00BF49DB /* LocNotes-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LocNotes-Bridging-Header.h"; sourceTree = "<group>"; };
 		FCCC8F191D37434400BF49DB /* MultipartFormDataHTTP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MultipartFormDataHTTP.swift; path = CommonUtils/MultipartFormDataHTTP.swift; sourceTree = "<group>"; };
 		FCCC8F1B1D37EFF500BF49DB /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -228,6 +230,7 @@
 			children = (
 				FCCD4C2F1D388E5E00656E3A /* LocationLogWithImageTableViewCell.swift */,
 				FCCD4C311D388F4100656E3A /* LocationLogWithoutImageTableViewCell.swift */,
+				FCCB72E11D394952001CCDD6 /* NoLocationLogsView.xib */,
 			);
 			name = LocationLogTableViews;
 			sourceTree = "<group>";
@@ -307,6 +310,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FCCB72E21D394952001CCDD6 /* NoLocationLogsView.xib in Resources */,
 				FC1913F81D1B869800146224 /* Assets.xcassets in Resources */,
 				FC1913F61D1B869800146224 /* Main.storyboard in Resources */,
 				FCFD7E401D2ED7B200727BD6 /* ProgressLoadingScreenView.xib in Resources */,

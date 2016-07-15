@@ -1670,6 +1670,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="locationLogsTableView" destination="58L-ld-j7Y" id="FaD-XE-Ohg"/>
                         <segue destination="8HT-tT-Wo3" kind="show" identifier="showSettingsPage" id="7fE-Ce-hdV"/>
                     </connections>
                 </viewController>

@@ -205,6 +205,7 @@ class UserSettingsViewController: UIViewController {
     }
     
     @IBAction func deleteLocationLogsButtonClicked(sender: AnyObject) {
+        // TODO:
     }
     
     @IBAction func logOutAccountButtonClicked(sender: AnyObject) {

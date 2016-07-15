@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NtD-dF-Mos">
+                    <rect key="frame" x="30" y="198.5" width="540" height="203.5"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="locationlog" translatesAutoresizingMaskIntoConstraints="NO" id="WKB-cJ-pVz">
+                            <rect key="frame" x="222" y="0.0" width="96" height="96"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="96" id="XYD-Ah-3iG"/>
+                                <constraint firstAttribute="height" constant="96" id="Zm0-bL-vQE"/>
+                            </constraints>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No location logs to show" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7tj-fs-B2P">
+                            <rect key="frame" x="0.0" y="121" width="540" height="32.5"/>
+                            <fontDescription key="fontDescription" name="PingFangHK-Semibold" family="PingFang HK" pointSize="23"/>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="To add a location log, click the plus sign to the top right of this application" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fM8-dR-4zz">
+                            <rect key="frame" x="0.0" y="158.5" width="540" height="50"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="50" id="eRh-qE-BDf"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="7tj-fs-B2P" secondAttribute="trailing" id="8y5-rE-DFU"/>
+                        <constraint firstItem="WKB-cJ-pVz" firstAttribute="centerX" secondItem="NtD-dF-Mos" secondAttribute="centerX" id="EkO-Tn-TbK"/>
+                        <constraint firstItem="7tj-fs-B2P" firstAttribute="leading" secondItem="NtD-dF-Mos" secondAttribute="leading" id="HeV-qN-vrC"/>
+                        <constraint firstAttribute="height" constant="204" id="KOF-hX-SII"/>
+                        <constraint firstItem="7tj-fs-B2P" firstAttribute="top" secondItem="WKB-cJ-pVz" secondAttribute="bottom" constant="25" id="T21-0W-xJW"/>
+                        <constraint firstItem="WKB-cJ-pVz" firstAttribute="top" secondItem="NtD-dF-Mos" secondAttribute="top" id="VN8-0M-0Rt"/>
+                        <constraint firstAttribute="trailing" secondItem="fM8-dR-4zz" secondAttribute="trailing" id="Y0R-fh-HsV"/>
+                        <constraint firstItem="fM8-dR-4zz" firstAttribute="leading" secondItem="NtD-dF-Mos" secondAttribute="leading" id="asI-Z6-MC7"/>
+                        <constraint firstItem="fM8-dR-4zz" firstAttribute="top" secondItem="7tj-fs-B2P" secondAttribute="bottom" constant="5" id="sdm-pp-l9n"/>
+                    </constraints>
+                </view>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="uparrow" translatesAutoresizingMaskIntoConstraints="NO" id="9cY-Ad-Kub">
+                    <rect key="frame" x="542" y="8" width="50" height="50"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="50" id="Yk0-IJ-FFu"/>
+                        <constraint firstAttribute="height" constant="50" id="iDF-iH-yu2"/>
+                    </constraints>
+                </imageView>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="NtD-dF-Mos" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="3dm-hs-1Db"/>
+                <constraint firstAttribute="trailing" secondItem="NtD-dF-Mos" secondAttribute="trailing" constant="30" id="I48-i1-Sal"/>
+                <constraint firstItem="NtD-dF-Mos" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="30" id="kSd-tC-NEs"/>
+                <constraint firstItem="9cY-Ad-Kub" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="8" id="lw4-2s-gFc"/>
+                <constraint firstAttribute="trailing" secondItem="9cY-Ad-Kub" secondAttribute="trailing" constant="8" id="wAd-ML-Bm0"/>
+                <constraint firstItem="NtD-dF-Mos" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="yNX-uj-IdJ"/>
+            </constraints>
+        </view>
+    </objects>
+    <resources>
+        <image name="locationlog" width="256" height="256"/>
+        <image name="uparrow" width="256" height="256"/>
+    </resources>
+</document>
