@@ -757,7 +757,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                 
                 // Resolve the destination S3 Bucket Name
                 let awsUploadBucketName: String? = CommonUtils.fetchFromPropertiesList("amazon-aws-credentials", fileExtension: "plist", key: "s3bucketname")
-                let awsUploadKey: String = "\(uniqueLogID)_\(uniqueS3ID)"
+                let awsUploadKey: String = "\(uniqueLogID)_\(uniqueS3ID).png"
                 // Spawn off the Amazon S3 Request now
                 let amazonS3UploadRequest: AWSS3TransferManagerUploadRequest = AWSS3TransferManagerUploadRequest()
                 amazonS3UploadRequest.body = fileURL

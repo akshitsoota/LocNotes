@@ -1643,7 +1643,7 @@
                                             <outlet property="locationLogTitle" destination="nJf-Uf-ZxK" id="K7o-Kx-tmk"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="progressLocationLogCell" rowHeight="64" id="70Q-8n-zPj" customClass="LocationLogWithoutImageTableViewCell" customModule="LocNotes" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="progressLocationLogCell" rowHeight="64" id="70Q-8n-zPj" customClass="ProgressLocationLogTableViewCell" customModule="LocNotes" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="342" width="600" height="64"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="70Q-8n-zPj" id="ptZ-WB-0f8">
@@ -1673,6 +1673,10 @@
                                                 <constraint firstItem="o0P-7m-LYi" firstAttribute="top" secondItem="eiQ-45-gmD" secondAttribute="bottom" constant="15" id="oca-xS-hMY"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="informationText" destination="eiQ-45-gmD" id="5Bb-4Q-HDb"/>
+                                            <outlet property="progressBar" destination="o0P-7m-LYi" id="dsX-Ht-Mrd"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>

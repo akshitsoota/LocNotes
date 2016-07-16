@@ -6,6 +6,9 @@
 //  Copyright © 2016 axe. All rights reserved.
 //
 
+import AWSCore
+import AWSS3
+
 import CoreData
 import UIKit
 
@@ -22,9 +25,12 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
     var locationLogImages: Dictionary<String, UIImage> = [String: UIImage]()
     // Holds if the TableView should show a loading cell or not
     var tableViewLoadingCellShown: Bool = false
-    // Holds the TableView loading cell itself
-    var tableViewLoadingCell: UITableViewCell? // TODO
+    // Holds the TableView Progress information
+    var tableViewLoadingCellProgressText: String = ""
+    var tableViewLoadingCellProgressValue: Float = 0
     
+    // Dispatch Queues
+    let refreshLogQueue = dispatch_queue_create("RefreshLocationLogQueue", DISPATCH_QUEUE_CONCURRENT)
     // Core Data Managed Context
     var managedContext : NSManagedObjectContext?
     
@@ -158,8 +164,18 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
         // Check if we are loading something
         if( self.tableViewLoadingCellShown && indexPath.row == 0 ) {
             // Return the loading cell
-            // TODO:
-            return UITableViewCell()
+            let origTableCell: UITableViewCell = tableView.dequeueReusableCellWithIdentifier("progressLocationLogCell")!
+            let progressCell: ProgressLocationLogTableViewCell = origTableCell as! ProgressLocationLogTableViewCell
+            // Now set the information
+            progressCell.informationText.text = self.tableViewLoadingCellProgressText
+            progressCell.progressBar.setProgress(self.tableViewLoadingCellProgressValue, animated: true)
+            // Set TableViewCell Insets
+            progressCell.preservesSuperviewLayoutMargins = false
+            progressCell.separatorInset = UIEdgeInsetsZero
+            progressCell.layoutMargins = UIEdgeInsetsZero
+            
+            // Now, return
+            return progressCell
         }
         // Now, fetch the TableViewCell accordingly
         var llIndex: Int = indexPath.row
@@ -232,6 +248,9 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     @IBAction func navigationBarRefreshButtonClicked(sender: AnyObject) {
+        // Force an update of the list from CoreData
+        self.fetchLocationLogs()
+        
         // Show the activity indicator instead of the Refresh Button
         let activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView.init(activityIndicatorStyle: .White)
         let refreshBarButton: UIBarButtonItem = UIBarButtonItem(customView: activityIndicator)
@@ -240,7 +259,488 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
         // Show activity indicator on the Status Bar
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         
-        // TODO: Query the server and compare
+        // Spawn off the request on another thread
+        dispatch_barrier_async(self.refreshLogQueue, {
+            // Ensure we've got a valid Login Token
+            // Request for Login Token Renewal
+            let tokenRenewalState: NSDictionary? = UserAuthentication.renewLoginToken()
+            // Check if nil
+            if( tokenRenewalState == nil ) {
+                // We failed to renew the login token, tell the user on the main thread
+                dispatch_async(dispatch_get_main_queue(), {
+                    // Remove the activity indicator from the navigation bar
+                    self.navigationItem.leftBarButtonItem = self.navigationItemRefreshButton
+                    // Hide activity indicator on the Status Bar
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    // Tell the user where we hit a snag
+                    CommonUtils.showDefaultAlertToUser(self, title: "Hit a Snag!", alertContents: "We are having issues with our internal framework. Please try again later!")
+                })
+                // Exit
+                return
+            }
+            // Else, process
+            if(   tokenRenewalState!["status"] as! String == "invalid_non_json_response" ||
+                ( tokenRenewalState!["status"] as! String == "no_renewal" &&
+                    tokenRenewalState!["reason"] as! String == "backend_failure" ) ||
+                ( tokenRenewalState!["status"] as! String == "not_possible_request_error" ) ) {
+                
+                // We failed to renew the login token, tell the user on the main thread
+                dispatch_async(dispatch_get_main_queue(), {
+                    // Remove the activity indicator from the navigation bar
+                    self.navigationItem.leftBarButtonItem = self.navigationItemRefreshButton
+                    // Hide activity indicator on the Status Bar
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    // Tell the user where we hit a snag
+                    CommonUtils.showDefaultAlertToUser(self, title: "Hit a Snag!", alertContents: "The server returned an invalid response while attempting to verify your login credentials. Please try again later!")
+                })
+                // Exit
+                return
+                
+            } else if( tokenRenewalState!["status"] as! String == "renewed_but_failed" && tokenRenewalState!["reason"] as! String == "keychain_failed" ) {
+                
+                // We failed to renew the login token, tell the user on the main thread
+                dispatch_async(dispatch_get_main_queue(), {
+                    // Remove the activity indicator from the navigation bar
+                    self.navigationItem.leftBarButtonItem = self.navigationItemRefreshButton
+                    // Hide activity indicator on the Status Bar
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    // Tell the user where we hit a snag
+                    CommonUtils.showDefaultAlertToUser(self, title: "Hit a Snag!", alertContents: "We failed to save your fresh login token into Keychain. Please try again later!")
+                })
+                // Exit
+                return
+                
+            } else if( tokenRenewalState!["status"] as! String == "no_renewal" && tokenRenewalState!["reason"] as! String == "invalid_cred" ) {
+                
+                // We failed to renew the login token, tell the user on the main thread
+                dispatch_async(dispatch_get_main_queue(), {
+                    // Remove the activity indicator from the navigation bar
+                    self.navigationItem.leftBarButtonItem = self.navigationItemRefreshButton
+                    // Hide activity indicator on the Status Bar
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    // Tell the user where we hit a snag
+                    CommonUtils.showDefaultAlertToUser(self, title: "Hit a Snag!", alertContents: "Your login credentials have expired. Please try logout and log back in to create new Location Logs.")
+                })
+                // Exit
+                return
+                
+            } else if( ( tokenRenewalState!["status"] as! String == "no_renewal" && tokenRenewalState!["reason"] as! String == "not_needed" ) ||
+                       ( tokenRenewalState!["status"] as! String == "renewed" && tokenRenewalState!["reason"] == nil ) ) {
+                
+                // Perfect, just proceed with the rest of the job
+                
+            }
+            
+            // Fetch necessary information
+            let awsEndpoint: String = CommonUtils.fetchFromPropertiesList("endpoints", fileExtension: "plist", key: "awsEC2EndpointURL")!
+            let getMiniLogsURL: String = CommonUtils.fetchFromPropertiesList("endpoints", fileExtension: "plist", key: "fetchMiniLogsURL")!
+            let userName: String! = KeychainWrapper.defaultKeychainWrapper().stringForKey("LocNotes-username")!
+            let userLoginToken: String! = KeychainWrapper.defaultKeychainWrapper().stringForKey("LocNotes-loginToken")!
+            
+            // Create a synchronous request here
+            let syncRequestURL: NSURL! = NSURL(string: "http://" + awsEndpoint + getMiniLogsURL)
+            let syncSession: NSURLSession! = NSURLSession.sharedSession()
+            
+            let syncRequest: NSMutableURLRequest! = NSMutableURLRequest(URL: syncRequestURL)
+            syncRequest.HTTPMethod = "POST"
+            syncRequest.cachePolicy = .ReloadIgnoringLocalCacheData
+            syncRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            syncRequest.setValue(UserAuthentication.generateAuthorizationHeader(userName, userLoginToken: userLoginToken), forHTTPHeaderField: "Authorization")
+            
+            // Create semaphore to give a feel of a Synchronous Request via an Async Handler xD
+            // CITATION: http://stackoverflow.com/a/34308158/705471
+            let semaphore = dispatch_semaphore_create(0)
+            var syncResponse: (data: NSData?, response: NSURLResponse?, error: NSError?)? = nil
+            
+            let asyncTask = syncSession.dataTaskWithRequest(syncRequest, completionHandler: {(data: NSData?, response: NSURLResponse?, error: NSError?) -> () in
+                syncResponse = (data, response, error)
+                // Release the semaphore
+                dispatch_semaphore_signal(semaphore)
+            })
+            asyncTask.resume() // Start the task now
+            
+            // But wait for the request to finish and read the response
+            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+            
+            // Process the response
+            var logIDsToUpdate: [String] = []
+            var logIDsToAdd: [String] = []
+            
+            if( syncResponse?.error != nil ) {
+                // Tell the user; and return
+                dispatch_async(dispatch_get_main_queue(), {
+                    // Remove the activity indicator from the navigation bar
+                    self.navigationItem.leftBarButtonItem = self.navigationItemRefreshButton
+                    // Hide activity indicator on the Status Bar
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    // Also, alert the user
+                    CommonUtils.showDefaultAlertToUser(self, title: "Hit a snag!", alertContents: "The server returned an invalid response. Please try again later!")
+                })
+                // Now, return
+                return
+            }
+            
+            // Else, process the JSON
+            do {
+                // Parse the JSON
+                let jsonResponse: Array<AnyObject> = try NSJSONSerialization.JSONObjectWithData(syncResponse!.data!, options: NSJSONReadingOptions()) as! Array<AnyObject>
+                
+                // For each location log in the JSON, iterate over the Location Logs we've got and:
+                //   1) See if it exists in our list; and,
+                //   2) If it does exist, if the update time is newer than the one we have
+                
+                for locationLog in jsonResponse {
+                    // Extract information out of it now
+                    let locationLogParsed: [String: AnyObject] = (locationLog as? [String: AnyObject])!
+                    // Extract the Log ID and try to find it
+                    var logIDFound: Bool = false
+                    for locLogFromCoreData in self.locationLogs {
+                        if locLogFromCoreData.logID == locationLogParsed["locationlogid"] as? String {
+                            logIDFound = true
+                            // Compare dates
+                            let locLogUpdatedDate: Double! = (locationLogParsed["lastupdateddate"] as? NSNumber)?.doubleValue
+                            if locLogUpdatedDate != Double(locLogFromCoreData.updateDate!) {
+                                // Something has changed so we gotta update it
+                                logIDsToUpdate.append(locLogFromCoreData.logID!)
+                            }
+                            // Break as we found it
+                            break
+                        }
+                    }
+                    // If it wasn't found, we gotta update and fetch the new one
+                    if !logIDFound {
+                        logIDsToAdd.append(locationLogParsed["locationlogid"] as! String)
+                    }
+                }
+                
+                // Once, we've got that list
+                self.updateLocationLogs(logIDsToAdd, logIDsToUpdate: logIDsToUpdate)
+                // And exit:
+                return
+                
+            } catch {
+                // Tell the user; and return
+                dispatch_async(dispatch_get_main_queue(), {
+                    // Remove the activity indicator from the navigation bar
+                    self.navigationItem.leftBarButtonItem = self.navigationItemRefreshButton
+                    // Hide activity indicator on the Status Bar
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    // Also, alert the user
+                    CommonUtils.showDefaultAlertToUser(self, title: "Hit a snag!", alertContents: "The server returned an invalid response. Please try again later!")
+                })
+                // Now, return
+                return
+            }
+        })
+    }
+    
+    // MARK: - Update Location Logs function here
+    func updateLocationLogs(logIDsToAdd: [String], logIDsToUpdate: [String]) {
+        
+        let totalLogCount: Int = logIDsToAdd.count + logIDsToUpdate.count
+        let awsS3BucketName: String! = CommonUtils.fetchFromPropertiesList("amazon-aws-credentials", fileExtension: "plist", key: "s3bucketname")
+        
+        // Update the UI to show progress view and scroll to the top
+        dispatch_async(dispatch_get_main_queue(), {
+            self.tableViewLoadingCellShown = true
+            self.tableViewLoadingCellProgressText = "Download 0 of \(totalLogCount) Location Log(s)"
+            self.tableViewLoadingCellProgressValue = 0
+            // Force update the TableView
+            self.locationLogsTableView.reloadData()
+            // Scroll to the top of the TableView
+            self.locationLogsTableView.setContentOffset(CGPointZero, animated: true)
+        })
+        
+        // Okay, now download all the Location Logs and save the JSON Array
+        var freshLocationLogs: Array<[String: AnyObject]>? = nil
+        
+        dispatch_barrier_async(self.refreshLogQueue, {
+            // Create a synchronous request to the server to fetch all the Location Logs for this user
+            
+            // Fetch necessary information
+            let awsEndpoint: String = CommonUtils.fetchFromPropertiesList("endpoints", fileExtension: "plist", key: "awsEC2EndpointURL")!
+            let getMiniLogsURL: String = CommonUtils.fetchFromPropertiesList("endpoints", fileExtension: "plist", key: "fetchAllLocationLogsURL")!
+            let userName: String! = KeychainWrapper.defaultKeychainWrapper().stringForKey("LocNotes-username")!
+            let userLoginToken: String! = KeychainWrapper.defaultKeychainWrapper().stringForKey("LocNotes-loginToken")!
+            
+            // Create a synchronous request here
+            let syncRequestURL: NSURL! = NSURL(string: "http://" + awsEndpoint + getMiniLogsURL)
+            let syncSession: NSURLSession! = NSURLSession.sharedSession()
+            
+            let syncRequest: NSMutableURLRequest! = NSMutableURLRequest(URL: syncRequestURL)
+            syncRequest.HTTPMethod = "POST"
+            syncRequest.cachePolicy = .ReloadIgnoringLocalCacheData
+            syncRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            syncRequest.setValue(UserAuthentication.generateAuthorizationHeader(userName, userLoginToken: userLoginToken), forHTTPHeaderField: "Authorization")
+            
+            // Create semaphore to give a feel of a Synchronous Request via an Async Handler xD
+            // CITATION: http://stackoverflow.com/a/34308158/705471
+            let semaphore = dispatch_semaphore_create(0)
+            var syncResponse: (data: NSData?, response: NSURLResponse?, error: NSError?)? = nil
+            
+            let asyncTask = syncSession.dataTaskWithRequest(syncRequest, completionHandler: {(data: NSData?, response: NSURLResponse?, error: NSError?) -> () in
+                syncResponse = (data, response, error)
+                // Release the semaphore
+                dispatch_semaphore_signal(semaphore)
+            })
+            asyncTask.resume() // Start the task now
+            
+            // But wait for the request to finish and read the response
+            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+            
+            // Process the response
+            if( syncResponse?.error != nil ) {
+                // Tell the user; and return
+                dispatch_async(dispatch_get_main_queue(), {
+                    // Remove the activity indicator from the navigation bar
+                    self.navigationItem.leftBarButtonItem = self.navigationItemRefreshButton
+                    // Hide activity indicator on the Status Bar
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    // Clean up progress view
+                    self.tableViewLoadingCellShown = false
+                    self.tableViewLoadingCellProgressValue = 0
+                    self.tableViewLoadingCellProgressText = ""
+                    self.locationLogsTableView.reloadData()
+                    // Also, alert the user
+                    CommonUtils.showDefaultAlertToUser(self, title: "Hit a snag!", alertContents: "The server returned an invalid response. Please try again later!")
+                })
+                // Now, return
+                return
+            }
+            
+            // Else, process the JSON
+            do {
+                // Parse the JSON
+                let jsonResponse: Array<AnyObject> = try NSJSONSerialization.JSONObjectWithData(syncResponse!.data!, options: NSJSONReadingOptions()) as! Array<AnyObject>
+                // Extract this up
+                var finalJSON: Array<[String: AnyObject]> = Array<[String: AnyObject]>()
+                for jsonObject in jsonResponse {
+                    finalJSON.append((jsonObject as? [String: AnyObject])!)
+                }
+                // Save this
+                freshLocationLogs = finalJSON
+                
+            } catch {
+                // Tell the user; and return
+                dispatch_async(dispatch_get_main_queue(), {
+                    // Remove the activity indicator from the navigation bar
+                    self.navigationItem.leftBarButtonItem = self.navigationItemRefreshButton
+                    // Hide activity indicator on the Status Bar
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    // Clean up progress view
+                    self.tableViewLoadingCellShown = false
+                    self.tableViewLoadingCellProgressValue = 0
+                    self.tableViewLoadingCellProgressText = ""
+                    self.locationLogsTableView.reloadData()
+                    // Also, alert the user
+                    CommonUtils.showDefaultAlertToUser(self, title: "Hit a snag!", alertContents: "The server returned an invalid response. Please try again later!")
+                })
+                // Now, return
+                return
+            }
+        })
+        
+        // First, let us add all the necessary logs
+        dispatch_barrier_async(self.refreshLogQueue, {
+            // Check if we should proceed
+            if( freshLocationLogs == nil ) {
+                return      //  Nope!
+            }
+            
+            // Go over each of the logs to be added
+            var logsAdded: Int = 0
+            
+            for logToBeAdded in logIDsToAdd {
+                // Find this Log ID in the JSON Array
+                for freshJSONLocationLog in freshLocationLogs! {
+                    if freshJSONLocationLog["logid"] as! String == logToBeAdded {
+                        
+                        // We've found the log to be added
+                        // First, extract all the image IDs
+                        var imagesArray: Array<[String: AnyObject]> = Array<[String: AnyObject]>()
+                        var imageS3IDs: [String] = []
+                        for image in ((freshJSONLocationLog["images"]) as! Array<AnyObject>) {
+                            let imageObject: [String: AnyObject] = (image as? [String: AnyObject])!
+                            
+                            imagesArray.append(imageObject)
+                            imageS3IDs.append(imageObject["s3id"] as! String)
+                        }
+                        // Second, download them all from Amazon AWS
+                        do {
+                            try NSFileManager.defaultManager().createDirectoryAtURL(
+                                NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent("amazons3download"),
+                                withIntermediateDirectories: true,
+                                attributes: nil)
+                        } catch {
+                            // Maybe it exists already?
+                        }
+                        
+                        var imageCountDone: Int = 0
+                        
+                        for imageS3ID in imageS3IDs {
+                            // Create the request
+                            let awsDownloadRequest: AWSS3TransferManagerDownloadRequest = AWSS3TransferManagerDownloadRequest()
+                            let localFileName: String = NSProcessInfo.processInfo().globallyUniqueString.stringByAppendingString(".png")
+                            // TODO: Add the PNG
+                            awsDownloadRequest.bucket = awsS3BucketName
+                            awsDownloadRequest.key = "\(logToBeAdded)_\(imageS3ID)" // ADD HERE
+                            awsDownloadRequest.downloadingFileURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent("amazons3download").URLByAppendingPathComponent(localFileName)
+                            
+                            let awsTransferManager: AWSS3TransferManager = AWSS3TransferManager.defaultS3TransferManager()
+                            let awsTask: AWSTask = awsTransferManager.download(awsDownloadRequest)
+                            awsTask.continueWithBlock({(task) -> AnyObject! in
+                                if let _ = task.error {
+                                    // What to do? Work on error handling
+                                } else if let _ = task.exception {
+                                    // What to do? Work on error handling
+                                } else {
+                                    // Successful
+                                }
+                                // We are suppose to return nil
+                                return nil
+                            })
+                            
+                            // Wait for it to end
+                            while( !awsTask.completed ) {
+                                // Sleep for one second
+                                sleep(1)
+                                // Now update the user with the progress of the upload
+                                awsDownloadRequest.uploadProgress = {(bytesSent, totalBytesSent, totalBytesExpectedToSend) -> Void in
+                                    // Calculate the fresh progress
+                                    let progressToAddNum: Double = Double(totalBytesSent)
+                                    let progressToAddDenom: Double = Double(totalBytesExpectedToSend) * Double(imageS3IDs.count)
+                                    let progressToAdd: Float = Float(progressToAddNum / progressToAddDenom) + Float(logsAdded / totalLogCount)
+                                    let finalProgress: Float = Float(progressToAdd / Float(totalLogCount))
+                                    // Update the UI
+                                    dispatch_async(dispatch_get_main_queue(), {
+                                        self.tableViewLoadingCellProgressValue = finalProgress
+                                        // Force update of the first row
+                                        self.locationLogsTableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: .None)
+                                    })
+                                }
+                            }
+                            
+                            // Increment
+                            imageCountDone = imageCountDone + 1
+                            
+                            // Update the progress bar
+                            dispatch_async(dispatch_get_main_queue(), {
+                                self.tableViewLoadingCellProgressValue = Float(Float(imageCountDone) / Float(imageS3IDs.count))
+                                self.tableViewLoadingCellProgressValue += Float(logsAdded / totalLogCount)
+                                self.tableViewLoadingCellProgressValue = Float(self.tableViewLoadingCellProgressValue / Float(totalLogCount))
+                                // Force update of the first row
+                                self.locationLogsTableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: .None)
+                            })
+                            
+                            // Third, save them to CoreData with location points of each image
+                            let imageData: NSData? = NSData(contentsOfURL: NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent("amazons3download").URLByAppendingPathComponent(localFileName))
+                            if( imageData != nil ) {
+                                
+                                // We can proceed to saving it in the CoreData
+                                let theImage: UIImage = UIImage(data: imageData!)!
+                                
+                                guard let fullResolutionS3Image: FullResolutionS3Image = NSEntityDescription.insertNewObjectForEntityForName("FullResolutionS3Image", inManagedObjectContext: self.managedContext!) as? FullResolutionS3Image, let imageThumbnail: ImageThumbnail = NSEntityDescription.insertNewObjectForEntityForName("ImageThumbnail", inManagedObjectContext: self.managedContext!) as? ImageThumbnail else
+                                {
+                                    continue
+                                    // What to do? Work on error handling, yet again :(
+                                }
+                                
+                                // Fill out the information
+                                fullResolutionS3Image.amazonS3link = "https://s3.amazonaws.com/\(awsS3BucketName!)/\(logToBeAdded)_\(imageS3ID).png"
+                                fullResolutionS3Image.image = UIImagePNGRepresentation(theImage)
+                                fullResolutionS3Image.s3id = imageS3ID
+                                fullResolutionS3Image.storeDate = NSNumber(longLong: Int64(NSDate().timeIntervalSince1970))
+                                fullResolutionS3Image.respectiveLogID = logToBeAdded
+                                
+                                // Thumbnail Re-sizing Function
+                                func resizeImage(image: UIImage, newHeight: CGFloat) -> UIImage {
+                                    let scale = newHeight / image.size.height
+                                    let newWidth = image.size.width * scale
+                                    UIGraphicsBeginImageContext(CGSize(width: newWidth, height: newHeight))
+                                    image.drawInRect(CGRectMake(0, 0, newWidth, newHeight))
+                                    let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()
+                                    UIGraphicsEndImageContext()
+                                    
+                                    return newImage
+                                }
+                                
+                                imageThumbnail.fullResS3id = imageS3ID
+                                imageThumbnail.image = UIImagePNGRepresentation(resizeImage(theImage, newHeight: 128))
+                                imageThumbnail.respectiveLogID = logToBeAdded
+                                
+                                // Save the new objects
+                                do {
+                                    try self.managedContext?.save()
+                                } catch {
+                                    // What to do? Work on error handling
+                                }
+                            }
+                        }
+                        // Fourth, create a CoreData object for the entire LocationLog itself
+                        guard let locationLog: LocationLog = NSEntityDescription.insertNewObjectForEntityForName("LocationLog", inManagedObjectContext: self.managedContext!) as? LocationLog else
+                        {
+                            continue
+                        }
+                        
+                        // Fill out the information
+                        locationLog.addedDate = (freshJSONLocationLog["publishdate"] as? NSNumber)?.doubleValue
+                        locationLog.imageS3ids = imageS3IDs.joinWithSeparator(";")
+                        locationLog.locationNames = freshJSONLocationLog["locnames"] as? String
+                        locationLog.logDesc = freshJSONLocationLog["desc"] as? String
+                        locationLog.logID = logToBeAdded
+                        locationLog.logTitle = freshJSONLocationLog["title"] as? String
+                        locationLog.updateDate = (freshJSONLocationLog["lastupdateddate"] as? NSNumber)?.doubleValue
+                        
+                        // Attempt to save it now
+                        do {
+                            try self.managedContext?.save()
+                        } catch {
+                            continue
+                        }
+                        
+                        // Increment
+                        logsAdded = logsAdded + 1
+                        // Update progress
+                        dispatch_async(dispatch_get_main_queue(), {
+                            self.tableViewLoadingCellProgressText = "Download \(logsAdded) of \(totalLogCount) Location Log(s)"
+                        })
+                        
+                    }
+                }
+            }
+        })
+        
+        // Second, let us update all the necessary logs
+        // TODO: We shouldn't be reaching here in the first place; right now I am not dealing with updates
+        
+        // Third, force update the UI
+        dispatch_barrier_async(self.refreshLogQueue, {
+            // Check if we should proceed
+            if( freshLocationLogs == nil ) {
+                return      // Nope!
+            }
+            
+            // Clear up some memory
+            self.managedContext?.refreshAllObjects()
+            
+            // Else, clean up on the main thread
+            dispatch_async(dispatch_get_main_queue(), {
+                // Replace the loading navigation bar item and update the status bar
+                self.navigationItem.leftBarButtonItem = self.navigationItemRefreshButton
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                
+                // Force fetching of new logs
+                self.fetchLocationLogs()
+                
+                // Also, hide the progress view in the TableView
+                self.tableViewLoadingCellShown = false
+                self.tableViewLoadingCellProgressValue = 0
+                self.tableViewLoadingCellProgressText = ""
+                
+                // Force a refresh of the TableView
+                self.locationLogsTableView.reloadData()
+            })
+        })
     }
     
     // MARK: - Segue actions handler here
