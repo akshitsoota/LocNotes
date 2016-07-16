@@ -22,5 +22,7 @@
 	<string>/dummyAllLocationLogsURL</string>
 	<key>deleteAllLocationLogsURL</key>
 	<string>/dummyDeleteAllLogsURL</string>
+	<key>deleteLocationLogURL</key>
+	<string>/dummyDeleteALocationLogURL</string>
 </dict>
 </plist>

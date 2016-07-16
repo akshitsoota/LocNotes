@@ -28,8 +28,10 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
     // Holds the TableView Progress information
     var tableViewLoadingCellProgressText: String = ""
     var tableViewLoadingCellProgressValue: Float = 0
-    // Holds if the ViewController was called by a login/sign up screen or not
-    var calledFromLogin: Bool = false
+    // Holds if the ViewController wants our LocationLogs to be auto-refreshed
+    var autoRefreshLocationLogsOnLoad: Bool = false
+    // Holds the loading screen that would be shown on the screen
+    var loadingScreen: UIView?
     
     // Dispatch Queues
     let refreshLogQueue = dispatch_queue_create("RefreshLocationLogQueue", DISPATCH_QUEUE_CONCURRENT)
@@ -43,7 +45,7 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
         // Set up the views
         setupViews()
         // Check if we should implictly refresh
-        if( self.calledFromLogin ) {
+        if( self.autoRefreshLocationLogsOnLoad ) {
             forceAutoRefreshLocationLogs()
         }
     }
@@ -147,6 +149,9 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
         
         // Grab the refresh button reference
         self.navigationItemRefreshButton = self.navigationItem.leftBarButtonItem
+        
+        // Configure TableView for appropriate editing
+        self.locationLogsTableView.allowsMultipleSelectionDuringEditing = false
     }
     
     func forceAutoRefreshLocationLogs() {
@@ -243,6 +248,251 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
             return 64
         } else {
             return 250
+        }
+    }
+    
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        if( editingStyle == .Delete ) {
+            // We are only supporting this Editing Style
+            
+            // Ask the user for confirmation
+            let actionSheet: UIAlertController = UIAlertController(title: nil, message: "Are you sure you want to delete this Location Log? This action cannot be undone", preferredStyle: .ActionSheet)
+            let deleteAction: UIAlertAction = UIAlertAction(title: "Delete", style: .Destructive, handler: {(alert: UIAlertAction) -> Void in
+                // Show up a loading screen
+                if( self.loadingScreen == nil ) {
+                    self.loadingScreen = CommonUtils.returnLoadingScreenView(self, size: UIScreen.mainScreen().bounds)
+                }
+                CommonUtils.setLoadingTextOnLoadingScreenView(self.loadingScreen, newLabelContents: "Deleting your location log...")
+                self.navigationController?.view.addSubview(self.loadingScreen!)
+                
+                // Check the Login Token Validity
+                let tokenRenewalState: NSDictionary? = UserAuthentication.renewLoginToken()
+                // Check if nil
+                if( tokenRenewalState == nil ) {
+                    // We failed to renew the login token, tell the user on the main thread
+                    dispatch_async(dispatch_get_main_queue(), {
+                        // Hide the loading screen
+                        self.loadingScreen!.removeFromSuperview()
+                        // Tell the user where we hit a snag
+                        CommonUtils.showDefaultAlertToUser(self, title: "Hit a Snag!", alertContents: "We are having issues with our internal framework. Please try again later!")
+                    })
+                    // Exit
+                    return
+                }
+                // Else, process
+                if(   tokenRenewalState!["status"] as! String == "invalid_non_json_response" ||
+                    ( tokenRenewalState!["status"] as! String == "no_renewal" &&
+                        tokenRenewalState!["reason"] as! String == "backend_failure" ) ||
+                    ( tokenRenewalState!["status"] as! String == "not_possible_request_error" ) ) {
+                    
+                    // We failed to renew the login token, tell the user on the main thread
+                    dispatch_async(dispatch_get_main_queue(), {
+                        // Hide the loading screen
+                        self.loadingScreen!.removeFromSuperview()
+                        // Tell the user where we hit a snag
+                        CommonUtils.showDefaultAlertToUser(self, title: "Hit a Snag!", alertContents: "The server returned an invalid response while attempting to verify your login credentials. Please try again later!")
+                    })
+                    // Exit
+                    return
+                    
+                } else if( tokenRenewalState!["status"] as! String == "renewed_but_failed" && tokenRenewalState!["reason"] as! String == "keychain_failed" ) {
+                    
+                    // We failed to renew the login token, tell the user on the main thread
+                    dispatch_async(dispatch_get_main_queue(), {
+                        // Hide the loading screen
+                        self.loadingScreen!.removeFromSuperview()
+                        // Tell the user where we hit a snag
+                        CommonUtils.showDefaultAlertToUser(self, title: "Hit a Snag!", alertContents: "We failed to save your fresh login token into Keychain. Please try again later!")
+                    })
+                    // Exit
+                    return
+                    
+                } else if( tokenRenewalState!["status"] as! String == "no_renewal" && tokenRenewalState!["reason"] as! String == "invalid_cred" ) {
+                    
+                    // We failed to renew the login token, tell the user on the main thread
+                    dispatch_async(dispatch_get_main_queue(), {
+                        // Hide the loading screen
+                        self.loadingScreen!.removeFromSuperview()
+                        // Tell the user where we hit a snag
+                        CommonUtils.showDefaultAlertToUser(self, title: "Hit a Snag!", alertContents: "Your login credentials have expired. Please try logout and log back in to delete all your Location Logs.")
+                    })
+                    // Exit
+                    return
+                    
+                } else if( ( tokenRenewalState!["status"] as! String == "no_renewal" && tokenRenewalState!["reason"] as! String == "not_needed" ) ||
+                           ( tokenRenewalState!["status"] as! String == "renewed" && tokenRenewalState!["reason"] == nil ) ) {
+                    
+                    // Perfect, just proceed with the rest of the job
+                    
+                }
+                
+                // Send the request to log the user out
+                let awsEndpoint: String = CommonUtils.fetchFromPropertiesList("endpoints", fileExtension: "plist", key: "awsEC2EndpointURL")!
+                let deleteLocationLogsURL: String = CommonUtils.fetchFromPropertiesList("endpoints", fileExtension: "plist", key: "deleteLocationLogURL")!
+                
+                let userName: String! = KeychainWrapper.defaultKeychainWrapper().stringForKey("LocNotes-username")!
+                let userLoginToken: String! = KeychainWrapper.defaultKeychainWrapper().stringForKey("LocNotes-loginToken")!
+                
+                // Now start the async request
+                let asyncRequestURL: NSURL! = NSURL(string: "http://" + awsEndpoint + deleteLocationLogsURL)
+                let asyncSession: NSURLSession! = NSURLSession.sharedSession()
+                
+                let asyncRequest: NSMutableURLRequest! = NSMutableURLRequest(URL: asyncRequestURL)
+                asyncRequest.HTTPMethod = "POST"
+                asyncRequest.cachePolicy = .ReloadIgnoringLocalCacheData
+                asyncRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+                asyncRequest.setValue(UserAuthentication.generateAuthorizationHeader(userName, userLoginToken: userLoginToken), forHTTPHeaderField: "Authorization")
+                
+                // Setup the POST Body to send the Location Log ID to be delete
+                var requestBody = "locationlogid=" + self.locationLogs[indexPath.row].logID!
+                
+                requestBody = requestBody.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
+                asyncRequest.HTTPBody = requestBody.dataUsingEncoding(NSUTF8StringEncoding)
+                
+                // Now start the Async task
+                let asyncTask = asyncSession.dataTaskWithRequest(asyncRequest, completionHandler: {(data: NSData?, response: NSURLResponse?, error: NSError?) -> Void in
+                    // Check for any errors
+                    if( error != nil ) {
+                        // Tell the user that we failed to log them out
+                        dispatch_async(dispatch_get_main_queue(), {
+                            // Hide the loading screen
+                            self.loadingScreen!.removeFromSuperview()
+                            // Alert the user
+                            CommonUtils.showDefaultAlertToUser(self, title: "Server Error", alertContents: "We received an invalid response from the server. Please try again later!")
+                        })
+                        // Return
+                        return
+                    }
+                    
+                    // Check the response
+                    do {
+                        
+                        let jsonResponse: [String: AnyObject] = try (NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions()) as? [String: AnyObject])!
+                        // Now process the response
+                        let status = jsonResponse["status"]
+                        
+                        if( status == nil ) {
+                            // We've got an error
+                            dispatch_async(dispatch_get_main_queue(), {
+                                // Hide the loading screen
+                                self.loadingScreen!.removeFromSuperview()
+                                // Alert the user
+                                CommonUtils.showDefaultAlertToUser(self, title: "Server Error", alertContents: "We received an invalid response from the server. Please try again later!")
+                            })
+                            // Return
+                            return
+                        }
+                        
+                        let strStatus: String! = status as! String
+                        
+                        if( strStatus == "success" ) {
+                            
+                            // Clear up CoreData to remove this Location Log
+                            
+                            var s3IDsToDelete: [String] = [] // Also collect the S3 IDs to be deleted
+                            
+                            // Search of the Location Log that has to be delete
+                            let fetchRequest: NSFetchRequest = NSFetchRequest(entityName: "LocationLog")
+                            do {
+                                let results = try self.managedContext?.executeFetchRequest(fetchRequest)
+                                let locationLogs: [LocationLog] = results as! [LocationLog]
+                                
+                                // Iterate over them and see which one should be delete
+                                for locationLog in locationLogs {
+                                    if locationLog.logID == self.locationLogs[indexPath.row].logID! {
+                                        // Save all the S3 IDs to be deleted
+                                        if( locationLog.imageS3ids != nil && !(locationLog.imageS3ids?.isEmpty)! ) {
+                                            for s3id in (locationLog.imageS3ids?.componentsSeparatedByString(";"))! {
+                                                s3IDsToDelete.append("\(s3id)")
+                                            }
+                                        }
+                                        // Ask CoreData to delete
+                                        self.managedContext?.deleteObject(locationLog)
+                                        // Ask Context To Save It
+                                        try self.managedContext?.save()
+                                        // We found it so:
+                                        break
+                                    }
+                                }
+                            } catch {  }
+                            
+                            if( s3IDsToDelete.count != 0 ) {
+                                // We've got S3 Image to delete from user's CoreData for this specific Location Log
+                                
+                                let imagesFetchRequest: NSFetchRequest = NSFetchRequest(entityName: "FullResolutionS3Image")
+                                do {
+                                    let imageResults = try self.managedContext?.executeFetchRequest(imagesFetchRequest)
+                                    let images: [FullResolutionS3Image] = imageResults as! [FullResolutionS3Image]
+                                    
+                                    // Iterate over them and see which one to delete
+                                    for image in images {
+                                        if image.respectiveLogID! == self.locationLogs[indexPath.row].logID! &&
+                                           s3IDsToDelete.contains("\(image.s3id!)") {
+                                            // Remove this image
+                                            self.managedContext?.deleteObject(image)
+                                            // Ask Context to save the changes
+                                            try self.managedContext?.save()
+                                        }
+                                    }
+                                } catch {  }
+                                
+                                let thumbnailFetchRequest: NSFetchRequest = NSFetchRequest(entityName: "ImageThumbnail")
+                                do {
+                                    let thumbnailResults = try self.managedContext?.executeFetchRequest(thumbnailFetchRequest)
+                                    let thumbnails: [ImageThumbnail] = thumbnailResults as! [ImageThumbnail]
+                                    
+                                    // Iterate over them and see which ones to delete
+                                    for thumbnail in thumbnails {
+                                        if thumbnail.respectiveLogID! == self.locationLogs[indexPath.row].logID! &&
+                                           s3IDsToDelete.contains("\(thumbnail.fullResS3id!)") {
+                                            // Remove this thumbnail
+                                            self.managedContext?.deleteObject(thumbnail)
+                                            // Ask Context to save changes
+                                            try self.managedContext?.save()
+                                        }
+                                    }
+                                } catch {  }
+                                
+                            }
+                            
+                            // Take the user to the login screen
+                            dispatch_async(dispatch_get_main_queue(), {
+                                self.loadingScreen!.removeFromSuperview()
+                                // Force a reload from CoreData
+                                self.fetchLocationLogs()
+                                // Force an update of the TableView
+                                self.locationLogsTableView.beginUpdates()
+                                self.locationLogsTableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
+                                self.locationLogsTableView.endUpdates()
+                            })
+                            // And we're done
+                            return
+                            
+                        }
+                        
+                    } catch {
+                        // Tell the user that we couldn't log them out
+                        dispatch_async(dispatch_get_main_queue(), {
+                            // Hide the loading screen
+                            self.loadingScreen!.removeFromSuperview()
+                            // Alert the user
+                            CommonUtils.showDefaultAlertToUser(self, title: "Server Error", alertContents: "We received an invalid response from the server. Please try again later!")
+                        })
+                        // Return
+                        return
+                    }
+                })
+                asyncTask.resume() // Start the task now
+                // Return
+                return
+            })
+            let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
+            // Add the options to the Action Sheet
+            actionSheet.addAction(deleteAction)
+            actionSheet.addAction(cancelAction)
+            // Now present the Action Sheet
+            self.presentViewController(actionSheet, animated: true, completion: nil)
+            
         }
     }
     

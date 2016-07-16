@@ -385,7 +385,7 @@ class LoginUserViewController: UIViewController, UIGestureRecognizerDelegate, UI
         if( segue.identifier == "showLoggedInUserFromLogin" ) {
             // Set the necessary information
             let destVC: UserLocationLogsViewController = segue.destinationViewController.childViewControllers[0] as! UserLocationLogsViewController
-            destVC.calledFromLogin = true
+            destVC.autoRefreshLocationLogsOnLoad = true
         }
     }
     

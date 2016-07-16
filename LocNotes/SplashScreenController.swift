@@ -55,10 +55,20 @@ class SplashScreenController: UIViewController {
             // There is a value in KeyChain and the user is logged in; Split based on if Touch ID is enabled
             if( !(touchIDEnabled!) ) {
                 // Show the user their Location Logs
-                self.performSegueWithIdentifier("showLoggedInUser", sender: self) //"showNewUser", sender: self) //showLoggedInUser", sender: self)
+                self.performSegueWithIdentifier("showLoggedInUser", sender: self)
             } else {
                 promptTouchID()
             }
+        }
+    }
+    
+    // MARK: - Segue operations
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        // Check which Segue is it
+        if( segue.identifier == "showLoggedInUser" ) {
+            // Set the necessary information
+            let destVC: UserLocationLogsViewController = segue.destinationViewController.childViewControllers[0] as! UserLocationLogsViewController
+            destVC.autoRefreshLocationLogsOnLoad = true
         }
     }
     
