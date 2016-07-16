@@ -29,7 +29,7 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
     var tableViewLoadingCellProgressText: String = ""
     var tableViewLoadingCellProgressValue: Float = 0
     // Holds if the ViewController was called by a login/sign up screen or not
-    var calledFromLoginOrSignUp: Bool = false
+    var calledFromLogin: Bool = false
     
     // Dispatch Queues
     let refreshLogQueue = dispatch_queue_create("RefreshLocationLogQueue", DISPATCH_QUEUE_CONCURRENT)
@@ -43,7 +43,7 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
         // Set up the views
         setupViews()
         // Check if we should implictly refresh
-        if( self.calledFromLoginOrSignUp ) {
+        if( self.calledFromLogin ) {
             forceAutoRefreshLocationLogs()
         }
     }

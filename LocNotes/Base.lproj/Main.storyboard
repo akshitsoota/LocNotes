@@ -1243,7 +1243,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Big-pU-9e5" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="V8T-ep-MCW" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1562" y="-48"/>
+            <point key="canvasLocation" x="1562" y="-15"/>
         </scene>
         <!--User Location Log Details View Controller-->
         <scene sceneID="Ay2-Fx-3LJ">
@@ -1287,12 +1287,48 @@
                                                             <constraint firstItem="tIr-kt-zER" firstAttribute="top" secondItem="7QP-vy-0XW" secondAttribute="top" constant="2" id="pbw-zY-w6K"/>
                                                         </constraints>
                                                     </view>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="&lt;location-log-times&gt;" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3LU-0G-jK4">
+                                                        <rect key="frame" x="8" y="58" width="584" height="13.5"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="13" id="uEm-nA-Z63"/>
+                                                        </constraints>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SNZ-1T-DAA">
+                                                        <rect key="frame" x="0.0" y="75" width="600" height="34"/>
+                                                        <subviews>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="&lt;location-log-desc&gt;" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="12" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E3P-oJ-eS6">
+                                                                <rect key="frame" x="12" y="2" width="576" height="30"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="30" id="U9m-eP-VWS"/>
+                                                                </constraints>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                                <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                        </subviews>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <constraints>
+                                                            <constraint firstItem="E3P-oJ-eS6" firstAttribute="top" secondItem="SNZ-1T-DAA" secondAttribute="top" constant="2" id="5mf-yr-w8v"/>
+                                                            <constraint firstItem="E3P-oJ-eS6" firstAttribute="leading" secondItem="SNZ-1T-DAA" secondAttribute="leading" constant="12" id="Wwl-4g-JPt"/>
+                                                            <constraint firstAttribute="trailing" secondItem="E3P-oJ-eS6" secondAttribute="trailing" constant="12" id="fbx-KD-cuX"/>
+                                                            <constraint firstAttribute="bottom" secondItem="E3P-oJ-eS6" secondAttribute="bottom" constant="2" id="w55-k1-quh"/>
+                                                        </constraints>
+                                                    </view>
                                                 </subviews>
                                                 <color key="backgroundColor" red="0.84313725490196079" green="0.84313725490196079" blue="0.84313725490196079" alpha="1" colorSpace="calibratedRGB"/>
                                                 <constraints>
                                                     <constraint firstItem="7QP-vy-0XW" firstAttribute="width" secondItem="LHd-IP-vbb" secondAttribute="width" id="8fk-cR-Wdo"/>
+                                                    <constraint firstAttribute="trailing" secondItem="3LU-0G-jK4" secondAttribute="trailing" constant="8" id="L4b-lu-J7V"/>
+                                                    <constraint firstItem="SNZ-1T-DAA" firstAttribute="width" secondItem="LHd-IP-vbb" secondAttribute="width" id="QeP-cV-sWa"/>
+                                                    <constraint firstItem="3LU-0G-jK4" firstAttribute="top" secondItem="7QP-vy-0XW" secondAttribute="bottom" constant="4" id="Xyy-TT-TMa"/>
+                                                    <constraint firstItem="SNZ-1T-DAA" firstAttribute="centerX" secondItem="LHd-IP-vbb" secondAttribute="centerX" id="bym-6w-4Tf"/>
                                                     <constraint firstItem="7QP-vy-0XW" firstAttribute="top" secondItem="LHd-IP-vbb" secondAttribute="top" constant="20" id="iCT-K8-QDx"/>
                                                     <constraint firstItem="7QP-vy-0XW" firstAttribute="centerX" secondItem="LHd-IP-vbb" secondAttribute="centerX" id="kUK-3D-gFL"/>
+                                                    <constraint firstItem="SNZ-1T-DAA" firstAttribute="top" secondItem="3LU-0G-jK4" secondAttribute="bottom" constant="4" id="opD-zp-VPl"/>
+                                                    <constraint firstItem="3LU-0G-jK4" firstAttribute="leading" secondItem="LHd-IP-vbb" secondAttribute="leading" constant="8" id="xgA-3a-C5G"/>
                                                 </constraints>
                                             </view>
                                         </subviews>
@@ -1326,7 +1362,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QB2-o1-rdO" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2274" y="102"/>
+            <point key="canvasLocation" x="2274" y="135"/>
         </scene>
         <!--New User Page Content View Controller-->
         <scene sceneID="92S-23-u50">
@@ -1455,7 +1491,6 @@
                                                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="NS6-x9-YmJ">
                                                                 <rect key="frame" x="535" y="8" width="51" height="31"/>
                                                                 <connections>
-                                                                    <action selector="touchIDSwitchToggled:" destination="8HT-tT-Wo3" eventType="valueChanged" id="3re-3i-KAJ"/>
                                                                     <action selector="wifiSwitchToggled:" destination="8HT-tT-Wo3" eventType="valueChanged" id="yE8-Yz-F5o"/>
                                                                 </connections>
                                                             </switch>
