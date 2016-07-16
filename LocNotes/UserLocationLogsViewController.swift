@@ -443,7 +443,7 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
         // Update the UI to show progress view and scroll to the top
         dispatch_async(dispatch_get_main_queue(), {
             self.tableViewLoadingCellShown = true
-            self.tableViewLoadingCellProgressText = "Download 0 of \(totalLogCount) Location Log(s)"
+            self.tableViewLoadingCellProgressText = "Download 0 of \(totalLogCount) Location Logs"
             self.tableViewLoadingCellProgressValue = 0
             // Force update the TableView
             self.locationLogsTableView.reloadData()
@@ -607,10 +607,12 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
                                 // Now update the user with the progress of the upload
                                 awsDownloadRequest.uploadProgress = {(bytesSent, totalBytesSent, totalBytesExpectedToSend) -> Void in
                                     // Calculate the fresh progress
-                                    let progressToAddNum: Double = Double(totalBytesSent)
-                                    let progressToAddDenom: Double = Double(totalBytesExpectedToSend) * Double(imageS3IDs.count)
-                                    let progressToAdd: Float = Float(progressToAddNum / progressToAddDenom) + Float(logsAdded / totalLogCount)
-                                    let finalProgress: Float = Float(progressToAdd / Float(totalLogCount))
+                                    let uploadProgress: Float = Float(bytesSent / totalBytesExpectedToSend)
+                                    let imagesDone: Float = uploadProgress + Float(imageCountDone)
+                                    let percentLogDone: Float = imagesDone / Float(imageS3IDs.count)
+                                    let totalLogsDone: Float = percentLogDone + Float(logsAdded)
+                                    
+                                    let finalProgress: Float = Float(totalLogsDone) / Float(totalLogCount)
                                     // Update the UI
                                     dispatch_async(dispatch_get_main_queue(), {
                                         self.tableViewLoadingCellProgressValue = finalProgress
@@ -624,10 +626,9 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
                             imageCountDone = imageCountDone + 1
                             
                             // Update the progress bar
+                            let percentImagesDone: Float = Float(imageCountDone) / Float(imageS3IDs.count)
                             dispatch_async(dispatch_get_main_queue(), {
-                                self.tableViewLoadingCellProgressValue = Float(Float(imageCountDone) / Float(imageS3IDs.count))
-                                self.tableViewLoadingCellProgressValue += Float(logsAdded / totalLogCount)
-                                self.tableViewLoadingCellProgressValue = Float(self.tableViewLoadingCellProgressValue / Float(totalLogCount))
+                                self.tableViewLoadingCellProgressValue = Float(Float(logsAdded) + percentImagesDone) / Float(totalLogCount)
                                 // Force update of the first row
                                 self.locationLogsTableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: .None)
                             })
@@ -702,7 +703,11 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
                         logsAdded = logsAdded + 1
                         // Update progress
                         dispatch_async(dispatch_get_main_queue(), {
-                            self.tableViewLoadingCellProgressText = "Download \(logsAdded) of \(totalLogCount) Location Log(s)"
+                            // Update Progress
+                            self.tableViewLoadingCellProgressText = "Download \(logsAdded) of \(totalLogCount) Location Logs"
+                            self.tableViewLoadingCellProgressValue = Float(logsAdded) / Float(totalLogCount)
+                            // Force update of the first row
+                            self.locationLogsTableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: .None)
                         })
                         
                     }
