@@ -20,5 +20,7 @@
 	<string>/dummyGetMiniLocationLogsURL</string>
 	<key>fetchAllLocationLogsURL</key>
 	<string>/dummyAllLocationLogsURL</string>
+	<key>deleteAllLocationLogsURL</key>
+	<string>/dummyDeleteAllLogsURL</string>
 </dict>
 </plist>

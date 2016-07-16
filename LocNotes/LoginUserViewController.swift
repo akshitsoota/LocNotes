@@ -379,6 +379,16 @@ class LoginUserViewController: UIViewController, UIGestureRecognizerDelegate, UI
         return true
     }
     
+    // MARK: - Segue operations
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        // Check which Segue is it
+        if( segue.identifier == "showLoggedInUserFromLogin" ) {
+            // Set the necessary information
+            let destVC: UserLocationLogsViewController = segue.destinationViewController.childViewControllers[0] as! UserLocationLogsViewController
+            destVC.calledFromLoginOrSignUp = true
+        }
+    }
+    
     // MARK: - Helper functions here
     
     // REFERENCE: http://stackoverflow.com/a/29534779/705471

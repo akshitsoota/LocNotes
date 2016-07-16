@@ -28,6 +28,8 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
     // Holds the TableView Progress information
     var tableViewLoadingCellProgressText: String = ""
     var tableViewLoadingCellProgressValue: Float = 0
+    // Holds if the ViewController was called by a login/sign up screen or not
+    var calledFromLoginOrSignUp: Bool = false
     
     // Dispatch Queues
     let refreshLogQueue = dispatch_queue_create("RefreshLocationLogQueue", DISPATCH_QUEUE_CONCURRENT)
@@ -40,6 +42,10 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
         fetchLocationLogs()
         // Set up the views
         setupViews()
+        // Check if we should implictly refresh
+        if( self.calledFromLoginOrSignUp ) {
+            forceAutoRefreshLocationLogs()
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -141,6 +147,10 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
         
         // Grab the refresh button reference
         self.navigationItemRefreshButton = self.navigationItem.leftBarButtonItem
+    }
+    
+    func forceAutoRefreshLocationLogs() {
+        self.navigationBarRefreshButtonClicked(self)
     }
     
     // MARK: - UITableView Delegate and Data Source Functions
@@ -248,6 +258,8 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     @IBAction func navigationBarRefreshButtonClicked(sender: AnyObject) {
+        // TODO: Check for Wi-Fi
+        
         // Force an update of the list from CoreData
         self.fetchLocationLogs()
         
@@ -363,6 +375,7 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
             dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
             
             // Process the response
+            var logIDsToDelete: [String] = []
             var logIDsToUpdate: [String] = []
             var logIDsToAdd: [String] = []
             
@@ -388,6 +401,7 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
                 // For each location log in the JSON, iterate over the Location Logs we've got and:
                 //   1) See if it exists in our list; and,
                 //   2) If it does exist, if the update time is newer than the one we have
+                // Also check if any have been deleted
                 
                 for locationLog in jsonResponse {
                     // Extract information out of it now
@@ -413,8 +427,27 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
                     }
                 }
                 
+                // Check for deleted one
+                for locLogFromCoreData in self.locationLogs {
+                    var found: Bool = false
+                    // Iterate to see if we find
+                    for locationLog in jsonResponse {
+                        // Parse this JSON Block
+                        let locationLogParsed: [String: AnyObject] = (locationLog as? [String: AnyObject])!
+                        // Check
+                        if locLogFromCoreData.logID == locationLogParsed["locationlogid"] as? String {
+                            found = true
+                            break
+                        }
+                    }
+                    // If not found, then we gotta delete
+                    if !found {
+                        logIDsToDelete.append(locLogFromCoreData.logID!)
+                    }
+                }
+                
                 // Once, we've got that list
-                self.updateLocationLogs(logIDsToAdd, logIDsToUpdate: logIDsToUpdate)
+                self.updateLocationLogs(logIDsToAdd, logIDsToUpdate: logIDsToUpdate, logIDsToDelete: logIDsToDelete)
                 // And exit:
                 return
                 
@@ -435,15 +468,15 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     // MARK: - Update Location Logs function here
-    func updateLocationLogs(logIDsToAdd: [String], logIDsToUpdate: [String]) {
+    func updateLocationLogs(logIDsToAdd: [String], logIDsToUpdate: [String], logIDsToDelete: [String]) {
         
-        let totalLogCount: Int = logIDsToAdd.count + logIDsToUpdate.count
+        let totalLogCount: Int = logIDsToAdd.count + logIDsToUpdate.count + logIDsToDelete.count
         let awsS3BucketName: String! = CommonUtils.fetchFromPropertiesList("amazon-aws-credentials", fileExtension: "plist", key: "s3bucketname")
         
         // Update the UI to show progress view and scroll to the top
         dispatch_async(dispatch_get_main_queue(), {
             self.tableViewLoadingCellShown = true
-            self.tableViewLoadingCellProgressText = "Download 0 of \(totalLogCount) Location Logs"
+            self.tableViewLoadingCellProgressText = "Processing 0 of \(totalLogCount) Location Logs"
             self.tableViewLoadingCellProgressValue = 0
             // Force update the TableView
             self.locationLogsTableView.reloadData()
@@ -581,9 +614,8 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
                             // Create the request
                             let awsDownloadRequest: AWSS3TransferManagerDownloadRequest = AWSS3TransferManagerDownloadRequest()
                             let localFileName: String = NSProcessInfo.processInfo().globallyUniqueString.stringByAppendingString(".png")
-                            // TODO: Add the PNG
                             awsDownloadRequest.bucket = awsS3BucketName
-                            awsDownloadRequest.key = "\(logToBeAdded)_\(imageS3ID)" // ADD HERE
+                            awsDownloadRequest.key = "\(logToBeAdded)_\(imageS3ID).png"
                             awsDownloadRequest.downloadingFileURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent("amazons3download").URLByAppendingPathComponent(localFileName)
                             
                             let awsTransferManager: AWSS3TransferManager = AWSS3TransferManager.defaultS3TransferManager()
@@ -704,7 +736,7 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
                         // Update progress
                         dispatch_async(dispatch_get_main_queue(), {
                             // Update Progress
-                            self.tableViewLoadingCellProgressText = "Download \(logsAdded) of \(totalLogCount) Location Logs"
+                            self.tableViewLoadingCellProgressText = "Processing \(logsAdded) of \(totalLogCount) Location Logs"
                             self.tableViewLoadingCellProgressValue = Float(logsAdded) / Float(totalLogCount)
                             // Force update of the first row
                             self.locationLogsTableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: .None)
@@ -718,7 +750,94 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
         // Second, let us update all the necessary logs
         // TODO: We shouldn't be reaching here in the first place; right now I am not dealing with updates
         
-        // Third, force update the UI
+        // Third, let us delete all the necessary logs
+        dispatch_barrier_async(self.refreshLogQueue, {
+            // Check if we should proceed
+            if( freshLocationLogs == nil ) {
+                return      //  Nope!
+            }
+            
+            var s3IDsToDelete: [String] = [] // Also collect the S3 IDs to be deleted
+            
+            // Iterate over each of the Log IDs to be delete
+            for logIDtoDelete in logIDsToDelete {
+
+                let fetchRequest: NSFetchRequest = NSFetchRequest(entityName: "LocationLog")
+                do {
+                    let results = try self.managedContext?.executeFetchRequest(fetchRequest)
+                    let locationLogs: [LocationLog] = results as! [LocationLog]
+                    
+                    // Iterate over them and see which one should be delete
+                    for locationLog in locationLogs {
+                        if locationLog.logID == logIDtoDelete {
+                            // Save all the S3 IDs to be deleted
+                            if( locationLog.imageS3ids != nil && !(locationLog.imageS3ids?.isEmpty)! ) {
+                                for s3id in (locationLog.imageS3ids?.componentsSeparatedByString(";"))! {
+                                    s3IDsToDelete.append("\(locationLog.logID!)_\(s3id)")
+                                }
+                            }
+                            // Ask CoreData to delete
+                            self.managedContext?.deleteObject(locationLog)
+                            // Ask Context To Save It
+                            try self.managedContext?.save()
+                            // We found it so:
+                            break
+                        }
+                    }
+                } catch {  }
+                
+            }
+            
+            if( s3IDsToDelete.count != 0 ) {
+                // We've got S3 Image to delete from user's CoreData
+            
+                let imagesFetchRequest: NSFetchRequest = NSFetchRequest(entityName: "FullResolutionS3Image")
+                do {
+                    let imageResults = try self.managedContext?.executeFetchRequest(imagesFetchRequest)
+                    let images: [FullResolutionS3Image] = imageResults as! [FullResolutionS3Image]
+                    
+                    // Iterate over them and see which one to delete
+                    for image in images {
+                        if s3IDsToDelete.contains("\(image.respectiveLogID!)_\(image.s3id!)") {
+                            // Remove this image
+                            self.managedContext?.deleteObject(image)
+                            // Ask Context to save the changes
+                            try self.managedContext?.save()
+                        }
+                    }
+                } catch {  }
+                
+                let thumbnailFetchRequest: NSFetchRequest = NSFetchRequest(entityName: "ImageThumbnail")
+                do {
+                    let thumbnailResults = try self.managedContext?.executeFetchRequest(thumbnailFetchRequest)
+                    let thumbnails: [ImageThumbnail] = thumbnailResults as! [ImageThumbnail]
+                    
+                    // Iterate over them and see which ones to delete
+                    for thumbnail in thumbnails {
+                        if s3IDsToDelete.contains("\(thumbnail.respectiveLogID!)_\(thumbnail.fullResS3id!)") {
+                            // Remove this thumbnail
+                            self.managedContext?.deleteObject(thumbnail)
+                            // Ask Context to save changes
+                            try self.managedContext?.save()
+                        }
+                    }
+                } catch {  }
+                
+            }
+            
+            // Show done processing
+            dispatch_async(dispatch_get_main_queue(), {
+                // Update the label and progress
+                self.tableViewLoadingCellProgressText = "Done processing all Location Logs"
+                self.tableViewLoadingCellProgressValue = 1
+                // Force an update of the TableView
+                self.locationLogsTableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: .None)
+            })
+            // Sleep for a second
+            sleep(1)
+        })
+        
+        // Lastly, force update the UI
         dispatch_barrier_async(self.refreshLogQueue, {
             // Check if we should proceed
             if( freshLocationLogs == nil ) {
@@ -744,13 +863,17 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
                 
                 // Force a refresh of the TableView
                 self.locationLogsTableView.reloadData()
+                
+                // Scroll to the top
+                self.locationLogsTableView.setContentOffset(CGPointZero, animated: true)
             })
         })
     }
     
     // MARK: - Segue actions handler here
     @IBAction func unwindSegue(segue: UIStoryboardSegue) {
-        if( segue.sourceViewController.isKindOfClass(NewUserLocationLogViewController) ) {
+        if( segue.sourceViewController.isKindOfClass(NewUserLocationLogViewController) ||
+            segue.sourceViewController.isKindOfClass(UserSettingsViewController) ) {
             // Call the function to populate the LocationLogs from CoreData
             self.fetchLocationLogs()
             // And, refresh the TableView

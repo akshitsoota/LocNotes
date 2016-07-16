@@ -1245,6 +1245,89 @@
             </objects>
             <point key="canvasLocation" x="1562" y="-48"/>
         </scene>
+        <!--User Location Log Details View Controller-->
+        <scene sceneID="Ay2-Fx-3LJ">
+            <objects>
+                <viewController title="User Location Log Details View Controller" id="z6j-6N-Hq9" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="yTi-wm-Zd0"/>
+                        <viewControllerLayoutGuide type="bottom" id="cGS-Km-EGF"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="PtE-jq-mi1">
+                        <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="A7d-9K-grt" userLabel="Scroll View Holder">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
+                                <subviews>
+                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BNM-dQ-ma0">
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LHd-IP-vbb" userLabel="Content View">
+                                                <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
+                                                <subviews>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7QP-vy-0XW">
+                                                        <rect key="frame" x="0.0" y="20" width="600" height="34"/>
+                                                        <subviews>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="&lt;location-log-title&gt;" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tIr-kt-zER">
+                                                                <rect key="frame" x="12" y="2" width="576" height="30"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" constant="30" id="kBL-hu-qrA"/>
+                                                                </constraints>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                                <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                        </subviews>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="trailing" secondItem="tIr-kt-zER" secondAttribute="trailing" constant="12" id="3ZU-Dr-273"/>
+                                                            <constraint firstItem="tIr-kt-zER" firstAttribute="leading" secondItem="7QP-vy-0XW" secondAttribute="leading" constant="12" id="6e6-iN-q8h"/>
+                                                            <constraint firstAttribute="bottom" secondItem="tIr-kt-zER" secondAttribute="bottom" constant="2" id="T4R-O6-VYX"/>
+                                                            <constraint firstItem="tIr-kt-zER" firstAttribute="top" secondItem="7QP-vy-0XW" secondAttribute="top" constant="2" id="pbw-zY-w6K"/>
+                                                        </constraints>
+                                                    </view>
+                                                </subviews>
+                                                <color key="backgroundColor" red="0.84313725490196079" green="0.84313725490196079" blue="0.84313725490196079" alpha="1" colorSpace="calibratedRGB"/>
+                                                <constraints>
+                                                    <constraint firstItem="7QP-vy-0XW" firstAttribute="width" secondItem="LHd-IP-vbb" secondAttribute="width" id="8fk-cR-Wdo"/>
+                                                    <constraint firstItem="7QP-vy-0XW" firstAttribute="top" secondItem="LHd-IP-vbb" secondAttribute="top" constant="20" id="iCT-K8-QDx"/>
+                                                    <constraint firstItem="7QP-vy-0XW" firstAttribute="centerX" secondItem="LHd-IP-vbb" secondAttribute="centerX" id="kUK-3D-gFL"/>
+                                                </constraints>
+                                            </view>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="LHd-IP-vbb" secondAttribute="bottom" id="2OQ-xv-Wgf"/>
+                                            <constraint firstItem="LHd-IP-vbb" firstAttribute="width" secondItem="BNM-dQ-ma0" secondAttribute="width" id="89G-pD-n7v"/>
+                                            <constraint firstItem="LHd-IP-vbb" firstAttribute="leading" secondItem="BNM-dQ-ma0" secondAttribute="leading" id="XD1-rc-aa3"/>
+                                            <constraint firstItem="LHd-IP-vbb" firstAttribute="top" secondItem="BNM-dQ-ma0" secondAttribute="top" id="eh5-RB-D4S"/>
+                                            <constraint firstAttribute="trailing" secondItem="LHd-IP-vbb" secondAttribute="trailing" id="szB-Rc-ND8"/>
+                                        </constraints>
+                                    </scrollView>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="BNM-dQ-ma0" secondAttribute="trailing" id="7Hq-JJ-5Uh"/>
+                                    <constraint firstAttribute="bottom" secondItem="BNM-dQ-ma0" secondAttribute="bottom" id="N6R-FV-36Y"/>
+                                    <constraint firstItem="BNM-dQ-ma0" firstAttribute="top" secondItem="A7d-9K-grt" secondAttribute="top" id="TuT-dR-4rh"/>
+                                    <constraint firstItem="LHd-IP-vbb" firstAttribute="height" secondItem="A7d-9K-grt" secondAttribute="height" id="bh8-Vn-mhg"/>
+                                    <constraint firstItem="BNM-dQ-ma0" firstAttribute="leading" secondItem="A7d-9K-grt" secondAttribute="leading" id="hQ4-oh-O02"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="A7d-9K-grt" secondAttribute="trailing" constant="-20" id="NAd-4A-Rz5"/>
+                            <constraint firstItem="cGS-Km-EGF" firstAttribute="top" secondItem="A7d-9K-grt" secondAttribute="bottom" id="Ood-W9-HwK"/>
+                            <constraint firstItem="A7d-9K-grt" firstAttribute="top" secondItem="yTi-wm-Zd0" secondAttribute="bottom" id="jyG-qN-RrM"/>
+                            <constraint firstItem="A7d-9K-grt" firstAttribute="leading" secondItem="PtE-jq-mi1" secondAttribute="leadingMargin" constant="-20" id="vM7-r6-86R"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="QB2-o1-rdO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2274" y="102"/>
+        </scene>
         <!--New User Page Content View Controller-->
         <scene sceneID="92S-23-u50">
             <objects>
@@ -1714,6 +1797,7 @@
                     <connections>
                         <outlet property="locationLogsTableView" destination="58L-ld-j7Y" id="FaD-XE-Ohg"/>
                         <segue destination="8HT-tT-Wo3" kind="show" identifier="showSettingsPage" id="7fE-Ce-hdV"/>
+                        <segue destination="z6j-6N-Hq9" kind="show" id="q4y-2D-7bf"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="h7z-6f-f0i" userLabel="First Responder" sceneMemberID="firstResponder"/>

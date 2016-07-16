@@ -118,7 +118,7 @@ class UserAuthentication {
             } else if( strStatus == "renew_success" ) {
                 
                 let newLoginToken: String = jsonResponse["new_login_token"] as! String
-                let newLoginTokenExpiry: Double! = (jsonResponse["token_expiry"] as? NSNumber)?.doubleValue
+                let newLoginTokenExpiry: Double! = (jsonResponse["new_token_expiry"] as? NSNumber)?.doubleValue
                 
                 // Save these in Keychain
                 let newLoginTokenSaved: Bool = KeychainWrapper.defaultKeychainWrapper().setString(newLoginToken, forKey: "LocNotes-loginToken")
