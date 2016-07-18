@@ -48,6 +48,8 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
         if( self.autoRefreshLocationLogsOnLoad ) {
             forceAutoRefreshLocationLogs()
         }
+        // Enable swipe to Go Back for this UINavigationController
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
     }
 
     override func didReceiveMemoryWarning() {

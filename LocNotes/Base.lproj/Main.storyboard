@@ -1318,7 +1318,7 @@
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hGC-v5-sgg">
-                                                        <rect key="frame" x="0.0" y="129" width="600" height="170"/>
+                                                        <rect key="frame" x="0.0" y="129" width="600" height="176"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your Photos" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VWK-K4-eEW">
                                                                 <rect key="frame" x="12" y="2" width="576" height="30"/>
@@ -1359,9 +1359,9 @@
                                                             <constraint firstItem="wTx-fg-00p" firstAttribute="top" secondItem="VWK-K4-eEW" secondAttribute="bottom" constant="8" id="4RK-eZ-VhR"/>
                                                             <constraint firstItem="VWK-K4-eEW" firstAttribute="leading" secondItem="hGC-v5-sgg" secondAttribute="leading" constant="12" id="8dE-66-wQS"/>
                                                             <constraint firstAttribute="trailing" secondItem="VWK-K4-eEW" secondAttribute="trailing" constant="12" id="F70-nc-6md"/>
-                                                            <constraint firstAttribute="height" constant="170" id="dZb-gI-MHd"/>
+                                                            <constraint firstAttribute="height" constant="176" id="dZb-gI-MHd"/>
                                                             <constraint firstItem="wTx-fg-00p" firstAttribute="leading" secondItem="hGC-v5-sgg" secondAttribute="leading" constant="8" id="e0W-Ls-eBj"/>
-                                                            <constraint firstAttribute="bottom" secondItem="wTx-fg-00p" secondAttribute="bottom" constant="2" id="fqX-Ta-Kvu"/>
+                                                            <constraint firstAttribute="bottom" secondItem="wTx-fg-00p" secondAttribute="bottom" constant="8" id="fqX-Ta-Kvu"/>
                                                             <constraint firstItem="VWK-K4-eEW" firstAttribute="top" secondItem="hGC-v5-sgg" secondAttribute="top" constant="2" id="lZM-zd-hPf"/>
                                                         </constraints>
                                                     </view>
