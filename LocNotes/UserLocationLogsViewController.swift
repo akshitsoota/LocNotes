@@ -32,6 +32,8 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
     var autoRefreshLocationLogsOnLoad: Bool = false
     // Holds the loading screen that would be shown on the screen
     var loadingScreen: UIView?
+    // Holds the Location Log that the user wishes to open up
+    var locationLogOpeningUp: LocationLog?
     
     // Dispatch Queues
     let refreshLogQueue = dispatch_queue_create("RefreshLocationLogQueue", DISPATCH_QUEUE_CONCURRENT)
@@ -496,6 +498,25 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
             self.presentViewController(actionSheet, animated: true, completion: nil)
             
         }
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        // Check which Table Cell did the user choose
+        if( self.tableViewLoadingCellShown && indexPath.row == 0 ) {
+            // The user tapped the loading cell, so do nothing but de-select it
+            tableView.deselectRowAtIndexPath(indexPath, animated: false)
+            // Return
+            return
+        }
+        // Now take the user to the respective Location Log
+        // Set the Location Log the user wishes to open up
+        if( self.tableViewLoadingCellShown ) {
+            self.locationLogOpeningUp = self.locationLogs[indexPath.row - 1]
+        } else {
+            self.locationLogOpeningUp = self.locationLogs[indexPath.row]
+        }
+        // Perform the segue
+        self.performSegueWithIdentifier("showLocationLogDetails", sender: self)
     }
     
     // MARK: - Actions received here
@@ -1132,6 +1153,14 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
             self.locationLogsTableView.reloadData()
             // Scroll to the top of the TableView
             self.locationLogsTableView.setContentOffset(CGPointZero, animated: true)
+        }
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if( segue.identifier == "showLocationLogDetails" ) {
+            // If we are going to be taking the user to the ViewController where we show the Location Log, send the Location Log along
+            let destVC: ShowLocationLogViewController = segue.destinationViewController as! ShowLocationLogViewController
+            destVC.locationLogShown = self.locationLogOpeningUp
         }
     }
 

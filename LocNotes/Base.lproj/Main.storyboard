@@ -1248,17 +1248,17 @@
         <!--User Location Log Details View Controller-->
         <scene sceneID="Ay2-Fx-3LJ">
             <objects>
-                <viewController title="User Location Log Details View Controller" id="z6j-6N-Hq9" sceneMemberID="viewController">
+                <viewController title="User Location Log Details View Controller" id="z6j-6N-Hq9" customClass="ShowLocationLogViewController" customModule="LocNotes" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="yTi-wm-Zd0"/>
                         <viewControllerLayoutGuide type="bottom" id="cGS-Km-EGF"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="PtE-jq-mi1">
-                        <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="A7d-9K-grt" userLabel="Scroll View Holder">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
+                                <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                                 <subviews>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BNM-dQ-ma0">
                                         <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
@@ -1297,10 +1297,10 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SNZ-1T-DAA">
-                                                        <rect key="frame" x="0.0" y="75" width="600" height="34"/>
+                                                        <rect key="frame" x="0.0" y="75" width="600" height="38"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="&lt;location-log-desc&gt;" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="12" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E3P-oJ-eS6">
-                                                                <rect key="frame" x="12" y="2" width="576" height="30"/>
+                                                                <rect key="frame" x="12" y="4" width="576" height="30"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="30" id="U9m-eP-VWS"/>
                                                                 </constraints>
@@ -1311,14 +1311,14 @@
                                                         </subviews>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                         <constraints>
-                                                            <constraint firstItem="E3P-oJ-eS6" firstAttribute="top" secondItem="SNZ-1T-DAA" secondAttribute="top" constant="2" id="5mf-yr-w8v"/>
+                                                            <constraint firstItem="E3P-oJ-eS6" firstAttribute="top" secondItem="SNZ-1T-DAA" secondAttribute="top" constant="4" id="5mf-yr-w8v"/>
                                                             <constraint firstItem="E3P-oJ-eS6" firstAttribute="leading" secondItem="SNZ-1T-DAA" secondAttribute="leading" constant="12" id="Wwl-4g-JPt"/>
                                                             <constraint firstAttribute="trailing" secondItem="E3P-oJ-eS6" secondAttribute="trailing" constant="12" id="fbx-KD-cuX"/>
-                                                            <constraint firstAttribute="bottom" secondItem="E3P-oJ-eS6" secondAttribute="bottom" constant="2" id="w55-k1-quh"/>
+                                                            <constraint firstAttribute="bottom" secondItem="E3P-oJ-eS6" secondAttribute="bottom" constant="4" id="w55-k1-quh"/>
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hGC-v5-sgg">
-                                                        <rect key="frame" x="0.0" y="129" width="600" height="176"/>
+                                                        <rect key="frame" x="0.0" y="133" width="600" height="176"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your Photos" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VWK-K4-eEW">
                                                                 <rect key="frame" x="12" y="2" width="576" height="30"/>
@@ -1412,6 +1412,22 @@
                             <constraint firstItem="A7d-9K-grt" firstAttribute="leading" secondItem="PtE-jq-mi1" secondAttribute="leadingMargin" constant="-20" id="vM7-r6-86R"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" title="Your Location Log" id="Z5T-ZM-GbH">
+                        <barButtonItem key="backBarButtonItem" title="Back" id="DAI-Kw-TH9"/>
+                        <barButtonItem key="rightBarButtonItem" title="Delete" id="gMF-bU-Phn">
+                            <color key="tintColor" red="1" green="0.3786582295" blue="0.35799239309999997" alpha="1" colorSpace="calibratedRGB"/>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                    <connections>
+                        <outlet property="locationLogDescHolder" destination="SNZ-1T-DAA" id="tNo-v6-zbx"/>
+                        <outlet property="locationLogDescLabel" destination="E3P-oJ-eS6" id="hBX-Bo-wIB"/>
+                        <outlet property="locationLogPhotosHolder" destination="hGC-v5-sgg" id="a8A-wm-d9h"/>
+                        <outlet property="locationLogPhotosView" destination="wTx-fg-00p" id="RVG-8G-dej"/>
+                        <outlet property="locationLogTimesLabel" destination="3LU-0G-jK4" id="CTu-7a-wVg"/>
+                        <outlet property="locationLogTitleHolder" destination="7QP-vy-0XW" id="nYt-W0-yT1"/>
+                        <outlet property="locationLogTitleLabel" destination="tIr-kt-zER" id="GCE-km-YaU"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QB2-o1-rdO" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -1660,10 +1676,10 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Settings" id="QFH-e0-q8M">
-                        <barButtonItem key="leftBarButtonItem" title="&lt; Back" id="Hbp-mR-waB">
+                        <barButtonItem key="leftBarButtonItem" title="&lt; Back" id="bwg-K4-4Bv">
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
-                                <action selector="navigationBarBackButtonClicked:" destination="8HT-tT-Wo3" id="7Ju-e6-GfW"/>
+                                <action selector="navigationBarBackButtonClicked:" destination="8HT-tT-Wo3" id="apT-4L-2lq"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -1900,6 +1916,7 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="8Se-bM-WWi">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <color key="barTintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <textAttributes key="titleTextAttributes">
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1993,7 +2010,7 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="tiQ-3l-giC"/>
-        <segue reference="LLn-GC-l9Y"/>
+        <segue reference="b4C-br-kGl"/>
         <segue reference="bpy-dh-Cs3"/>
         <segue reference="lBy-8L-5cV"/>
     </inferredMetricsTieBreakers>
