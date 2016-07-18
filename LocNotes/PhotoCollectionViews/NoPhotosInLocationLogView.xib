@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="128"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7Dw-VF-z0h">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="128"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="cryingFace" translatesAutoresizingMaskIntoConstraints="NO" id="STH-xA-ORy">
+                            <rect key="frame" x="8" y="28" width="72" height="72"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="72" id="GYK-50-0Rz"/>
+                                <constraint firstAttribute="height" constant="72" id="Sg3-Fg-Shf"/>
+                            </constraints>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You don't have any photos attached with this Location Log!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qnO-7W-Qvw">
+                            <rect key="frame" x="99" y="28" width="493" height="72"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="72" id="y0O-Rw-niZ"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
+                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="qnO-7W-Qvw" firstAttribute="leading" secondItem="STH-xA-ORy" secondAttribute="trailing" constant="19" id="3YY-L9-Bik"/>
+                        <constraint firstAttribute="bottom" secondItem="STH-xA-ORy" secondAttribute="bottom" constant="28" id="7Fc-7P-4yR"/>
+                        <constraint firstAttribute="trailing" secondItem="qnO-7W-Qvw" secondAttribute="trailing" constant="8" id="HpF-2m-n3i"/>
+                        <constraint firstAttribute="height" constant="128" id="RLm-5m-NfR"/>
+                        <constraint firstItem="qnO-7W-Qvw" firstAttribute="top" secondItem="7Dw-VF-z0h" secondAttribute="top" constant="28" id="dRH-W7-HhZ"/>
+                        <constraint firstItem="STH-xA-ORy" firstAttribute="leading" secondItem="7Dw-VF-z0h" secondAttribute="leading" constant="8" id="lGt-3M-kcm"/>
+                        <constraint firstAttribute="bottom" secondItem="qnO-7W-Qvw" secondAttribute="bottom" constant="28" id="me2-So-kip"/>
+                        <constraint firstItem="STH-xA-ORy" firstAttribute="top" secondItem="7Dw-VF-z0h" secondAttribute="top" constant="28" id="mgG-VR-JeA"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="7Dw-VF-z0h" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="1Qe-MI-3hC"/>
+                <constraint firstAttribute="bottom" secondItem="7Dw-VF-z0h" secondAttribute="bottom" id="266-Op-1iO"/>
+                <constraint firstAttribute="trailing" secondItem="7Dw-VF-z0h" secondAttribute="trailing" id="Jez-vB-Uvr"/>
+                <constraint firstItem="7Dw-VF-z0h" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="opW-NA-rYH"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="575" y="186"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="cryingFace" width="256" height="256"/>
+    </resources>
+</document>

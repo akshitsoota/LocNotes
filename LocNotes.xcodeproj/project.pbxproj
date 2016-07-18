@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		FC0AE9B41D3D523C00296401 /* ShowLocationLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0AE9B31D3D523C00296401 /* ShowLocationLogViewController.swift */; };
 		FC0AE9B81D3D621500296401 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0AE9B71D3D621500296401 /* DateExtension.swift */; };
+		FC0AE9BA1D3D794F00296401 /* NoPhotosInLocationLogView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FC0AE9B91D3D794F00296401 /* NoPhotosInLocationLogView.xib */; };
 		FC1913F11D1B869800146224 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1913F01D1B869800146224 /* AppDelegate.swift */; };
 		FC1913F31D1B869800146224 /* SplashScreenController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1913F21D1B869800146224 /* SplashScreenController.swift */; };
 		FC1913F61D1B869800146224 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FC1913F41D1B869800146224 /* Main.storyboard */; };
@@ -72,6 +73,7 @@
 /* Begin PBXFileReference section */
 		FC0AE9B31D3D523C00296401 /* ShowLocationLogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShowLocationLogViewController.swift; sourceTree = "<group>"; };
 		FC0AE9B71D3D621500296401 /* DateExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DateExtension.swift; path = CommonUtils/DateExtension.swift; sourceTree = "<group>"; };
+		FC0AE9B91D3D794F00296401 /* NoPhotosInLocationLogView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = NoPhotosInLocationLogView.xib; path = PhotoCollectionViews/NoPhotosInLocationLogView.xib; sourceTree = "<group>"; };
 		FC1913ED1D1B869800146224 /* LocNotes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LocNotes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC1913F01D1B869800146224 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FC1913F21D1B869800146224 /* SplashScreenController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenController.swift; sourceTree = "<group>"; };
@@ -250,6 +252,7 @@
 				FCFD7E4E1D300BAA00727BD6 /* AddNewPhotoCollectionViewCell.swift */,
 				FCFD7E501D300D6500727BD6 /* PhotoCollectionViewCell.swift */,
 				FCFD7E521D300F8E00727BD6 /* PhotoView.swift */,
+				FC0AE9B91D3D794F00296401 /* NoPhotosInLocationLogView.xib */,
 			);
 			name = PhotoCollectionViews;
 			sourceTree = "<group>";
@@ -324,6 +327,7 @@
 				FC1913F61D1B869800146224 /* Main.storyboard in Resources */,
 				FCFD7E401D2ED7B200727BD6 /* ProgressLoadingScreenView.xib in Resources */,
 				FC392C301D355FAA009DD959 /* amazon-aws-credentials.plist in Resources */,
+				FC0AE9BA1D3D794F00296401 /* NoPhotosInLocationLogView.xib in Resources */,
 				FC605F301D29FE2700AC5F73 /* endpoints.plist in Resources */,
 				FC605F341D2B092800AC5F73 /* LoadingScreenView.xib in Resources */,
 			);

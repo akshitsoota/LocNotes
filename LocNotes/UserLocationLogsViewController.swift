@@ -147,9 +147,9 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
         
         // Setup Table View No Location Logs Background
         let nibArray: [AnyObject] = NSBundle.mainBundle().loadNibNamed("NoLocationLogsView", owner: self, options: nil)
-        let toReturn = nibArray[0] as! UIView
-        toReturn.frame.size = self.locationLogsTableView.frame.size
-        self.locationLogsTableView.backgroundView = toReturn
+        let bgView = nibArray[0] as! UIView
+        bgView.frame.size = self.locationLogsTableView.frame.size
+        self.locationLogsTableView.backgroundView = bgView
         
         // Grab the refresh button reference
         self.navigationItemRefreshButton = self.navigationItem.leftBarButtonItem
@@ -515,6 +515,8 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
         } else {
             self.locationLogOpeningUp = self.locationLogs[indexPath.row]
         }
+        // Deselect this IndexPath and then proceed with the segue
+        tableView.deselectRowAtIndexPath(indexPath, animated: false)
         // Perform the segue
         self.performSegueWithIdentifier("showLocationLogDetails", sender: self)
     }
@@ -1161,6 +1163,10 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
             // If we are going to be taking the user to the ViewController where we show the Location Log, send the Location Log along
             let destVC: ShowLocationLogViewController = segue.destinationViewController as! ShowLocationLogViewController
             destVC.locationLogShown = self.locationLogOpeningUp
+            // Setup the navigation bar
+            let backButton: UIBarButtonItem = UIBarButtonItem()
+            backButton.title = "Back"
+            self.navigationItem.backBarButtonItem = backButton
         }
     }
 
