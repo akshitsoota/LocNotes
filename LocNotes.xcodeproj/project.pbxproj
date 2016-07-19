@@ -11,6 +11,7 @@
 		FC0AE9B81D3D621500296401 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0AE9B71D3D621500296401 /* DateExtension.swift */; };
 		FC0AE9BA1D3D794F00296401 /* NoPhotosInLocationLogView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FC0AE9B91D3D794F00296401 /* NoPhotosInLocationLogView.xib */; };
 		FC1644381D3DBCE800C97997 /* LocationLogMapViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1644371D3DBCE800C97997 /* LocationLogMapViewViewController.swift */; };
+		FC16443A1D3EA8B400C97997 /* LocationLogImageViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1644391D3EA8B400C97997 /* LocationLogImageViewViewController.swift */; };
 		FC1913F11D1B869800146224 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1913F01D1B869800146224 /* AppDelegate.swift */; };
 		FC1913F31D1B869800146224 /* SplashScreenController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1913F21D1B869800146224 /* SplashScreenController.swift */; };
 		FC1913F61D1B869800146224 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FC1913F41D1B869800146224 /* Main.storyboard */; };
@@ -76,6 +77,7 @@
 		FC0AE9B71D3D621500296401 /* DateExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DateExtension.swift; path = CommonUtils/DateExtension.swift; sourceTree = "<group>"; };
 		FC0AE9B91D3D794F00296401 /* NoPhotosInLocationLogView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = NoPhotosInLocationLogView.xib; path = PhotoCollectionViews/NoPhotosInLocationLogView.xib; sourceTree = "<group>"; };
 		FC1644371D3DBCE800C97997 /* LocationLogMapViewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationLogMapViewViewController.swift; sourceTree = "<group>"; };
+		FC1644391D3EA8B400C97997 /* LocationLogImageViewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationLogImageViewViewController.swift; sourceTree = "<group>"; };
 		FC1913ED1D1B869800146224 /* LocNotes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LocNotes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC1913F01D1B869800146224 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FC1913F21D1B869800146224 /* SplashScreenController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenController.swift; sourceTree = "<group>"; };
@@ -180,6 +182,7 @@
 				FCFD7E561D30B1DA00727BD6 /* AddLocationToLocationLogViewController.swift */,
 				FC0AE9B31D3D523C00296401 /* ShowLocationLogViewController.swift */,
 				FC1644371D3DBCE800C97997 /* LocationLogMapViewViewController.swift */,
+				FC1644391D3EA8B400C97997 /* LocationLogImageViewViewController.swift */,
 				FC605F2F1D29FE2700AC5F73 /* endpoints.plist */,
 				FC392C2F1D355FAA009DD959 /* amazon-aws-credentials.plist */,
 				FC392BDF1D3480C0009DD959 /* LocationLog.xcdatamodeld */,
@@ -374,6 +377,7 @@
 				FCFD7E4F1D300BAA00727BD6 /* AddNewPhotoCollectionViewCell.swift in Sources */,
 				FC392BEA1D348453009DD959 /* LocationLog+CoreDataProperties.swift in Sources */,
 				FCFD7E481D2F42B400727BD6 /* NewUserLocationLogViewController.swift in Sources */,
+				FC16443A1D3EA8B400C97997 /* LocationLogImageViewViewController.swift in Sources */,
 				FC392BEC1D348453009DD959 /* FullResolutionS3Image+CoreDataProperties.swift in Sources */,
 				FC0AE9B41D3D523C00296401 /* ShowLocationLogViewController.swift in Sources */,
 				FC392BE81D348453009DD959 /* ImageThumbnail+CoreDataProperties.swift in Sources */,

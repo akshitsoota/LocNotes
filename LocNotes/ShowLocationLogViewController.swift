@@ -239,6 +239,7 @@ class ShowLocationLogViewController: UIViewController, UICollectionViewDataSourc
         photoView.photoViewIndex = indexPath.row
         photoViewCell.extraInformation = photoView
         photoViewCell.removePhotoButtonClickedFunction = self.openUpImageLocation
+        photoViewCell.imageViewClickedFunction = self.openUpImage
         // The map button should only be shown if there is a mapped image
         photoViewCell.removeButton.hidden = (self.locationLogImageLocations[self.explodedS3imageIDsList[indexPath.row]] == nil)
         // Now that we've setup the thumbnail, return
@@ -259,6 +260,12 @@ class ShowLocationLogViewController: UIViewController, UICollectionViewDataSourc
             // Tell the user we've got nothing for them
             CommonUtils.showDefaultAlertToUser(self, title: "Missing Location Info", alertContents: "The image has no location metadata attached with it. Try another image!")
         }
+    }
+    
+    func openUpImage(sender: AnyObject, extraInfo: PhotoView?) {
+        // Perform the segue and save the information in self.sipIndex
+        self.sipIndex = (extraInfo?.photoViewIndex)!
+        self.performSegueWithIdentifier("showImageView", sender: self)
     }
     
     // MARK: - UICollectionView Flow Layout Delegate
@@ -314,7 +321,6 @@ class ShowLocationLogViewController: UIViewController, UICollectionViewDataSourc
     }
     
     @IBAction func navigationBarDeleteLocationLogClicked(sender: UIBarButtonItem) {
-        
         // Ask the user for confirmation
         let actionSheet: UIAlertController = UIAlertController(title: nil, message: "Are you sure you want to delete this Location Log? This action cannot be undone", preferredStyle: .ActionSheet)
         let deleteAction: UIAlertAction = UIAlertAction(title: "Delete", style: .Destructive, handler: {(alert: UIAlertAction) -> Void in
@@ -483,7 +489,6 @@ class ShowLocationLogViewController: UIViewController, UICollectionViewDataSourc
         actionSheet.addAction(cancelAction)
         // Now present the Action Sheet
         self.presentViewController(actionSheet, animated: true, completion: nil)
-        
     }
     
     // MARK: - Segue handler
@@ -509,6 +514,30 @@ class ShowLocationLogViewController: UIViewController, UICollectionViewDataSourc
                 destVC.mlpLocationNames = self.locationsVisited
                 destVC.mlpLocationPoints = self.latLngsVisited
             }
+        } else if( segue.identifier == "showImageView" ) {
+            // Grab the destination VC
+            let destVC: LocationLogImageViewViewController = segue.destinationViewController as! LocationLogImageViewViewController
+            // Fetch the image from CoreData
+            var coreDataImage: UIImage?
+            let imagesFetchRequest: NSFetchRequest = NSFetchRequest(entityName: "FullResolutionS3Image")
+            do {
+                let imageResults = try self.managedContext?.executeFetchRequest(imagesFetchRequest)
+                let images: [FullResolutionS3Image] = imageResults as! [FullResolutionS3Image]
+                
+                // Iterate over them and see which one to delete
+                for s3image in images {
+                    if s3image.respectiveLogID! == (self.locationLogShown?.logID)! &&
+                       s3image.s3id! == self.explodedS3imageIDsList[self.sipIndex!] {
+                        // We found the image, so save it
+                        coreDataImage = UIImage(data: s3image.image!)
+                        // And break
+                        break
+                    }
+                }
+            } catch {  }
+            // Fill out the information
+            destVC.imageShown = coreDataImage
+            destVC.imageLocation = self.locationLogImageLocations[self.explodedS3imageIDsList[self.sipIndex!]]
         }
     }
     
