@@ -7,6 +7,7 @@
 //
 
 import CoreData
+import MapKit
 import UIKit
 
 class ShowLocationLogViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -18,10 +19,14 @@ class ShowLocationLogViewController: UIViewController, UICollectionViewDataSourc
     @IBOutlet weak var locationLogDescLabel: UILabel!
     @IBOutlet weak var locationLogPhotosHolder: UIView!
     @IBOutlet weak var locationLogPhotosView: UICollectionView!
+    @IBOutlet weak var locationLogLocationsVisitedHolder: UIView!
+    @IBOutlet weak var locationLogLocationsVisitedTable: UITableView!
+    @IBOutlet weak var locationLogShowLocationsMap: UIButton!
     // Holds the bottom border of the Description Field
     var locationLogDescHolderBottomBorder: UIView?
-    // Holds the LocationLog, thumbnails that will be shown to the user
+    // Holds the LocationLog, thumbnails and image locations that will be shown to the user
     var locationLogShown: LocationLog?
+    var locationLogImageLocations: Dictionary<String, CLLocation> = Dictionary<String, CLLocation>()
     var locationLogThumbnails: Dictionary<String, ImageThumbnail> = Dictionary<String, ImageThumbnail>()
     var locationLogThumbnailScales: Dictionary<String, Double> = Dictionary<String, Double>()
     var explodedS3imageIDsList: [String] = []
@@ -158,7 +163,7 @@ class ShowLocationLogViewController: UIViewController, UICollectionViewDataSourc
                 }
             }
         } catch {  }
-        // Now iterate over the S3 Images and find the Thumbnail Scales
+        // Now iterate over the S3 Images and find the Thumbnail Scales and also save a location if there is any
         let imagesFetchRequest: NSFetchRequest = NSFetchRequest(entityName: "FullResolutionS3Image")
         do {
             let imageResults = try self.managedContext?.executeFetchRequest(imagesFetchRequest)
@@ -171,6 +176,13 @@ class ShowLocationLogViewController: UIViewController, UICollectionViewDataSourc
                     // Save the scale to the dictionary of scales
                     let imageObject: UIImage = UIImage(data: image.image!)!
                     self.locationLogThumbnailScales[image.s3id!] = Double(Double(imageObject.size.width) / Double(imageObject.size.height))
+                    // Check for location
+                    if( !(image.imageLocation?.isEmpty)! ) {
+                        let splitted: [String] = image.imageLocation!.componentsSeparatedByString(",")
+                        // Collect the LatLng and save it in the dictionary
+                        let location: CLLocation = CLLocation(latitude: Double(splitted[0])!, longitude: Double(splitted[1])!)
+                        self.locationLogImageLocations[image.s3id!] = location
+                    }
                 }
             }
         } catch {  }
@@ -188,14 +200,39 @@ class ShowLocationLogViewController: UIViewController, UICollectionViewDataSourc
         let photoViewCell: PhotoCollectionViewCell! = collectionView.dequeueReusableCellWithReuseIdentifier("locationLogImage", forIndexPath: indexPath) as! PhotoCollectionViewCell
         let photoView: PhotoView = PhotoView()
         photoView.thumbnailImage = UIImage(data: self.locationLogThumbnails[self.explodedS3imageIDsList[indexPath.row]]!.image!)!
+        photoView.photoViewIndex = indexPath.row
         photoViewCell.extraInformation = photoView
+        photoViewCell.removePhotoButtonClickedFunction = self.openUpImageLocation
+        // The map button should only be shown if there is a mapped image
+        photoViewCell.removeButton.hidden = (self.locationLogImageLocations[self.explodedS3imageIDsList[indexPath.row]] == nil)
         // Now that we've setup the thumbnail, return
         return photoViewCell
+    }
+    
+    func openUpImageLocation(sender: AnyObject, extraInfo: PhotoView?) {
+        // Check if we've got an associated location
+        if( self.locationLogImageLocations[self.explodedS3imageIDsList[(extraInfo?.photoViewIndex)!]] != nil ) {
+            // We've got a location to show on a map
+            // TODO: Work on MapView
+        } else {
+            // We shouldn't be here in the first place, but...
+            // Tell the user we've got nothing for them
+            CommonUtils.showDefaultAlertToUser(self, title: "Missing Location Info", alertContents: "The image has no location metadata attached with it. Try another image!")
+        }
     }
     
     // MARK: - UICollectionView Flow Layout Delegate
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         return CGSize(width: self.locationLogThumbnailScales[self.explodedS3imageIDsList[indexPath.row]]! * 128, height: 128)
+    }
+    
+    // MARK: - Actions received here
+    @IBAction func locationsVisitedShowMapButtonClicked(sender: UIButton) {
+        
+    }
+    
+    @IBAction func navigationBarDeleteLocationLogClicked(sender: UIBarButtonItem) {
+        
     }
     
     // MARK: - Orientation Change Listener

@@ -11,6 +11,7 @@ import UIKit
 class PhotoCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var removeButton: UIButton!
     // Function that will be called when the image view is tapped
     var imageViewClickedFunction: ((sender: AnyObject, extraInfo: PhotoView?) -> Void)?
     // Function that will be called when the remove photo button is tapped
