@@ -959,6 +959,11 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
                                 fullResolutionS3Image.s3id = imageS3ID
                                 fullResolutionS3Image.storeDate = NSNumber(longLong: Int64(NSDate().timeIntervalSince1970))
                                 fullResolutionS3Image.respectiveLogID = logToBeAdded
+                                // Add the location as well
+                                if( !(imagesArray[imageCountDone - 1]["latlng"] as! String).isEmpty ) {
+                                    // Then we must save it
+                                    fullResolutionS3Image.imageLocation = imagesArray[imageCountDone - 1]["latlng"] as? String
+                                }
                                 
                                 // Thumbnail Re-sizing Function
                                 func resizeImage(image: UIImage, newHeight: CGFloat) -> UIImage {
@@ -998,6 +1003,21 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
                         locationLog.logID = logToBeAdded
                         locationLog.logTitle = freshJSONLocationLog["title"] as? String
                         locationLog.updateDate = (freshJSONLocationLog["lastupdateddate"] as? NSNumber)?.doubleValue
+                        // Extract the location points
+                        let latLngPairs: NSArray = freshJSONLocationLog["locpoints"] as! NSArray
+                        var addedALLPair: Bool = false
+                        var compiledLatLng: String = ""
+                        
+                        for latLngPair in latLngPairs {
+                            let latLngDict: Dictionary<String, String> = latLngPair as! Dictionary<String, String>
+                            if( addedALLPair ) {
+                                compiledLatLng = "\(compiledLatLng);\(latLngDict["lat"]!),\(latLngDict["lng"]!)"
+                            } else {
+                                addedALLPair = true
+                                compiledLatLng = "\(latLngDict["lat"]!),\(latLngDict["lng"]!)"
+                            }
+                        }
+                        locationLog.locationPoints = compiledLatLng
                         
                         // Attempt to save it now
                         do {
