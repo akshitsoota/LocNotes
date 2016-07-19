@@ -1175,6 +1175,9 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
             self.locationLogsTableView.reloadData()
             // Scroll to the top of the TableView
             self.locationLogsTableView.setContentOffset(CGPointZero, animated: true)
+        } else if( segue.sourceViewController.isKindOfClass(ShowLocationLogViewController) ) {
+            // Force a refresh from the backend
+            self.forceAutoRefreshLocationLogs()
         }
     }
     

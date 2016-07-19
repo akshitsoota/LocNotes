@@ -10,7 +10,9 @@ import CoreData
 import MapKit
 import UIKit
 
-class ShowLocationLogViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class ShowLocationLogViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,
+                                     UITableViewDelegate, UITableViewDataSource
+{
 
     @IBOutlet weak var locationLogTitleHolder: UIView!
     @IBOutlet weak var locationLogTitleLabel: UILabel!
@@ -30,6 +32,18 @@ class ShowLocationLogViewController: UIViewController, UICollectionViewDataSourc
     var locationLogThumbnails: Dictionary<String, ImageThumbnail> = Dictionary<String, ImageThumbnail>()
     var locationLogThumbnailScales: Dictionary<String, Double> = Dictionary<String, Double>()
     var explodedS3imageIDsList: [String] = []
+    // Holds the locations the user visited along with the respective LatLng
+    var locationsVisited: [String] = []
+    var latLngsVisited: [CLLocationCoordinate2D] = []
+    // Holds the loading screen
+    var loadingScreen: UIView?
+    
+    // Holds the destination ViewSetup required for the LocationLogMapViewController
+    var destinationViewSetup: LocationLogMapViewViewController.ViewSetup = .Unknown
+    // SingleImagePoint
+    var sipIndex: Int?
+    // SingleLocationPoint
+    var slpIndex: Int?
     
     // Dispatch Queues
     let coreDataQueue = dispatch_queue_create("CoreDataWorkQueue", DISPATCH_QUEUE_CONCURRENT)
@@ -88,6 +102,23 @@ class ShowLocationLogViewController: UIViewController, UICollectionViewDataSourc
         }
         // Save it
         self.explodedS3imageIDsList = s3IDs
+        
+        // Explode the Locations Visited into the Array along with the respective LatLngs
+        for locName in (self.locationLogShown?.locationNames?.componentsSeparatedByString(";;;"))! {
+            if( !locName.isEmpty ) {
+                self.locationsVisited.append(locName)
+            }
+        }
+        
+        for locPoint in (self.locationLogShown?.locationPoints?.componentsSeparatedByString(";"))! {
+            if( !locPoint.isEmpty ) {
+                let splitted: [String] = locPoint.componentsSeparatedByString(",")
+                let latitude: Double = (splitted[0] as NSString).doubleValue
+                let longitude: Double = (splitted[1] as NSString).doubleValue
+                
+                self.latLngsVisited.append(CLLocationCoordinate2DMake(latitude, longitude))
+            }
+        }
     }
     
     func setupView() {
@@ -113,6 +144,7 @@ class ShowLocationLogViewController: UIViewController, UICollectionViewDataSourc
         generateTopBorder(self.locationLogTitleHolder)
         generateTopBorder(self.locationLogDescHolder)
         generateTopBorder(self.locationLogPhotosHolder)
+        generateTopBorder(self.locationLogLocationsVisitedHolder)
         // Add the bottom borders for the holders
         generateBottomBorder(self.locationLogTitleHolder)
         if( self.locationLogDescHolderBottomBorder != nil ) {
@@ -120,6 +152,7 @@ class ShowLocationLogViewController: UIViewController, UICollectionViewDataSourc
         }
         self.locationLogDescHolderBottomBorder = generateBottomBorder(self.locationLogDescHolder)
         generateBottomBorder(self.locationLogPhotosHolder)
+        generateBottomBorder(self.locationLogLocationsVisitedHolder)
         
         // Setup the background color for the CollectionView
         self.locationLogPhotosView.backgroundColor = UIColor.clearColor()
@@ -139,8 +172,11 @@ class ShowLocationLogViewController: UIViewController, UICollectionViewDataSourc
         }
         
         // Setup the Locations Visited Table View
-        /* self.locationVisitedTable.dataSource = self
-        self.locationVisitedTable.delegate = self */
+        self.locationLogLocationsVisitedTable.dataSource = self
+        self.locationLogLocationsVisitedTable.delegate = self
+        
+        // Hide "Map It Out" Button if necessary
+        self.locationLogShowLocationsMap.hidden = (self.locationsVisited.count == 0)
         
     }
     
@@ -213,7 +249,11 @@ class ShowLocationLogViewController: UIViewController, UICollectionViewDataSourc
         // Check if we've got an associated location
         if( self.locationLogImageLocations[self.explodedS3imageIDsList[(extraInfo?.photoViewIndex)!]] != nil ) {
             // We've got a location to show on a map
-            // TODO: Work on MapView
+            // Fill out information before performing the segue
+            self.destinationViewSetup = .SingleImagePoint
+            self.sipIndex = (extraInfo?.photoViewIndex)!
+            // Perform the segue
+            self.performSegueWithIdentifier("showMapView", sender: self)
         } else {
             // We shouldn't be here in the first place, but...
             // Tell the user we've got nothing for them
@@ -226,13 +266,250 @@ class ShowLocationLogViewController: UIViewController, UICollectionViewDataSourc
         return CGSize(width: self.locationLogThumbnailScales[self.explodedS3imageIDsList[indexPath.row]]! * 128, height: 128)
     }
     
+    // MARK: - UITableView Data Source
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if( self.locationsVisited.count == 0 ) {
+            return 1        // Just tell the user that we've got nothing to show
+        }
+        return self.locationsVisited.count
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        // Dequeue the Cell
+        let locationCell: UITableViewCell = tableView.dequeueReusableCellWithIdentifier("locationVisitedCell")!
+        
+        // Check if we've got any Location Visited
+        if( self.locationsVisited.count == 0 ) {
+            locationCell.textLabel?.text = "No locations to show!"
+            // Return
+            return locationCell
+        }
+        // Else, fill in the location name and return
+        locationCell.textLabel?.text = self.locationsVisited[indexPath.row]
+        return locationCell
+    }
+    
+    // MARK: - UITableView Delegate
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        // Deselect the Table Cell
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        // Check if we've got anything to show the user
+        if( self.locationsVisited.count == 0 ) {
+            return
+        }
+        // Else, open it up in the map
+        // Fill out information before performing the segue
+        self.destinationViewSetup = .SingleLocationPoint
+        self.slpIndex = indexPath.row
+        // Perform the segue
+        self.performSegueWithIdentifier("showMapView", sender: self)
+    }
+    
     // MARK: - Actions received here
     @IBAction func locationsVisitedShowMapButtonClicked(sender: UIButton) {
-        
+        // Show all the locations
+        self.destinationViewSetup = .MultiLocationPoint
+        // Perform the segue
+        self.performSegueWithIdentifier("showMapView", sender: self)
     }
     
     @IBAction func navigationBarDeleteLocationLogClicked(sender: UIBarButtonItem) {
         
+        // Ask the user for confirmation
+        let actionSheet: UIAlertController = UIAlertController(title: nil, message: "Are you sure you want to delete this Location Log? This action cannot be undone", preferredStyle: .ActionSheet)
+        let deleteAction: UIAlertAction = UIAlertAction(title: "Delete", style: .Destructive, handler: {(alert: UIAlertAction) -> Void in
+            // Show up a loading screen
+            if( self.loadingScreen == nil ) {
+                self.loadingScreen = CommonUtils.returnLoadingScreenView(self, size: UIScreen.mainScreen().bounds)
+            }
+            CommonUtils.setLoadingTextOnLoadingScreenView(self.loadingScreen, newLabelContents: "Deleting your location log...")
+            self.navigationController?.view.addSubview(self.loadingScreen!)
+            
+            // Check the Login Token Validity
+            let tokenRenewalState: NSDictionary? = UserAuthentication.renewLoginToken()
+            // Check if nil
+            if( tokenRenewalState == nil ) {
+                // We failed to renew the login token, tell the user on the main thread
+                dispatch_async(dispatch_get_main_queue(), {
+                    // Hide the loading screen
+                    self.loadingScreen!.removeFromSuperview()
+                    // Tell the user where we hit a snag
+                    CommonUtils.showDefaultAlertToUser(self, title: "Hit a Snag!", alertContents: "We are having issues with our internal framework. Please try again later!")
+                })
+                // Exit
+                return
+            }
+            // Else, process
+            if(   tokenRenewalState!["status"] as! String == "invalid_non_json_response" ||
+                ( tokenRenewalState!["status"] as! String == "no_renewal" &&
+                    tokenRenewalState!["reason"] as! String == "backend_failure" ) ||
+                ( tokenRenewalState!["status"] as! String == "not_possible_request_error" ) ) {
+                
+                // We failed to renew the login token, tell the user on the main thread
+                dispatch_async(dispatch_get_main_queue(), {
+                    // Hide the loading screen
+                    self.loadingScreen!.removeFromSuperview()
+                    // Tell the user where we hit a snag
+                    CommonUtils.showDefaultAlertToUser(self, title: "Hit a Snag!", alertContents: "The server returned an invalid response while attempting to verify your login credentials. Please try again later!")
+                })
+                // Exit
+                return
+                
+            } else if( tokenRenewalState!["status"] as! String == "renewed_but_failed" && tokenRenewalState!["reason"] as! String == "keychain_failed" ) {
+                
+                // We failed to renew the login token, tell the user on the main thread
+                dispatch_async(dispatch_get_main_queue(), {
+                    // Hide the loading screen
+                    self.loadingScreen!.removeFromSuperview()
+                    // Tell the user where we hit a snag
+                    CommonUtils.showDefaultAlertToUser(self, title: "Hit a Snag!", alertContents: "We failed to save your fresh login token into Keychain. Please try again later!")
+                })
+                // Exit
+                return
+                
+            } else if( tokenRenewalState!["status"] as! String == "no_renewal" && tokenRenewalState!["reason"] as! String == "invalid_cred" ) {
+                
+                // We failed to renew the login token, tell the user on the main thread
+                dispatch_async(dispatch_get_main_queue(), {
+                    // Hide the loading screen
+                    self.loadingScreen!.removeFromSuperview()
+                    // Tell the user where we hit a snag
+                    CommonUtils.showDefaultAlertToUser(self, title: "Hit a Snag!", alertContents: "Your login credentials have expired. Please try logout and log back in to delete all your Location Logs.")
+                })
+                // Exit
+                return
+                
+            } else if( ( tokenRenewalState!["status"] as! String == "no_renewal" && tokenRenewalState!["reason"] as! String == "not_needed" ) ||
+                ( tokenRenewalState!["status"] as! String == "renewed" && tokenRenewalState!["reason"] == nil ) ) {
+                
+                // Perfect, just proceed with the rest of the job
+                
+            }
+            
+            // Send the request to log the user out
+            let awsEndpoint: String = CommonUtils.fetchFromPropertiesList("endpoints", fileExtension: "plist", key: "awsEC2EndpointURL")!
+            let deleteLocationLogsURL: String = CommonUtils.fetchFromPropertiesList("endpoints", fileExtension: "plist", key: "deleteLocationLogURL")!
+            
+            let userName: String! = KeychainWrapper.defaultKeychainWrapper().stringForKey("LocNotes-username")!
+            let userLoginToken: String! = KeychainWrapper.defaultKeychainWrapper().stringForKey("LocNotes-loginToken")!
+            
+            // Now start the async request
+            let asyncRequestURL: NSURL! = NSURL(string: "http://" + awsEndpoint + deleteLocationLogsURL)
+            let asyncSession: NSURLSession! = NSURLSession.sharedSession()
+            
+            let asyncRequest: NSMutableURLRequest! = NSMutableURLRequest(URL: asyncRequestURL)
+            asyncRequest.HTTPMethod = "POST"
+            asyncRequest.cachePolicy = .ReloadIgnoringLocalCacheData
+            asyncRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            asyncRequest.setValue(UserAuthentication.generateAuthorizationHeader(userName, userLoginToken: userLoginToken), forHTTPHeaderField: "Authorization")
+            
+            // Setup the POST Body to send the Location Log ID to be delete
+            var requestBody = "locationlogid=" + (self.locationLogShown?.logID)!
+            
+            requestBody = requestBody.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
+            asyncRequest.HTTPBody = requestBody.dataUsingEncoding(NSUTF8StringEncoding)
+            
+            // Now start the Async task
+            let asyncTask = asyncSession.dataTaskWithRequest(asyncRequest, completionHandler: {(data: NSData?, response: NSURLResponse?, error: NSError?) -> Void in
+                // Check for any errors
+                if( error != nil ) {
+                    // Tell the user that we failed to log them out
+                    dispatch_async(dispatch_get_main_queue(), {
+                        // Hide the loading screen
+                        self.loadingScreen!.removeFromSuperview()
+                        // Alert the user
+                        CommonUtils.showDefaultAlertToUser(self, title: "Server Error", alertContents: "We received an invalid response from the server. Please try again later!")
+                    })
+                    // Return
+                    return
+                }
+                
+                // Check the response
+                do {
+                    
+                    let jsonResponse: [String: AnyObject] = try (NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions()) as? [String: AnyObject])!
+                    // Now process the response
+                    let status = jsonResponse["status"]
+                    
+                    if( status == nil ) {
+                        // We've got an error
+                        dispatch_async(dispatch_get_main_queue(), {
+                            // Hide the loading screen
+                            self.loadingScreen!.removeFromSuperview()
+                            // Alert the user
+                            CommonUtils.showDefaultAlertToUser(self, title: "Server Error", alertContents: "We received an invalid response from the server. Please try again later!")
+                        })
+                        // Return
+                        return
+                    }
+                    
+                    let strStatus: String! = status as! String
+                    
+                    if( strStatus == "success" ) {
+                        
+                        // The Location Log was removed. Going to the previous screen (listing of user's location log) and forcing a refresh should help clear up
+                        //   the necessary CoreData that is laying around for this deleted Location Log
+                        
+                        // Take the user to the login screen
+                        dispatch_async(dispatch_get_main_queue(), {
+                            self.loadingScreen!.removeFromSuperview()
+                            // Exit this ViewController, go back and force a refresh
+                            self.performSegueWithIdentifier("goBackUserLocationLogListing", sender: self)
+                        })
+                        // And we're done
+                        return
+                        
+                    }
+                    
+                } catch {
+                    // Tell the user that we couldn't log them out
+                    dispatch_async(dispatch_get_main_queue(), {
+                        // Hide the loading screen
+                        self.loadingScreen!.removeFromSuperview()
+                        // Alert the user
+                        CommonUtils.showDefaultAlertToUser(self, title: "Server Error", alertContents: "We received an invalid response from the server. Please try again later!")
+                    })
+                    // Return
+                    return
+                }
+            })
+            asyncTask.resume() // Start the task now
+            // Return
+            return
+        })
+        let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
+        // Add the options to the Action Sheet
+        actionSheet.addAction(deleteAction)
+        actionSheet.addAction(cancelAction)
+        // Now present the Action Sheet
+        self.presentViewController(actionSheet, animated: true, completion: nil)
+        
+    }
+    
+    // MARK: - Segue handler
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        // Check the segue that we are performing
+        if( segue.identifier == "showMapView" ) {
+            // Grab the destination VC
+            let destVC: LocationLogMapViewViewController = segue.destinationViewController as! LocationLogMapViewViewController
+            // Check the destination setup type request
+            if( self.destinationViewSetup == .SingleImagePoint && self.sipIndex != nil ) {
+                // Fill out the info in destVC
+                destVC.locationTypeSetup = .SingleImagePoint
+                destVC.sipLocationPoint = self.locationLogImageLocations[self.explodedS3imageIDsList[self.sipIndex!]]
+                destVC.sipImage = UIImage(data: self.locationLogThumbnails[self.explodedS3imageIDsList[self.sipIndex!]]!.image!)!
+            } else if( self.destinationViewSetup == .SingleLocationPoint && self.slpIndex != nil ) {
+                // Fill out the info in destVC
+                destVC.locationTypeSetup = .SingleLocationPoint
+                destVC.slpLocationPoint = self.latLngsVisited[self.slpIndex!]
+                destVC.slpLocationName = self.locationsVisited[self.slpIndex!]
+            } else if( self.destinationViewSetup == .MultiLocationPoint ) {
+                // Fill out the info in destVC
+                destVC.locationTypeSetup = .MultiLocationPoint
+                destVC.mlpLocationNames = self.locationsVisited
+                destVC.mlpLocationPoints = self.latLngsVisited
+            }
+        }
     }
     
     // MARK: - Orientation Change Listener
