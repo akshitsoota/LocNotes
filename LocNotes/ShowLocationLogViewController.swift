@@ -11,7 +11,7 @@ import MapKit
 import UIKit
 
 class ShowLocationLogViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,
-                                     UITableViewDelegate, UITableViewDataSource
+                                     UITableViewDelegate, UITableViewDataSource, UIViewControllerPreviewingDelegate
 {
 
     @IBOutlet weak var locationLogTitleHolder: UIView!
@@ -178,6 +178,11 @@ class ShowLocationLogViewController: UIViewController, UICollectionViewDataSourc
         // Hide "Map It Out" Button if necessary
         self.locationLogShowLocationsMap.hidden = (self.locationsVisited.count == 0)
         
+        // Accept force touch on Collection View
+        self.registerForPreviewingWithDelegate(self, sourceView: self.locationLogPhotosView)
+        // Same for the TableView
+        self.registerForPreviewingWithDelegate(self, sourceView: self.locationLogLocationsVisitedTable)
+        
     }
     
     func fetchFromCoreData() {
@@ -310,6 +315,69 @@ class ShowLocationLogViewController: UIViewController, UICollectionViewDataSourc
         self.slpIndex = indexPath.row
         // Perform the segue
         self.performSegueWithIdentifier("showMapView", sender: self)
+    }
+    
+    // MARK: - UIViewControllerPreviewing Delegate
+    func previewingContext(previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        // Try to find a location on the Collection View
+        // CITATION: http://krakendev.io/peek-pop/
+        
+        if previewingContext.sourceView == self.locationLogPhotosView {
+            if let indexPath = self.locationLogPhotosView.indexPathForItemAtPoint(location),
+                let cellAttributes = self.locationLogPhotosView.layoutAttributesForItemAtIndexPath(indexPath) {
+                // Setup the Peek
+                previewingContext.sourceRect = cellAttributes.frame
+                // Create the ViewController to be returned
+                guard let toReturnVC: LocationLogImageViewViewController = self.storyboard?.instantiateViewControllerWithIdentifier("locationLogImageViewVC") as? LocationLogImageViewViewController else { return nil }
+                // Fetch image from CoreData
+                var coreDataImage: UIImage?
+                let imagesFetchRequest: NSFetchRequest = NSFetchRequest(entityName: "FullResolutionS3Image")
+                do {
+                    let imageResults = try self.managedContext?.executeFetchRequest(imagesFetchRequest)
+                    let images: [FullResolutionS3Image] = imageResults as! [FullResolutionS3Image]
+                    
+                    // Iterate over them and see which one to delete
+                    for s3image in images {
+                        if s3image.respectiveLogID! == (self.locationLogShown?.logID)! &&
+                            s3image.s3id! == self.explodedS3imageIDsList[indexPath.row] {
+                            // We found the image, so save it
+                            coreDataImage = UIImage(data: s3image.image!)
+                            // And break
+                            break
+                        }
+                    }
+                } catch {  }
+                // Fill out the information
+                toReturnVC.imageShown = coreDataImage
+                toReturnVC.imageLocation = self.locationLogImageLocations[self.explodedS3imageIDsList[indexPath.row]]
+                // Now, return
+                return toReturnVC
+            }
+        }
+        
+        // Try to find a location on the Table View instead
+        if previewingContext.sourceView == self.locationLogLocationsVisitedTable {
+            if let indexPath = self.locationLogLocationsVisitedTable.indexPathForRowAtPoint(location) {
+                // Setup the Peek
+                previewingContext.sourceRect = self.locationLogLocationsVisitedTable.rectForRowAtIndexPath(indexPath)
+                // Create the ViewController to be returned
+                guard let toReturnVC: LocationLogMapViewViewController = self.storyboard?.instantiateViewControllerWithIdentifier("locationLogMapViewVC") as? LocationLogMapViewViewController else { return nil }
+                // Fill out the information
+                toReturnVC.locationTypeSetup = .SingleLocationPoint
+                toReturnVC.slpLocationName = self.locationsVisited[indexPath.row]
+                toReturnVC.slpLocationPoint = self.latLngsVisited[indexPath.row]
+                // Now, return
+                return toReturnVC
+            }
+        }
+        
+        // Else, return
+        return nil
+    }
+    
+    func previewingContext(previewingContext: UIViewControllerPreviewing, commitViewController viewControllerToCommit: UIViewController) {
+        // Show the ViewController
+        self.navigationController?.showViewController(viewControllerToCommit, sender: self)
     }
     
     // MARK: - Actions received here

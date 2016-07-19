@@ -1536,10 +1536,10 @@
             </objects>
             <point key="canvasLocation" x="2304" y="-15"/>
         </scene>
-        <!--Location Log Image View View Controller-->
+        <!--ImageView for a Location Log-->
         <scene sceneID="Tvv-W2-6Sp">
             <objects>
-                <viewController id="39n-Xe-lL5" customClass="LocationLogImageViewViewController" customModule="LocNotes" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="locationLogImageViewVC" title="ImageView for a Location Log" definesPresentationContext="YES" id="39n-Xe-lL5" customClass="LocationLogImageViewViewController" customModule="LocNotes" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="wqy-Tl-2Gc"/>
                         <viewControllerLayoutGuide type="bottom" id="UTR-sl-1xo"/>
@@ -1593,7 +1593,7 @@
         <!--MapView for a Location Log-->
         <scene sceneID="sve-QV-acl">
             <objects>
-                <viewController title="MapView for a Location Log" id="e1u-MV-LOx" customClass="LocationLogMapViewViewController" customModule="LocNotes" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="locationLogMapViewVC" title="MapView for a Location Log" id="e1u-MV-LOx" customClass="LocationLogMapViewViewController" customModule="LocNotes" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Hoc-6r-7rR"/>
                         <viewControllerLayoutGuide type="bottom" id="XQA-WP-sBO"/>
