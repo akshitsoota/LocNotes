@@ -167,37 +167,6 @@ class CommonUtils {
         } else {
             return ConnectionStatus.ConnectionTypeWiFi
         }
-        
-        /* SCNetworkReachabilityRef reachability = SCNetworkReachabilityCreateWithName(NULL, "8.8.8.8");
-        SCNetworkReachabilityFlags flags;
-        BOOL success = SCNetworkReachabilityGetFlags(reachability, &flags);
-        CFRelease(reachability);
-        if (!success) {
-            return ConnectionTypeUnknown;
-        }
-        BOOL isReachable = ((flags & kSCNetworkReachabilityFlagsReachable) != 0);
-        BOOL needsConnection = ((flags & kSCNetworkReachabilityFlagsConnectionRequired) != 0);
-        BOOL isNetworkReachable = (isReachable && !needsConnection);
-        
-        if (!isNetworkReachable) {
-            return ConnectionTypeNone;
-        } else if ((flags & kSCNetworkReachabilityFlagsIsWWAN) != 0) {
-            return ConnectionType3G;
-        } else {
-            return ConnectionTypeWiFi;
-        }
-        
-        let rechability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, "www.apple.com")
-        var flags: SCNetworkReachabilityFlags = SCNetworkReachabilityFlags()
-        
-        if SCNetworkReachabilityGetFlags(rechability!, &flags) == false {
-            return false
-        }
-        
-        let isReachable = (flags.rawValue & UInt32(kSCNetworkFlagsReachable)) != 0
-        let needsConnection = (flags.rawValue & UInt32(kSCNetworkFlagsConnectionRequired)) != 0
-        
-        return (isReachable && !needsConnection) */
     }
     
 }

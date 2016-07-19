@@ -19,5 +19,6 @@ extension FullResolutionS3Image {
     @NSManaged var storeDate: NSNumber?
     @NSManaged var amazonS3link: String?
     @NSManaged var respectiveLogID: String?
+    @NSManaged var imageLocation: String?
 
 }

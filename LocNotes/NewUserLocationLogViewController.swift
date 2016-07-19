@@ -1069,6 +1069,10 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                 fullResolutionS3Image.s3id = self.photoViews[photoIndex].uniqueS3ID
                 fullResolutionS3Image.storeDate = NSNumber(longLong: Int64(NSDate().timeIntervalSince1970))
                 fullResolutionS3Image.respectiveLogID = uniqueLogID
+                // Save the location if we've got one
+                if( self.photoViews[photoIndex].photoLocation != nil ) {
+                    fullResolutionS3Image.imageLocation = "\(self.photoViews[photoIndex].photoLocation!.coordinate.latitude),\(self.photoViews[photoIndex].photoLocation!.coordinate.longitude)"
+                }
                 
                 imageThumbnail.fullResS3id = self.photoViews[photoIndex].uniqueS3ID
                 imageThumbnail.image = UIImagePNGRepresentation(self.photoViews[photoIndex].thumbnailImage!)
@@ -1262,6 +1266,7 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
                     locationLog.addedDate = addedTime
                     locationLog.imageS3ids = s3IDsCompiled
                     locationLog.locationNames = locNameListCompiled
+                    locationLog.locationPoints = locPointsListCompiled
                     locationLog.logDesc = self.descriptionTextField.text!
                     locationLog.logID = uniqueLogID
                     locationLog.logTitle = self.titleTextField.text!

@@ -19,6 +19,7 @@ extension LocationLog {
     @NSManaged var logDesc: String?
     @NSManaged var imageS3ids: String?
     @NSManaged var locationNames: String?
+    @NSManaged var locationPoints: String?
     @NSManaged var addedDate: NSNumber?
     @NSManaged var updateDate: NSNumber?
 
