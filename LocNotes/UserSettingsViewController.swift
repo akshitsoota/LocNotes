@@ -79,8 +79,8 @@ class UserSettingsViewController: UIViewController {
         generateTopBorder(self.deleteAllLocationLogsViewHolder, color: nil)
         
         generateBottomBorder(self.userNameViewHolder, color: nil)
-        generateBottomBorder(self.touchIDViewHolder, color: nil)
-        generateBottomBorder(self.uploadOnWifiViewHolder, color: UIColor.lightGrayColor())
+        generateBottomBorder(self.touchIDViewHolder, color: UIColor.lightGrayColor())
+        generateBottomBorder(self.uploadOnWifiViewHolder, color: nil)
         generateBottomBorder(self.deleteAllLocationLogsViewHolder, color: UIColor.lightGrayColor())
         generateBottomBorder(self.logOutOfAccountViewHolder, color: nil)
         
@@ -98,7 +98,8 @@ class UserSettingsViewController: UIViewController {
         // Show it on the screen
         self.userNameLabel.text = "Username: \(userName)"
         self.touchIDSwitch.on = touchIDEnabled
-        self.uploadOnWifiSwitch.on = preferredWifi!
+        // Don't fill this one in because we haven't worked on this feature yet: 
+        //   self.uploadOnWifiSwitch.on = preferredWifi!
     }
     
     // MARK: - Orientation Change Listener

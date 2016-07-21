@@ -218,7 +218,7 @@ class ShowLocationLogViewController: UIViewController, UICollectionViewDataSourc
                     let imageObject: UIImage = UIImage(data: image.image!)!
                     self.locationLogThumbnailScales[image.s3id!] = Double(Double(imageObject.size.width) / Double(imageObject.size.height))
                     // Check for location
-                    if( !(image.imageLocation?.isEmpty)! ) {
+                    if( image.imageLocation != nil && !(image.imageLocation?.isEmpty)! ) {
                         let splitted: [String] = image.imageLocation!.componentsSeparatedByString(",")
                         // Collect the LatLng and save it in the dictionary
                         let location: CLLocation = CLLocation(latitude: Double(splitted[0])!, longitude: Double(splitted[1])!)
