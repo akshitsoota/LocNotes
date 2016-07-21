@@ -322,7 +322,7 @@ class ShowLocationLogViewController: UIViewController, UICollectionViewDataSourc
         // Try to find a location on the Collection View
         // CITATION: http://krakendev.io/peek-pop/
         
-        if previewingContext.sourceView == self.locationLogPhotosView {
+        if previewingContext.sourceView == self.locationLogPhotosView && self.explodedS3imageIDsList.count != 0 {
             if let indexPath = self.locationLogPhotosView.indexPathForItemAtPoint(location),
                 let cellAttributes = self.locationLogPhotosView.layoutAttributesForItemAtIndexPath(indexPath) {
                 // Setup the Peek
@@ -356,7 +356,7 @@ class ShowLocationLogViewController: UIViewController, UICollectionViewDataSourc
         }
         
         // Try to find a location on the Table View instead
-        if previewingContext.sourceView == self.locationLogLocationsVisitedTable {
+        if previewingContext.sourceView == self.locationLogLocationsVisitedTable && self.locationsVisited.count != 0 {
             if let indexPath = self.locationLogLocationsVisitedTable.indexPathForRowAtPoint(location) {
                 // Setup the Peek
                 previewingContext.sourceRect = self.locationLogLocationsVisitedTable.rectForRowAtIndexPath(indexPath)
