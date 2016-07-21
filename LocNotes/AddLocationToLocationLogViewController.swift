@@ -129,6 +129,11 @@ class AddLocationToLocationLogViewController: UIViewController, UITableViewDeleg
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if( self.searchMatches.count == 0 ) {
+            // Deselect the row and return
+            tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            return
+        }
         // Hide all the search things
         self.searchBar.text = nil
         self.searchResultsHolder.hidden = true // Hide the Search Results Holder

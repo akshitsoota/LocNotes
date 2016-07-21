@@ -50,6 +50,8 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     var loadingProgressView: ProgressLoadingScreenView!
     // Keeps track of the active field on the View
     var activeField: UIView?
+    // Holds the Tap View Gesture Recognizer for this main view
+    var tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer()
     
     // Dispatch Queues
     let uploadLocationLogQueue = dispatch_queue_create("LocationLogUploadQueue", DISPATCH_QUEUE_CONCURRENT)
@@ -141,8 +143,8 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
             self.titleTextField.delegate = self
             
             // If user taps outside any field, we are to dismiss the keyboard
-            let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(NewUserLocationLogViewController.dismissKeyboard))
-            self.view.addGestureRecognizer(tap)
+            self.tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(NewUserLocationLogViewController.dismissKeyboard))
+            self.view.addGestureRecognizer(tapGestureRecognizer)
         }
     }
     
@@ -516,6 +518,8 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
     @IBAction func removeLocationClicked(sender: AnyObject) {
         // Set state
         self.locationsVisitedTableAction = 0 // Multi-Remove taking place
+        // Remove the tap gesture recognizer from the view to fix delete button not showing up
+        self.view.removeGestureRecognizer(self.tapGestureRecognizer)
         // Toggle editing mode on for the TableView
         self.locationVisitedTable.setEditing(true, animated: true)
         // Hide other buttons and show stop action button
@@ -546,6 +550,11 @@ class NewUserLocationLogViewController: UIViewController, UITextViewDelegate, UI
         if self.locationsVisitedTableAction != (-1) {
             // Toggle it off
             self.locationVisitedTable.setEditing(false, animated: true)
+            // Re-add the Gesture Recognizer if it was removed
+            if( self.locationsVisitedTableAction == 0 ) {
+                // Add it back!
+                self.view.addGestureRecognizer(self.tapGestureRecognizer)
+            }
             // Show other buttons and hide the stop action button
             self.locationsVisitedStopActionButton.hidden = true
             self.locationsVisitedReorderLocationsButton.hidden = false
