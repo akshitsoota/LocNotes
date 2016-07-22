@@ -1,5 +1,8 @@
 # LocNotes - Smarter Travel Logs
 
+![Swift 2.2](https://img.shields.io/badge/swift-2.2-brightgreen.svg)
+![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
+
 This is my **first** iOS Application. As a part of my internship, I was given a MacBook and I decided to learn Swift, XCode and put together my very own iOS application.
 Knowing Android development, I wanted to try the other side!
 
