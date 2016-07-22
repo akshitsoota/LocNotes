@@ -606,7 +606,7 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
                     // Hide activity indicator on the Status Bar
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     // Tell the user where we hit a snag
-                    CommonUtils.showDefaultAlertToUser(self, title: "Hit a Snag!", alertContents: "Your login credentials have expired. Please try logout and log back in to create new Location Logs.")
+                    CommonUtils.showDefaultAlertToUser(self, title: "Hit a Snag!", alertContents: "Your login credentials have expired. Please try logout and log back in to refresh your Location Logs.")
                 })
                 // Exit
                 return
