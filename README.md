@@ -72,6 +72,14 @@ Explaining screens from left to right:
 2. Force Touch on a location the user visited from a location log
 3. Viewing the location of a location that the user visited
 
+### Before running this application...
+
+Before you are able to run this application, you must change two files: `/LocNotes/endpoints_template.plist` and `LocNotes/amazon-aws-credentials_template.plist`.
+
+The file `/LocNotes/endpoints_template.plist` must be renamed to `/LocNotes/endpoints.plist` and `LocNotes/amazon-aws-credentials_template.plist` must be renamed to `LocNotes/amazon-aws-credentials.plist` for them to be picked up by the XCode environment.
+
+Necessary changes must be made to both these files by filling in valid values for all the dummy key-value pairs. These two files are crucial to the LocNotes application connecting to the backend server (instructions to configure that can be found [here](https://github.com/akshitsoota/LocNotes-EC2Backend)) and uploading images correctly.
+
 ### What's next?
 
 With the limited time I had over the summer, I wanted to hack together a few of my ideas. This left me with limited time to finish this project in its
