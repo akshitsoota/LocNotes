@@ -394,6 +394,7 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
                             // Clear up CoreData to remove this Location Log
                             
                             var s3IDsToDelete: [String] = [] // Also collect the S3 IDs to be deleted
+                            let locationLogIDLookingFor: String = self.locationLogs[indexPath.row].logID!
                             
                             // Search of the Location Log that has to be delete
                             let fetchRequest: NSFetchRequest = NSFetchRequest(entityName: "LocationLog")
@@ -430,7 +431,7 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
                                     
                                     // Iterate over them and see which one to delete
                                     for image in images {
-                                        if image.respectiveLogID! == self.locationLogs[indexPath.row].logID! &&
+                                        if image.respectiveLogID! == locationLogIDLookingFor &&
                                            s3IDsToDelete.contains("\(image.s3id!)") {
                                             // Remove this image
                                             self.managedContext?.deleteObject(image)
@@ -447,7 +448,7 @@ class UserLocationLogsViewController: UIViewController, UITableViewDelegate, UIT
                                     
                                     // Iterate over them and see which ones to delete
                                     for thumbnail in thumbnails {
-                                        if thumbnail.respectiveLogID! == self.locationLogs[indexPath.row].logID! &&
+                                        if thumbnail.respectiveLogID! == locationLogIDLookingFor &&
                                            s3IDsToDelete.contains("\(thumbnail.fullResS3id!)") {
                                             // Remove this thumbnail
                                             self.managedContext?.deleteObject(thumbnail)
