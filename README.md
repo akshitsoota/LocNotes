@@ -1,5 +1,6 @@
 # LocNotes - Smarter Travel Logs
 
+![Xcode 7.3.1](https://img.shields.io/badge/xcode-7.3.1-yellow.svg)
 ![Swift 2.2](https://img.shields.io/badge/swift-2.2-brightgreen.svg)
 ![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
 
